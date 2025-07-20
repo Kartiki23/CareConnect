@@ -37,10 +37,6 @@ const Login = () => {
                 className="w-full mt-1 px-4 py-2 border rounded-lg " />
             </div>
 
-            <div className="flex items-center justify-between pt-1">
-        
-            </div>
-
             <div className="pt-1">
                 <button type="submit"className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300">
                 Sign In
