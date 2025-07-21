@@ -1,57 +1,114 @@
-import React, { useState } from 'react'
 
-const Login = () => {
-    const [email,setEmail] = useState("");
-    const [password, setPassword] = useState("");
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom"; // <-- Make sure you're using React Router
 
-    const formSubmit = (e) =>{
-        e.preventDefault();
+const LoginPage = () => {
+  const [role, setRole] = useState("patient");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-        console.log("Form Submitted");
-        console.log("Email",email);
-        console.log("Password:",password);
+  const handleToggle = () => {
+    setRole((prev) => (prev === "patient" ? "doctor" : "patient"));
+  };
 
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Role:", role);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    // Backend logic goes here
+  };
+
   return (
-    <div className=" flex items-center justify-center mt-20">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 via-white to-blue-200 p-4">
+      <motion.div
+        className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg relative"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
+          {role === "patient" ? "Patient" : "Doctor"} Login
+        </h2>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-90 ">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+        {/* Role Toggle Button */}
+        <div className="flex justify-center mb-6">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleToggle}
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-200"
+          >
+            Switch to {role === "patient" ? "Doctor" : "Patient"}
+          </motion.button>
+        </div>
 
-        <form onSubmit={formSubmit}>
-            <div className="font-semibold text-1xl pt-1">
-                Email:
-                <input type="email" 
-                value={email}
-                name='email'
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-lg " />
-            </div>
+        <AnimatePresence mode="wait">
+          <motion.form
+            key={role}
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-4"
+          >
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-            <div className="font-semibold text-1xl pt-1">
-                Password:
-                <input type="password" 
-                value={password}
-                name='password'
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-lg " />
-            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-            <div className="pt-1">
-                <button type="submit"className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                Sign In
-                </button>
-            </div>
-        </form>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+            >
+              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+            </motion.button>
+          </motion.form>
+        </AnimatePresence>
 
-        <p className="text-sm text-center text-gray-600 mt-6">
-           Don't have an account?
-           <a href="#">Sign up</a>
-        </p>
-  </div>
+        {/* 👇 Registration Links */}
+        <div className="mt-6 text-center text-sm text-gray-600">
+          {role === "patient" ? (
+            <>
+              Don't have an account?{" "}
+              <Link
+                to="/patientRegistration"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Register as Patient
+              </Link>
+            </>
+          ) : (
+            <>
+              Don't have an account?{" "}
+              <Link
+                to="/doctorRegistration"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Register as Doctor
+              </Link >
+            </>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
-</div>
-  )
-}
-
-export default Login;
+export default LoginPage;
