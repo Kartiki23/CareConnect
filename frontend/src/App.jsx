@@ -7,8 +7,6 @@ import DoctorRegistration from './DoctorFlow/DoctorRegistration';
 import Login from './publicAcces/Login';
 import PatientRegistration from './PatientFlow/PatientRegistration';
 
-
-
 const App = ()=>{
 
 return(
@@ -21,6 +19,7 @@ return(
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
 </Routes>
+    <PatientRegistration/>
   </BrowserRouter>
 );
 }

@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 
 const PatientRegistration = () => {
@@ -104,6 +105,7 @@ const PatientRegistration = () => {
               name="password"
               value={formData.password}
               onChange={handleChanges}
+
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
               placeholder="Create password"
             />
