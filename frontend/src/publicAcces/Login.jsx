@@ -107,7 +107,7 @@ const Login = () => {
           )}
         </div>
       </motion.div>
-    </div>
+      </div>
   );
 };
 
