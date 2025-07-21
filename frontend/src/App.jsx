@@ -11,14 +11,14 @@ const App = ()=>{
 
 return(
   <BrowserRouter>
+  {/* <Navbar/> */}
     <Home />
     <Login/>
     <Routes>
       
      <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
-
-    </Routes>
+</Routes>
   </BrowserRouter>
 );
 }

@@ -1,5 +1,4 @@
 
-
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom"; // <-- Make sure you're using React Router
@@ -109,7 +108,6 @@ const Login = () => {
         </div>
       </motion.div>
       </div>
-    </div>
   );
 };
 
