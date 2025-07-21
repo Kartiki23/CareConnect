@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom"; // <-- Make sure you're using React Router
 
-const LoginPage = () => {
+const Login = () => {
   const [role, setRole] = useState("patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -111,4 +111,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
