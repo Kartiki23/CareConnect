@@ -1,101 +1,114 @@
+
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom"; // <-- Make sure you're using React Router
 
-const LoginPage = () => {
-  const [role, setRole] = useState("patient"); 
-  // 'patient' or 'doctor'
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+const Login = () => {
+  const [role, setRole] = useState("patient");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleRoleChange = (newRole) => {
-    setRole(newRole);
-    setFormData({ email: "", password: "" });
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleToggle = () => {
+    setRole((prev) => (prev === "patient" ? "doctor" : "patient"));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Logging in as:", role, formData);
-    // You can send role and credentials to backend here
+    console.log("Role:", role);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    // Backend logic goes here
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 via-white to-blue-200 p-4">
+      <motion.div
+        className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg relative"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
-          Login as {role === "patient" ? "Patient" : "Doctor"}
+          {role === "patient" ? "Patient" : "Doctor"} Login
         </h2>
 
-        {/* Role Toggle Buttons */}
+        {/* Role Toggle Button */}
         <div className="flex justify-center mb-6">
-          <button
-            onClick={() => handleRoleChange("patient")}
-            className={`px-4 py-2 rounded-l-lg ${
-              role === "patient"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-800"
-            }`}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleToggle}
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-200"
           >
-            Patient
-          </button>
-          <button
-            onClick={() => handleRoleChange("doctor")}
-            className={`px-4 py-2 rounded-r-lg ${
-              role === "doctor"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-800"
-            }`}
-          >
-            Doctor
-          </button>
+            Switch to {role === "patient" ? "Doctor" : "Patient"}
+          </motion.button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">Email</label>
+        <AnimatePresence mode="wait">
+          <motion.form
+            key={role}
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-4"
+          >
             <input
               type="email"
-              name="email"
-              className="w-full border rounded px-3 py-2"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
+              placeholder="Email"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
-          </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Password</label>
             <input
               type="password"
-              name="password"
-              className="w-full border rounded px-3 py-2"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter password"
+              placeholder="Password"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
-          </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
-          >
-            Login
-          </button>
-        </form>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+            >
+              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+            </motion.button>
+          </motion.form>
+        </AnimatePresence>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
-            Register now
-          </a>
-        </p>
+        {/* 👇 Registration Links */}
+        <div className="mt-6 text-center text-sm text-gray-600">
+          {role === "patient" ? (
+            <>
+              Don't have an account?{" "}
+              <Link
+                to="/patientRegistration"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Register as Patient
+              </Link>
+            </>
+          ) : (
+            <>
+              Don't have an account?{" "}
+              <Link
+                to="/doctorRegistration"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Register as Doctor
+              </Link >
+            </>
+          )}
+        </div>
+      </motion.div>
       </div>
-    </div>
   );
 };
 
-export default LoginPage;
+export default Login;

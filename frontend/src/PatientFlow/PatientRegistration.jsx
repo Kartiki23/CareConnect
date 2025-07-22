@@ -120,5 +120,7 @@ const PatientRegistration = () => {
   )
 }
 
-export default PatientRegistration
+
+export default PatientRegistration;
+
 
