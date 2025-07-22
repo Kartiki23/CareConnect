@@ -1,8 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
+  const location = useLocation();
+
+  const handleScroll = (sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (location.pathname === '/' && el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -19,8 +30,12 @@ const Navbar = () => {
         {/* Navigation Links */}
         <div className="space-x-6 hidden md:flex text-sm font-medium">
           <Link to="/" className="hover:text-gray-200 transition text-2xl">Home</Link>
-          <Link to="/specialties" className="hover:text-gray-200 transition text-2xl">Specialties</Link>
-          <Link to="/donation" className="hover:text-gray-200 transition text-2xl">Donation</Link>
+          <button onClick={() => handleScroll('specialties')} className="hover:text-gray-200 transition text-2xl">
+            Specialties
+          </button>
+          <button onClick={() => handleScroll('donation')} className="hover:text-gray-200 transition text-2xl">
+            Donation
+          </button>
           <Link to="/about" className="hover:text-gray-200 transition text-2xl">About</Link>
           <Link to="/contact" className="hover:text-gray-200 transition text-2xl">Contact</Link>
         </div>
