@@ -1,5 +1,6 @@
 // src/components/MedicalDashboard.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -47,7 +48,7 @@ const COLORS = ["#4F46E5", "#F59E0B"];
 
 const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
   <div className="bg-white p-4 rounded-xl shadow-md">
-    <h3 className="text-sm text-gray-500">{title}</h3>
+    <h3 className="text-sm font-semibold">{title}</h3>
     <p className="text-2xl font-bold mt-1">{value}</p>
     <p className={`text-xs mt-1 ${subColor}`}>{sub}</p>
   </div>
@@ -59,10 +60,10 @@ const DoctorDashboard = () => {
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-white shadow-md md:h-screen p-6">
         <h2 className="text-2xl font-bold text-indigo-600 mb-10">CareConnect</h2>
-        <nav className="space-y-4 text-gray-700">
+        <nav className="space-y-4 font-semibold">
           <div className="hover:text-indigo-600 cursor-pointer">Dashboard</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Appointments</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Patients</div>
+          <Link to ="/doctorAppointment"><div className="hover:text-indigo-600 cursor-pointer mt-2">Appointments</div></Link>
+          <div className="hover:text-indigo-600 cursor-pointer mt-2">Patients</div>
           <div className="hover:text-indigo-600 cursor-pointer">Messages</div>
           <div className="hover:text-indigo-600 cursor-pointer">Medications</div>
           <div className="hover:text-indigo-600 cursor-pointer">Documents</div>
@@ -81,7 +82,7 @@ const DoctorDashboard = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold">Dashboard</h1>
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">Dr. Hamam Zai</span>
+            <span className="font-semibold">Dr. Hamam Zai</span>
             <img
               src="https://i.pravatar.cc/40"
               alt="Avatar"
@@ -102,7 +103,7 @@ const DoctorDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Activity */}
           <div className="bg-white rounded-xl shadow-md p-4 md:col-span-2">
-            <h2 className="text-sm text-gray-500 mb-4">Activity</h2>
+            <h2 className=" font-semibold mb-4">Activity</h2>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={activityData}>
                 <XAxis dataKey="name" />
@@ -116,7 +117,7 @@ const DoctorDashboard = () => {
 
           {/* Top Division */}
           <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className="text-sm text-gray-500 mb-4">Top Division</h2>
+            <h2 className=" font-semibold mb-4">Top Division</h2>
             <ul className="text-gray-700 space-y-2 text-sm">
               <li>General Physician</li>
               <li>Internal Medicine</li>
@@ -131,7 +132,7 @@ const DoctorDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           {/* Age Chart */}
           <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className="text-sm text-gray-500 mb-4">Age</h2>
+            <h2 className=" font-semibold mb-4">Age</h2>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={ageData}>
                 <XAxis dataKey="name" />
@@ -144,7 +145,7 @@ const DoctorDashboard = () => {
 
           {/* Gender Chart */}
           <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className="text-sm text-gray-500 mb-4">Gender</h2>
+            <h2 className=" font-semibold mb-4">Gender</h2>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie

@@ -7,6 +7,9 @@ import PatientRegistration from './PatientFlow/PatientRegistration';
 import DoctorRegistration from './DoctorFlow/DoctorRegistration';
 import Login from './publicAcces/Login';
 import PatientDashboard from './PatientFlow/PatientDashboard';
+import DoctorDashboard from './DoctorFlow/DoctorDashboard';
+import DoctorAppointment from './DoctorFlow/DoctorAppointment';
+import PatientDetails from './DoctorFlow/PatientsDetails';
 
 
 const App = ()=>{
@@ -17,11 +20,15 @@ return(
     <Home />
     <Login/>
     <PatientDashboard/>
+    <DoctorDashboard/>
+    <PatientDetails/>
+    
     <Routes>
       
      <Route path="/patientRegistration" element={<PatientRegistration />} />
-        <Route path="/doctorRegistration" element={<DoctorRegistration />} />
-</Routes>
+      <Route path="/doctorRegistration" element={<DoctorRegistration />} />
+      <Route path='/doctorAppointment' element={<DoctorAppointment/>}/>
+    </Routes>
   </BrowserRouter>
 );
 }
