@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from './Navbar';
+//import Navbar from './Navbar';
 
 const donationSlides = [
   { title: "Blood Donation", description: "Your blood can save lives. Donate regularly to help accident victims, surgeries, and blood disorder patients." },
@@ -63,7 +63,7 @@ const Home = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-gray-800">
-      <Navbar />
+      {/* //<Navbar /> */}
 
       {/* Hero Section */}
       <motion.section initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="bg-blue-50 py-20 px-4 text-center">
