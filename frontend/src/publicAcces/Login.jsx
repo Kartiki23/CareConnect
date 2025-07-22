@@ -71,14 +71,15 @@ const Login = () => {
               required
             />
 
-            <motion.button
+            <Link to ="/patientDashboard"><motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
-            >
+             >
               Login as {role.charAt(0).toUpperCase() + role.slice(1)}
             </motion.button>
+            </Link>
           </motion.form>
         </AnimatePresence>
 
