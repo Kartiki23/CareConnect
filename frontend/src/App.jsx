@@ -6,6 +6,8 @@ import Navbar from './publicAcces/Navbar';
 import PatientRegistration from './PatientFlow/PatientRegistration';
 import DoctorRegistration from './DoctorFlow/DoctorRegistration';
 import Login from './publicAcces/Login';
+import PatientDashboard from './PatientFlow/PatientDashboard';
+
 
 const App = ()=>{
 
@@ -14,6 +16,7 @@ return(
   {/* <Navbar/> */}
     <Home />
     <Login/>
+    <PatientDashboard/>
     <Routes>
       
      <Route path="/patientRegistration" element={<PatientRegistration />} />
