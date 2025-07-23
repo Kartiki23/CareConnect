@@ -8,11 +8,9 @@ import Contact from './publicAcces/Contact';
 import PatientRegistration from './PatientFlow/PatientRegistration';
 import PatientDashboard from './PatientFlow/PatientDashboard';
 import DoctorRegistration from './DoctorFlow/DoctorRegistration';
-
-// 👇 These should be created and imported if you're using them
-// import DoctorDashboard from './DoctorFlow/DoctorDashboard';
-// import DoctorAppointment from './DoctorFlow/DoctorAppointment';
-// import PatientDetails from './PatientFlow/PatientDetails';
+import DoctorDashboard from './DoctorFlow/DoctorDashboard';
+import DoctorAppointment from './DoctorFlow/DoctorAppointment';
+import PatientDetails from './DoctorFlow/PatientsDetails';
 
 const App = () => {
   return (
@@ -26,11 +24,10 @@ const App = () => {
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/patientDashboard" element={<PatientDashboard />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
-
-        {/* Uncomment when you have created these components */}
-        {/* <Route path="/doctorDashboard" element={<DoctorDashboard />} />
+        <Route path="/doctorDashboard" element={<DoctorDashboard />} />
         <Route path="/doctorAppointment" element={<DoctorAppointment />} />
-        <Route path="/patientDetails" element={<PatientDetails />} /> */}
+        <Route path="/patientDetails" element={<PatientDetails />} />
+
       </Routes>
     </BrowserRouter>
   );

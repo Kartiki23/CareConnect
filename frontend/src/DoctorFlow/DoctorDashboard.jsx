@@ -63,7 +63,7 @@ const DoctorDashboard = () => {
         <nav className="space-y-4 font-semibold">
           <div className="hover:text-indigo-600 cursor-pointer">Dashboard</div>
           <Link to ="/doctorAppointment"><div className="hover:text-indigo-600 cursor-pointer mt-2">Appointments</div></Link>
-          <div className="hover:text-indigo-600 cursor-pointer mt-2">Patients</div>
+          <Link to ="/patientDetails"><div className="hover:text-indigo-600 cursor-pointer mt-2">Patients</div></Link>
           <div className="hover:text-indigo-600 cursor-pointer">Messages</div>
           <div className="hover:text-indigo-600 cursor-pointer">Medications</div>
           <div className="hover:text-indigo-600 cursor-pointer">Documents</div>
