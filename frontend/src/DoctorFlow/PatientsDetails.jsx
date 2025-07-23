@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, MessageCircle, Search } from "lucide-react";
+import DoctorSidebar from "./DoctorSidebar";
 
 const currentDoctor = "Dr. Alex";
 
@@ -68,6 +69,7 @@ const PatientDetails = () => {
   );
 
   return (
+    <DoctorSidebar>
     <motion.div
       className="p-6 bg-gray-50 min-h-screen"
       initial={{ opacity: 0 }}
@@ -137,6 +139,7 @@ const PatientDetails = () => {
         </table>
       </div>
     </motion.div>
+    </DoctorSidebar>
   );
 };
 

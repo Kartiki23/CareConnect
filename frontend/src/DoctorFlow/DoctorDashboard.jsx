@@ -1,4 +1,4 @@
-// src/components/MedicalDashboard.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import DoctorSidebar from "./DoctorSidebar";
 
 // Sample data
 const activityData = [
@@ -56,27 +57,9 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
 
 const DoctorDashboard = () => {
   return (
+    <DoctorSidebar>
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-white shadow-md md:h-screen p-6">
-        <h2 className="text-2xl font-bold text-indigo-600 mb-10">CareConnect</h2>
-        <nav className="space-y-4 font-semibold">
-          <div className="hover:text-indigo-600 cursor-pointer">Dashboard</div>
-          <Link to ="/doctorAppointment"><div className="hover:text-indigo-600 cursor-pointer mt-2">Appointments</div></Link>
-          <Link to ="/patientDetails"><div className="hover:text-indigo-600 cursor-pointer mt-2">Patients</div></Link>
-          <div className="hover:text-indigo-600 cursor-pointer">Messages</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Medications</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Documents</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Finances</div>
-          <div className="hover:text-indigo-600 cursor-pointer">Settings</div>
-        </nav>
-        <div className="absolute bottom-6">
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-            Upgrade
-          </button>
-        </div>
-      </aside>
-
+  
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-auto">
         <div className="flex justify-between items-center mb-6">
@@ -167,6 +150,7 @@ const DoctorDashboard = () => {
         </div>
       </main>
     </div>
+    </DoctorSidebar>
   );
 };
 
