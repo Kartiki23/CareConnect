@@ -1,8 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
+  const location = useLocation();
+
+  const handleScroll = (sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (location.pathname === '/' && el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -19,19 +30,20 @@ const Navbar = () => {
         {/* Navigation Links */}
         <div className="space-x-6 hidden md:flex text-sm font-medium">
           <Link to="/" className="hover:text-gray-200 transition text-2xl">Home</Link>
-          <Link to="/specialties" className="hover:text-gray-200 transition text-2xl">Specialties</Link>
-          <Link to="/donation" className="hover:text-gray-200 transition text-2xl">Donation</Link>
+          <button onClick={() => handleScroll('specialties')} className="hover:text-gray-200 transition text-2xl">
+            Specialties
+          </button>
+          <button onClick={() => handleScroll('donation')} className="hover:text-gray-200 transition text-2xl">
+            Donation
+          </button>
           <Link to="/about" className="hover:text-gray-200 transition text-2xl">About</Link>
           <Link to="/contact" className="hover:text-gray-200 transition text-2xl">Contact</Link>
         </div>
 
         {/* Auth Buttons */}
         <div className="space-x-3 text-sm font-medium hidden md:flex">
-          <Link to="/login" className="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
+          <Link to="/login" className="px-4 py-2 mr-7 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
             Login
-          </Link>
-          <Link to="/register" className="px-4 py-2 border border-white rounded hover:bg-blue-500 transition">
-            Register
           </Link>
         </div>
       </div>

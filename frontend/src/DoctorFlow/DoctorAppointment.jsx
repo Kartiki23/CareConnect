@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
+import DoctorSidebar from "./DoctorSidebar";
 
 const appointments = [
   {
@@ -44,6 +45,7 @@ const getStatusColor = (status) => {
 
 const DoctorAppointment = () => {
   return (
+    <DoctorSidebar>
     <motion.div
       className="p-6"
       initial={{ opacity: 0 }}
@@ -107,10 +109,10 @@ const DoctorAppointment = () => {
                   <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm transition">
                     Accept
                   </button>
-                  <button className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-green-700 text-sm transition">
+                  <button className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-green-700 text-sm transition mt-1">
                     Reschedule
                   </button>
-                  <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm transition">
+                  <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm transition mt-1">
                     Cancel
                   </button>
                 </td>
@@ -120,6 +122,7 @@ const DoctorAppointment = () => {
         </table>
       </div>
     </motion.div>
+    </DoctorSidebar>
   );
 };
 
