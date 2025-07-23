@@ -42,11 +42,8 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="space-x-3 text-sm font-medium hidden md:flex">
-          <Link to="/login" className="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
+          <Link to="/login" className="px-4 py-2 mr-7 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
             Login
-          </Link>
-          <Link to="/register" className="px-4 py-2 border border-white rounded hover:bg-blue-500 transition">
-            Register
           </Link>
         </div>
       </div>

@@ -11,6 +11,8 @@ import DoctorRegistration from './DoctorFlow/DoctorRegistration';
 import DoctorDashboard from './DoctorFlow/DoctorDashboard';
 import DoctorAppointment from './DoctorFlow/DoctorAppointment';
 import PatientDetails from './DoctorFlow/PatientsDetails';
+import DoctorSidebar from './DoctorFlow/DoctorSidebar';
+import DoctorMsg from './DoctorFlow/DoctorMsg';
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
         <Route path="/doctorDashboard" element={<DoctorDashboard />} />
         <Route path="/doctorAppointment" element={<DoctorAppointment />} />
         <Route path="/patientDetails" element={<PatientDetails />} />
+        <Route path='/doctorsidebar' element={<DoctorSidebar/>}/>
+        <Route path='/doctormsg' element={<DoctorMsg/>}/>
 
       </Routes>
     </BrowserRouter>
