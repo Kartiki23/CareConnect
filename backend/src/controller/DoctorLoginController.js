@@ -13,12 +13,6 @@ export const userRegister = async (req,res) => {
             return res.status(409).json({message:"All fields are requried !!"})
         }
 
-        const userExist = await docLogin.findOne({email});
-
-        if(userExist){
-            return res.status(401).json({message:"Email already Exists"})
-        }
-
         const salt = 10;
         const hashedPassword = await bcrypt.hash(password, salt);
 

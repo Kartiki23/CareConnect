@@ -4,8 +4,7 @@ export const userSchema = new Schema({
     email:{
         type:String,
         require:true,
-        trim:true,
-        unique:true
+        trim:true
     },
     password:{
         type:String,

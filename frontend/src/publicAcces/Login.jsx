@@ -14,15 +14,33 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Role:", role);
-    console.log("Email:", email);
-    console.log("Password:", password);
 
-    // 👉 Route after "successful login"
-    if (role === "patient") {
-      navigate("/patientDashboard");
-    } else {
-      navigate("/doctorDashboard");
+    const endpoint =
+      role === "patient" ? "/api/patient/login" : "http://localhost:3001/api/v1/user/login";
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Login successful:", data);
+        // Optionally store token if your backend returns one
+        // localStorage.setItem("token", data.token);
+        navigate(role === "patient" ? "/patientDashboard" : "/doctorDashboard");
+      } else {
+        console.error("Login failed:", data.message);
+        alert("Login failed: " + (data.message || "Invalid credentials"));
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Something went wrong. Check server or network.");
     }
   };
 

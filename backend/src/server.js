@@ -2,11 +2,13 @@ import express from 'express'
 import authRoutes from './route/DoctorRegistrationRoute.js';
 import { connectDB } from './config/Db.js';
 import docLoginRouter from './route/DoctorLoginRoute.js';
-
+import cors from 'cors';
 
 const app = express()
 
 app.use(express.json())
+
+app.use(cors());
 
 connectDB();
 
