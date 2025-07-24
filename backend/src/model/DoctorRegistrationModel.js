@@ -57,13 +57,13 @@ export const docRegSchema = new Schema({
     },
     licensePhoto:{
         type:String,
-        required:false
+        
     },
     doctorPhoto:{
         type:String,
-        required:false
     }
 },{timestamps:true})
 
 export const docRegModel = mongoose.model('docRegModel' ,docRegSchema  );
+
 

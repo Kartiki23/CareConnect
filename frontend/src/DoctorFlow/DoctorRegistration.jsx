@@ -1,202 +1,133 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
-const DoctorRegistration = () =>{
-
+const DoctorRegistration = () => {
   const [formData, setFormData] = useState({
-    fullName:"",
-    gender:"",
-    age:"",
-    email:"",
-    phone:"",
-    aadharNumber:"",
-    password:"",
-    specialization:"",
-    hospital:"",
-    licenseNumber:"",
-    licensePhoto:"",
-    profilePhoto:""
+    fullName: "",
+    gender: "",
+    age: "",
+    email: "",
+    phone: "",
+    aadharNumber: "",
+    password: "",
+    specialization: "",
+    hospital: "",
+    licenseNumber: "",
+    licensePhoto: null,
+    profilePhoto: null,
   });
 
-  const handleChange = (e) =>{
-    setFormData({...formData,[e.target.name]:e.target.value})
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    if (type === "file") {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  const handleSubmit = (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Doctor Registered:",formData)
+
+    const submissionData = new FormData();
+
+    // Correctly append each field and file
+    for (const key in formData) {
+      submissionData.append(key, formData[key]);
+    }
+
+    try {
+      const res = await fetch("http://localhost:3001/api/v1/user/register", {
+        method: "POST",
+        body: submissionData,
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("Doctor registered successfully");
+      } else {
+        alert(result.message || "Registration failed");
+      }
+    } catch (err) {
+      console.log("Frontend Error:", err);
+      alert("Server error");
+    }
   };
 
-  return(
+  return (
     <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="rounded-xl shadow-lg p-8 max-w-lg w-full">
-          <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">Registration Form</h2>
+      <div className="rounded-xl shadow-lg p-8 max-w-lg w-full">
+        <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">
+          Registration Form
+        </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4"> 
-            <div>
-              <label className="black font-medium mb-1">Full Name</label>
-              <input type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter full name"
-              />
-            </div>
-
-            <div>
-              <label className="black font-medium mb-1">Gender</label>
-              <div className="flex">
-              <label className='flex'>
-              <input
-                type="radio"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              /> <p className='font-semibold ml-2'>Male</p>
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
+          <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" className="w-full border rounded px-3 py-2" />
+          <div className="flex gap-4">
+            <label>
+              <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} />
+              <span className="ml-1">Male</span>
             </label>
-            <label className='ml-4 flex'>
-              <input
-                type="radio"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              /> <p className='font-semibold ml-2'>Female</p>
+            <label>
+              <input type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleChange} />
+              <span className="ml-1">Female</span>
             </label>
-            </div>
-            </div>
+          </div>
+          <input 
+          type="number" 
+          name="age"
+           value={formData.age} 
+           onChange={handleChange} 
+           placeholder="Age" 
+           className="w-full border rounded px-3 py-2" 
+           />
 
-            <div>
-              <label className="black font-medium mb-1">Age</label>
-              <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter age"
-              />
-            </div>
+          <input 
+          type="number" 
+          name="phone" 
+          value={formData.phone} 
+          onChange={handleChange} 
+          placeholder="Phone" 
+          className="w-full border rounded px-3 py-2" 
+          />
 
-            <div>
-              <label className="black font-medium mb-1">Contact No</label>
-              <input
-              type="number"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter contact number"
-              />
-            </div>
+          <input 
+          type="number" 
+          name="aadharNumber" 
+          value={formData.aadharNumber} 
+          onChange={handleChange} 
+          placeholder="Aadhar Number" 
+          className="w-full border rounded px-3 py-2" 
+          />
 
-             <div>
-              <label className="black font-medium mb-1">Aadharcard Number</label>
-              <input
-              type="number"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter contact number"
-              />
-            </div>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border rounded px-3 py-2" />
+          <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} placeholder="Specialization" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="hospital" value={formData.hospital} onChange={handleChange} placeholder="Hospital" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="licenseNumber" value={formData.licenseNumber} onChange={handleChange} placeholder="License Number" className="w-full border rounded px-3 py-2" />
 
-            <div>
-              <label className="black font-medium mb-1">Email</label>
-              <input 
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter email"
-              />
-            </div>
-
-            <div>
-              <label className="black font-medium mb-1">Password</label>
-              <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter Password"
-              />
-            </div>
-
-            <div>
-              <label className="black font-medium mb-1">Specialization</label>
-              <input
-              type="text"
-              name="specialization"
-              value={formData.specialization}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="e.g: Cardiologist, Neurologist"
-              />
-            </div>
-
-            <div>
-              <label className="black font-medium mb-1">Hospital/Clinic</label>
-              <input
-              type="text"
-              name="hospital"
-              value={formData.hospital}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Hospital Name"
-              />
-            </div>
-
-            <div>
-            <label className="block font-medium mb-1">Medical License Number</label>
-            <input
-              type="text"
-              name="licenseNumber"
-              value={formData.licenseNumber}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              placeholder="License number"
-            />
+          <div>
+            <label className="block font-medium mb-1">Upload License Photo</label>
+            <input type="file" name="licensePhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
           </div>
 
           <div>
-            <label class="block font-medium">Add Medical License Photo</label>
-            <input 
-            type="file" 
-            name="licensePhoto" 
-            value={formData.licensePhoto}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            />
+            <label className="block font-medium mb-1">Upload Profile Photo</label>
+            <input type="file" name="profilePhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
           </div>
 
-          <div>
-            <label class="block font-medium">Add your Photo</label>
-            <input 
-            type="file" 
-            name="profilePhoto" 
-            value={formData.profilePhoto}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            />
-          </div>
-
-
-            <button
+          <Link to ="/doctorDashboard"><button
             type="submit"
             className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-lg transition duration-300"
           >
             Register
           </button>
-
-
-          </form>
-        </div>
-
+          </Link>
+        </form>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default DoctorRegistration;
