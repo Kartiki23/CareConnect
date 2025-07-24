@@ -19,9 +19,6 @@ const Port=3001
 
 app.use('/api/v1/auth',doctorReg)
 
-
-
-
 app.listen(Port,()=>{
     console.log(`Server is running on http://localhost:${Port}`)
 })
