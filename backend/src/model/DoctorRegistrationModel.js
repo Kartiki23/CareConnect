@@ -1,0 +1,69 @@
+import mongoose, { Schema } from 'mongoose'
+
+export const docRegSchema = new Schema({
+    fullName:{
+        type:String,
+        required:true,
+        trim:true
+    },
+    gender:{
+        type:String,
+        required:true,
+        trim:true
+    },
+    age:{
+        type:Number,
+        required:true,
+        trim:true
+    },
+    contactNo:{
+        type:Number,
+        required:true,
+        length:10,
+        unique:true
+    },
+    aadharcardNo:{
+        type:Number,
+        required:true,
+        length:12,
+        unique:true
+    },
+    email:{
+        type:String,
+        required:true,
+        trim:true,
+        unique:true
+    },
+    password:{
+        type:String,
+        required:true,
+        trim:true,
+        minLength:6
+    },
+    specialization:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+    hospitalname:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+    licenseNo:{
+        type:String,
+        required:true,
+        unique:true,
+    },
+    licensePhoto:{
+        type:String,
+        required:false
+    },
+    doctorPhoto:{
+        type:String,
+        required:false
+    }
+},{timestamps:true})
+
+export const docRegModel = mongoose.model('docRegModel' ,docRegSchema  );
+
