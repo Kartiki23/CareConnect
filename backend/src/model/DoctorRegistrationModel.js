@@ -57,10 +57,13 @@ export const docRegSchema = new Schema({
     },
     licensePhoto:{
         type:String,
+        required:true
         
     },
     doctorPhoto:{
         type:String,
+        required:true
+
     }
 },{timestamps:true})
 

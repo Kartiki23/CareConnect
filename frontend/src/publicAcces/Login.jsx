@@ -39,7 +39,7 @@ const Login = () => {
         alert("Login failed: " + (data.message || "Invalid credentials"));
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.log("Error:", err);
       alert("Something went wrong. Check server or network.");
     }
   };
