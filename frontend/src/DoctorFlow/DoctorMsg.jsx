@@ -1,12 +1,13 @@
-// src/pages/MultiPatientChat.jsx 
+// src/pages/MultiPatientChat.jsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, User } from "lucide-react";
 
 const patients = [
-  { id: 1, name: "Jane Cooper" },
-  { id: 2, name: "Wade Warren" },
-  { id: 3, name: "Brooklyn Henderson" },
+  { id: 1, name: "kartiki Pawar" },
+  { id: 2, name: "Srushti Raskar" },
+  { id: 3, name: "Vaibhavi Garje" },
+  { id: 4, name: "Bhagyashri Gadge"}
 ];
 
 const DoctorMsg = () => {
@@ -41,14 +42,19 @@ const DoctorMsg = () => {
         <ul>
           {patients.map((p) => (
             <li
-              key={p.id}
-              onClick={() => setSelectedPatient(p)}
-              className={`px-4 py-3 cursor-pointer border-b hover:bg-gray-100 ${
-                selectedPatient.id === p.id ? "bg-blue-50 font-semibold" : ""
-              }`}
-            >
-              {p.name}
-            </li>
+  key={p.id}
+  onClick={() => setSelectedPatient(p)}
+  className={`px-4 py-3 flex items-center gap-3 cursor-pointer border-b hover:bg-gray-100 ${
+    selectedPatient.id === p.id ? "bg-blue-50 font-semibold" : ""
+  }`}
+>
+  <img
+    src={`https://i.pravatar.cc/150?u=${p.name}`} // Unique placeholder avatar
+    alt={p.name}
+    className="w-8 h-8 rounded-full object-cover"
+  />
+  <span>{p.name}</span>
+</li>
           ))}
         </ul>
       </div>

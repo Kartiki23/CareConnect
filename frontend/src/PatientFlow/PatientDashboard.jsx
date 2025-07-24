@@ -2,10 +2,14 @@ import React from "react";
 import { CalendarIcon, HeartPulse, ThermometerSun, Syringe, Droplet, Stethoscope } from "lucide-react"; 
 import { motion } from "framer-motion"; 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import PatientSidebar from "./PatientSidebar";
 
 const data = [ { name: 'Jan', value: 10 }, { name: 'Feb', value: 15 }, { name: 'Mar', value: 5 }, { name: 'Apr', value: 20 }, { name: 'May', value: 8 }, { name: 'Jun', value: 25 }, { name: 'Jul', value: 18 }, ];
 
-export default function PatientDashboard() { return ( <div className="flex min-h-screen bg-[#eef0ff]"> {/* Sidebar */} <aside className="w-64 bg-white shadow-md p-6"> <div className="text-xl font-bold text-blue-600 mb-8">CareConnect</div> <nav className="space-y-4"> <div className="flex items-center text-blue-600 font-semibold"> <HeartPulse className="mr-2" /> Dashboard </div> <div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"> <CalendarIcon className="mr-2" /> Appointments </div> </nav> </aside>
+export default function PatientDashboard() { 
+  return ( 
+  <PatientSidebar>
+  <div className="flex min-h-screen w-full bg-[#eef0ff]">
 
 {/* Main Content */}
   <main className="flex-1 p-8">
@@ -85,4 +89,5 @@ export default function PatientDashboard() { return ( <div className="flex min-h
   </main>
 </div>
 
+</PatientSidebar>
 ); }
