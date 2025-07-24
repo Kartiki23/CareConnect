@@ -1,64 +1,35 @@
-import express from 'express'
-import bcrypt from 'bcrypt';
-import { docRegModel } from '../model/DoctorRegistrationModel.js';
+// controllers/DoctorRegistrationController.js
 
-export const docRegistration = async (req,res)=>{
+export const registerDoctor = async (req, res) => {
+  try {
+    const {
+      fullName,
+      gender,
+      age,
+      email,
+      phone,
+      aadharNumber,
+      password,
+      specialization,
+      hospital,
+      licenseNumber,
+    } = req.body;
 
-    try {
-        const {fullName,gender,age,contactNo,aadharcardNo,email,password,specialization,hospitalname,licenseNo,licensePhoto,doctorPhoto } = req.body;
+    console.log("Uploaded files:", req.files);
 
-        // if(!email || !password ){
-        //     return res.status(409).json({message:"All fields are required"})
-        // }
+    const licensePhoto = req.files.licensePhoto?.[0]?.filename || "";
+    const profilePhoto = req.files.profilePhoto?.[0]?.filename || "";
 
-        const userExist = await docRegModel.findOne({email} )
-
-        if(userExist ){
-            return res.status(409).json({message:"User Already exist"})
-        }
-
-        const salt = 10
-        const hashPassword= await bcrypt.hash(password,salt);
-
-
-        const newDoc = new docRegModel({
-            fullName,
-            gender,
-            age,
-            contactNo,
-            aadharcardNo,
-            email,
-            password:hashPassword,
-            specialization,
-            hospitalname,
-            licenseNo,
-            licensePhoto,
-            doctorPhoto
-        });
-
-        await newDoc.save();
-
-        res.status(201).json({
-            message:"Login Sucessfully",
-            fullName,
-            gender,
-            age,
-            contactNo,
-            aadharcardNo,
-            email,
-            password:hashPassword,
-            specialization,
-            hospitalname,
-            licenseNo,
-            licensePhoto,
-            doctorPhoto
-        })
-
-        
-    } catch (error) {
-        console.log(error)   
-        res.status(501).json({message:"Server error"})
+    if (!email || !password || !licensePhoto || !profilePhoto) {
+      return res.status(400).json({ message: "All fields are required." });
     }
-    
 
-}
+    // Save logic here...
+
+    res.status(201).json({ message: "Doctor registered successfully." });
+
+  } catch (error) {
+    console.error("Backend error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};

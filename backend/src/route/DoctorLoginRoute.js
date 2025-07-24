@@ -1,9 +1,9 @@
 import express from 'express'
-import { userRegister } from '../controller/DoctorLoginController.js';
+import { loginDoctor} from '../controller/DoctorLoginController.js';
 
 
 const docLoginRouter = express.Router();
 
-docLoginRouter.post('/login',userRegister)
+docLoginRouter.post('/login',loginDoctor)
 
 export default docLoginRouter;

@@ -35,7 +35,7 @@ const Login = () => {
         // localStorage.setItem("token", data.token);
         navigate(role === "patient" ? "/patientDashboard" : "/doctorDashboard");
       } else {
-        console.error("Login failed:", data.message);
+        console.log("Login failed:", data.message);
         alert("Login failed: " + (data.message || "Invalid credentials"));
       }
     } catch (err) {

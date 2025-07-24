@@ -1,35 +1,29 @@
-import express from 'express';
-import bcrypt from 'bcrypt';
-import { docLogin} from '../model/DoctorLoginModel.js';
+import { docLogin } from "../model/doctorLoginModel.js";
+import bcrypt from "bcrypt";
 
-//const bcrypt = require('bcrypt');
+export const loginDoctor = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-export const userRegister = async (req,res) => {
+    // Check if user exists
+    const existingDoctor = await docLogin.findOne({ email });
 
-    try {
-        const {email,password} = req.body;
-
-        if(!email || !password){
-            return res.status(409).json({message:"All fields are requried !!"})
-        }
-
-        const salt = 10;
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = new docLogin({
-            email,
-            password:hashedPassword
-        });
-
-        await newUser.save();
-
-        res.status(201).json({
-            message:"Login Successfully!!!",
-            email
-        })    
-    } catch (error) {
-        console.log(error);
-        res.status(501).json({message:"Server Error"})
+    if (!existingDoctor) {
+      return res
+        .status(404)
+        .json({ message: "You haven't registered yet. Please register." });
     }
 
-}
+    // Compare password
+    const isMatch = await bcrypt.compare(password, existingDoctor.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    // Success
+    res.status(200).json({ message: "Login successful", doctor: existingDoctor });
+  } catch (error) {
+    console.error("Doctor login error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

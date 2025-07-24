@@ -16,6 +16,8 @@ const PORT = 3001
 
 app.use('/api/v1/user',authRoutes)
 
+app.use('/uploads', express.static('uploads')); 
+
 app.use('/api/v1/user',docLoginRouter)
 
 app.use('/',(req,res)=> {
