@@ -23,7 +23,7 @@ export const loginDoctor = async (req, res) => {
     // Success
     res.status(200).json({ message: "Login successful", doctor: existingDoctor });
   } catch (error) {
-    console.error("Doctor login error:", error);
+    console.log("Doctor login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

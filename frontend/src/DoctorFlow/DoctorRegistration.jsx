@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const DoctorRegistration = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "",
@@ -31,7 +33,6 @@ const DoctorRegistration = () => {
 
     const submissionData = new FormData();
 
-    // Correctly append each field and file
     for (const key in formData) {
       submissionData.append(key, formData[key]);
     }
@@ -45,13 +46,14 @@ const DoctorRegistration = () => {
       const result = await res.json();
 
       if (res.ok) {
-        alert("Doctor registered successfully");
+        alert(result.message || "Doctor registered successfully ✅");
+        navigate("/doctorDashboard"); 
       } else {
-        alert(result.message || "Registration failed");
+        alert(result.message || "Registration failed ❌");
       }
     } catch (err) {
       console.log("Frontend Error:", err);
-      alert("Server error");
+      alert("Server error. Try again.");
     }
   };
 
@@ -62,8 +64,13 @@ const DoctorRegistration = () => {
           Registration Form
         </h2>
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="space-y-4"
+        >
           <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Full Name" className="w-full border rounded px-3 py-2" />
+
           <div className="flex gap-4">
             <label>
               <input type="radio" name="gender" value="Male" checked={formData.gender === "Male"} onChange={handleChange} />
@@ -74,33 +81,10 @@ const DoctorRegistration = () => {
               <span className="ml-1">Female</span>
             </label>
           </div>
-          <input 
-          type="number" 
-          name="age"
-           value={formData.age} 
-           onChange={handleChange} 
-           placeholder="Age" 
-           className="w-full border rounded px-3 py-2" 
-           />
 
-          <input 
-          type="number" 
-          name="phone" 
-          value={formData.phone} 
-          onChange={handleChange} 
-          placeholder="Phone" 
-          className="w-full border rounded px-3 py-2" 
-          />
-
-          <input 
-          type="number" 
-          name="aadharNumber" 
-          value={formData.aadharNumber} 
-          onChange={handleChange} 
-          placeholder="Aadhar Number" 
-          className="w-full border rounded px-3 py-2" 
-          />
-
+          <input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Age" className="w-full border rounded px-3 py-2" />
+          <input type="number" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" className="w-full border rounded px-3 py-2" />
+          <input type="number" name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} placeholder="Aadhar Number" className="w-full border rounded px-3 py-2" />
           <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border rounded px-3 py-2" />
           <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="w-full border rounded px-3 py-2" />
           <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} placeholder="Specialization" className="w-full border rounded px-3 py-2" />
@@ -117,13 +101,12 @@ const DoctorRegistration = () => {
             <input type="file" name="profilePhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
           </div>
 
-          <Link to ="/doctorDashboard"><button
+          <button
             type="submit"
             className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-lg transition duration-300"
           >
             Register
           </button>
-          </Link>
         </form>
       </div>
     </div>
