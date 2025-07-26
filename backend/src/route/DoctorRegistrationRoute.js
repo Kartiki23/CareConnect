@@ -30,7 +30,7 @@ authRoutes.post(
   "/register",
   upload.fields([
     { name: "licensePhoto", maxCount: 1 },
-    { name: "profilePhoto", maxCount: 1 },
+    { name: "doctorPhoto", maxCount: 1 },
   ]),
   registerDoctor
 );

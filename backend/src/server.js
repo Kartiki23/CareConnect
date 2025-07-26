@@ -1,3 +1,4 @@
+
 import express from 'express'
 import authRoutes from './route/DoctorRegistrationRoute.js';
 import { connectDB } from './config/Db.js';
@@ -27,3 +28,4 @@ app.use('/',(req,res)=> {
 app.listen(PORT,()=>{
     console.log(`server is running on http://localhost:${PORT}`)
 })
+

@@ -8,15 +8,15 @@ const DoctorRegistration = () => {
     fullName: "",
     gender: "",
     age: "",
-    email: "",
     phone: "",
     aadharNumber: "",
+    email: "",
     password: "",
     specialization: "",
     hospital: "",
     licenseNumber: "",
     licensePhoto: null,
-    profilePhoto: null,
+    doctorPhoto: null,
   });
 
   const handleChange = (e) => {
@@ -32,7 +32,6 @@ const DoctorRegistration = () => {
     e.preventDefault();
 
     const submissionData = new FormData();
-
     for (const key in formData) {
       submissionData.append(key, formData[key]);
     }
@@ -47,7 +46,7 @@ const DoctorRegistration = () => {
 
       if (res.ok) {
         alert(result.message || "Doctor registered successfully ✅");
-        navigate("/doctorDashboard"); 
+        navigate("/doctorDashboard");
       } else {
         alert(result.message || "Registration failed ❌");
       }
@@ -61,7 +60,7 @@ const DoctorRegistration = () => {
     <div className="flex items-center justify-center min-h-screen p-6">
       <div className="rounded-xl shadow-lg p-8 max-w-lg w-full">
         <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">
-          Registration Form
+          Doctor Registration Form
         </h2>
 
         <form
@@ -83,12 +82,12 @@ const DoctorRegistration = () => {
           </div>
 
           <input type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Age" className="w-full border rounded px-3 py-2" />
-          <input type="number" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" className="w-full border rounded px-3 py-2" />
-          <input type="number" name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} placeholder="Aadhar Number" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone Number" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} placeholder="Aadhar Number" className="w-full border rounded px-3 py-2" />
           <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border rounded px-3 py-2" />
           <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="w-full border rounded px-3 py-2" />
           <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} placeholder="Specialization" className="w-full border rounded px-3 py-2" />
-          <input type="text" name="hospital" value={formData.hospital} onChange={handleChange} placeholder="Hospital" className="w-full border rounded px-3 py-2" />
+          <input type="text" name="hospital" value={formData.hospital} onChange={handleChange} placeholder="Hospital Name" className="w-full border rounded px-3 py-2" />
           <input type="text" name="licenseNumber" value={formData.licenseNumber} onChange={handleChange} placeholder="License Number" className="w-full border rounded px-3 py-2" />
 
           <div>
@@ -98,7 +97,7 @@ const DoctorRegistration = () => {
 
           <div>
             <label className="block font-medium mb-1">Upload Profile Photo</label>
-            <input type="file" name="profilePhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
+            <input type="file" name="doctorPhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
           </div>
 
           <button

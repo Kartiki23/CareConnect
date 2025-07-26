@@ -13,6 +13,8 @@ import DoctorAppointment from './DoctorFlow/DoctorAppointment';
 import PatientDetails from './DoctorFlow/PatientsDetails';
 import DoctorSidebar from './DoctorFlow/DoctorSidebar';
 import DoctorMsg from './DoctorFlow/DoctorMsg';
+import PatientAppointments from './PatientFlow/PatientAppointments';
+import PatientSidebar from './PatientFlow/PatientSidebar';
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/patientDashboard" element={<PatientDashboard />} />
+        <Route path="/PatientAppointments" element={<PatientAppointments/>}/>
+         <Route path='/PatientSidebar' element={<PatientSidebar/>}/>
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
         <Route path="/doctorDashboard" element={<DoctorDashboard />} />
         <Route path="/doctorAppointment" element={<DoctorAppointment />} />
