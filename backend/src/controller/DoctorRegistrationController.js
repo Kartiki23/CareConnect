@@ -2,7 +2,6 @@
 import bcrypt from "bcrypt";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
-
 export const registerDoctor = async (req, res) => {
   try {
     const {
@@ -18,11 +17,12 @@ export const registerDoctor = async (req, res) => {
       licenseNumber,
     } = req.body;
 
-    console.log("Request files:",req.files);
+    console.log("✅ req.body:", req.body);
+    console.log("✅ req.files:", req.files);
 
     // File uploads
     const licensePhoto = req.files?.licensePhoto?.[0]?.filename || "";
-    const profilePhoto = req.files?.profilePhoto?.[0]?.filename || "";
+    const doctorPhoto = req.files?.doctorPhoto?.[0]?.filename || "";
 
     // Validate required fields
     if (
@@ -37,7 +37,7 @@ export const registerDoctor = async (req, res) => {
       !hospital ||
       !licenseNumber ||
       !licensePhoto ||
-      !profilePhoto
+      !doctorPhoto
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -51,7 +51,7 @@ export const registerDoctor = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create and save doctor
+    // Save doctor
     const newDoctor = new docRegModel({
       fullName,
       gender,
@@ -64,14 +64,13 @@ export const registerDoctor = async (req, res) => {
       hospital,
       licenseNumber,
       licensePhoto,
-      profilePhoto,
+      doctorPhoto,
     });
 
     await newDoctor.save();
-
     res.status(201).json({ message: "Doctor registered successfully." });
   } catch (error) {
-    console.log("Registration Error:", error.message);
+    console.error("❌ Registration Error:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
