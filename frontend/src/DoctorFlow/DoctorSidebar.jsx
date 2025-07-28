@@ -6,7 +6,7 @@ const DoctorSidebar = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-white shadow-md fixed md:h-screen p-6">
+        <aside className="w-full md:w-64 bg-white shadow-md fixed h-190 p-6">
         <h2 className="text-2xl font-bold text-indigo-600 mb-10">CareConnect</h2>
         <nav className="space-y-4 font-semibold">
           <Link to ="/doctorDashboard"><div className="hover:text-indigo-600 cursor-pointer">Dashboard</div></Link>
@@ -19,8 +19,8 @@ const DoctorSidebar = ({ children }) => {
           <div className="hover:text-indigo-600 cursor-pointer">Settings</div>
         </nav>
         <div className="absolute bottom-6">
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
-            Upgrade
+          <button className="bg-indigo-600 text-white px-4 py-2 mb-20 rounded-md hover:bg-indigo-700">
+            Logout
           </button>
         </div>
       </aside>
