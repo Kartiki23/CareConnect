@@ -4,6 +4,7 @@ import mongoose, { Schema } from 'mongoose';
 
 
  export const patientSchema = new Schema({
+  
   fullName: { type: String, required: true },
 
   gender: { type: String, required: true },

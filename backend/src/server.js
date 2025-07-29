@@ -22,7 +22,7 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/api/v1/user',docLoginRouter)
 
-//app.use('/api/v1/user', patientRoutes);
+app.use('/api/v1/user', patientRoutes);
 
 
 app.use('/',(req,res)=> {

@@ -5,6 +5,7 @@ import { Patient } from "../model/PatientRegistrationModel.js";
 export const registerPatient = async (req, res) => {
   try {
     console.log("received data:",req.body);
+    
     const { fullName, gender, age, email, phone, password } = req.body;
 
     const existing = await Patient.findOne({ email });
@@ -17,7 +18,7 @@ export const registerPatient = async (req, res) => {
 
     res.status(201).json({ message: "Patient registered successfully", patient: newPatient });
   } catch (error) {
-    console.error("Register error:", error);
+    console.log("Register error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

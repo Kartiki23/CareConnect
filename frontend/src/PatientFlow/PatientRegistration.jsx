@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const PatientRegistration = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ const PatientRegistration = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3001/api/patient/register", {
+      const response = await fetch("http://localhost:3001/api/v1/user/Pregister", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -39,12 +40,13 @@ const PatientRegistration = () => {
           phone: "",
           password: ""
         });
+        navigate("/patientDashboard");
       } else {
-        alert(❌ Registration failed: ${data.message || "Server error"});
-        console.error("Backend error:", data);
+        alert(`❌ Registration failed: ${data.message || "Server error"}`);
+        console.log("Backend error:", data);
       }
     } catch (error) {
-      console.error("Network error:", error);
+      console.log("Network error:", error);
       alert("❌ Could not connect to server. Please check if backend is running on port 3001.");
     }
   };

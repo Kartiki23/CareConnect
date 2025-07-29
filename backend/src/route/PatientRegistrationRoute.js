@@ -5,6 +5,6 @@ import { registerPatient } from '../controller/PatientRegistrationController.js'
 
 const router = express.Router();
 
-router.post('/register', registerPatient);
+router.post('/Pregister', registerPatient);
 
 export default router;
