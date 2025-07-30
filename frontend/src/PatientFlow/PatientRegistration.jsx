@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const PatientRegistration = () => {
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "",
@@ -40,7 +41,7 @@ const PatientRegistration = () => {
           phone: "",
           password: ""
         });
-        navigate("/patientDashboard");
+        navigate("/patientDashboard"); 
       } else {
         alert(`❌ Registration failed: ${data.message || "Server error"}`);
         console.log("Backend error:", data);
@@ -58,6 +59,7 @@ const PatientRegistration = () => {
           Patient Registration
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* All input fields unchanged */}
           <div>
             <label className="block font-medium mb-1">Full Name</label>
             <input
