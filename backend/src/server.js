@@ -34,6 +34,7 @@ app.use('/',(req,res)=> {
     res.send ("Hello World")
 })
 
+
 app.use('/api/v1/user',specialtiesRouter)
 
 app.use('/api/v1/user',donationRoute)
@@ -41,6 +42,7 @@ app.use('/api/v1/user',donationRoute)
 // app.use('/',(req,res)=> {
 //     res.send ("Hello World")
 // })
+
 
 
 app.listen(PORT,()=>{
