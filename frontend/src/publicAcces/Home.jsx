@@ -2,39 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 
-const donationSlides = [
-  { title: "Blood Donation", description: "Your blood can save lives. Donate regularly to help accident victims, surgeries, and blood disorder patients." },
-  { title: "Tissue Donation", description: "Donate skin, heart valves, and connective tissues to help burn victims and surgical procedures." },
-  { title: "Sperm Donation", description: "Support families with fertility challenges by donating healthy sperm at approved centers." },
-  { title: "Eye Donation", description: "Restore sight to the blind by donating your eyes. You can give the gift of vision." },
-  { title: "Bone Marrow Donation", description: "Help blood cancer patients by donating stem cells or bone marrow through a painless process." },
-  { title: "Organ Donation", description: "Donate organs like kidneys, heart, liver to save lives. You can register as a donor easily." },
-  { title: "Body Donation", description: "Help advance medical education and research by donating your whole body after life." }
-];
-
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentSpecialty, setCurrentSpecialty] = useState(0);
   const [specialties, setSpecialties] = useState([]);
+  const [donationSlides, setDonationSlides] = useState([]);
   const [loadingSpecialties, setLoadingSpecialties] = useState(true);
+  const [loadingDonations, setLoadingDonations] = useState(true);
   const specialtySlideSize = 4;
-
-  // Donation slider auto-advance
-  useEffect(() => {
-    const slideInterval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % donationSlides.length);
-    }, 3000);
-    return () => clearInterval(slideInterval);
-  }, []);
-
-  // Specialties slider auto-advance only once specialties load
-  useEffect(() => {
-    if (specialties.length === 0) return;
-    const specialtyInterval = setInterval(() => {
-      setCurrentSpecialty(prev => (prev + specialtySlideSize) % specialties.length);
-    }, 4000);
-    return () => clearInterval(specialtyInterval);
-  }, [specialties.length]);
 
   // Fetch specialties from API
   const getSpecialties = async () => {
@@ -49,9 +24,43 @@ const Home = () => {
     }
   };
 
+  // Fetch donation slides from API
+  const getDonations = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/v1/user/donation');
+      console.log('Donation response:', response.donation);
+      setDonationSlides(response.data.donation ?? []);
+
+    } catch (error) {
+      console.log('Error fetching donations:', error);
+      setDonationSlides([]);
+    } finally {
+      setLoadingDonations(false);
+    }
+  };
+
   useEffect(() => {
     getSpecialties();
+    getDonations();
   }, []);
+
+  // Donation slider auto-advance
+  useEffect(() => {
+    if (donationSlides.length === 0) return;
+    const slideInterval = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % donationSlides.length);
+    }, 3000);
+    return () => clearInterval(slideInterval);
+  }, [donationSlides.length]);
+
+  // Specialties slider auto-advance
+  useEffect(() => {
+    if (specialties.length === 0) return;
+    const specialtyInterval = setInterval(() => {
+      setCurrentSpecialty(prev => (prev + specialtySlideSize) % specialties.length);
+    }, 4000);
+    return () => clearInterval(specialtyInterval);
+  }, [specialties.length]);
 
   const displayedSpecialties = specialties.slice(currentSpecialty, currentSpecialty + specialtySlideSize);
 
@@ -80,33 +89,46 @@ const Home = () => {
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} className="bg-gray-100 py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-10">Organ & Body Donation Awareness</h2>
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              className="relative bg-white shadow-lg rounded-lg p-8 min-h-[200px]"
-            >
-              <h3 className="text-2xl font-semibold text-green-700 mb-4">
-                {donationSlides[currentSlide].title}
-              </h3>
-              <p className="text-gray-700">{donationSlides[currentSlide].description}</p>
-            </motion.div>
-            <div className="flex justify-center space-x-2 mt-6">
-              {donationSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full ${currentSlide === index ? 'bg-blue-600' : 'bg-gray-300'} transition duration-300`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
+
+            {loadingDonations ? (
+              <p className="text-center w-full py-10">Loading donation slides...</p>
+            ) : (
+              <>
+                <motion.div
+                  key={donationSlides[currentSlide]?.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6 }}
+                  style={{
+                    backgroundImage: `url('${donationSlides[currentSlide]?.image}')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                  }}
+                  className="relative bg-white shadow-lg rounded-lg p-8 min-h-[240px] w-150 ml-40 "
+                >
+                  <h3 className="text-2xl font-semibold text-green-700 mb-4">
+                    {donationSlides[currentSlide]?.name}
+                  </h3>
+                  <p>{donationSlides[currentSlide]?.description}</p>
+                </motion.div>
+                <div className="flex justify-center space-x-2 mt-6">
+                  {donationSlides.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full ${currentSlide === index ? 'bg-blue-600' : 'bg-gray-300'} transition duration-300`}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </motion.section>
       </section>
 
-        {/* Specialties Section */}
+      {/* Specialties Section */}
       <section id="specialties">
         <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="bg-white py-16 px-4">
           <div className="max-w-7xl mx-auto">
