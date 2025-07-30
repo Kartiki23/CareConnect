@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
 
     const endpoint =
-      role === "patient" ? "/api/patient/login" : "http://localhost:3001/api/v1/user/login";
+      role === "patient" ? "http://localhost:3001/api/v1/user/Plogin" : "http://localhost:3001/api/v1/user/login";
 
     try {
       const response = await fetch(endpoint, {
