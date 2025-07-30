@@ -63,7 +63,12 @@ const DoctorMsg = () => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="p-4 border-b bg-white flex items-center text-lg font-semibold">
-          Chat with {selectedPatient.name}
+          <img
+    src={`https://i.pravatar.cc/150?u=${selectedPatient.name}`} // Unique placeholder avatar
+    alt={selectedPatient.name}
+    className="w-8 h-8 rounded-full object-cover"
+  />
+  <span className="ml-2">{selectedPatient.name} </span>
         </div>
 
         {/* Messages */}
@@ -74,7 +79,7 @@ const DoctorMsg = () => {
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              className={`max-w-xs px-4 py-2 rounded-lg ${
+              className={`max-w-xs px-4 py-2 mb-1 rounded-lg ${
                 msg.sender === "doctor"
                   ? "bg-blue-500 text-white self-end ml-auto"
                   : "bg-gray-200 text-gray-800"

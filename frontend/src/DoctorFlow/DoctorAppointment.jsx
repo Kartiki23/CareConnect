@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import DoctorSidebar from "./DoctorSidebar";
+import { useState } from "react";
 
 const appointments = [
   {
@@ -43,7 +44,13 @@ const getStatusColor = (status) => {
   }
 };
 
+
 const DoctorAppointment = () => {
+
+  const [search, setSearch] = useState("");
+
+const filteredAppointments = appointments.filter( (a) => a.firstName.toLowerCase().includes(search.toLowerCase()) || a.date.includes(search) );
+
   return (
     <DoctorSidebar>
     <motion.div
@@ -62,6 +69,8 @@ const DoctorAppointment = () => {
           <input
             type="text"
             placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full border border-gray-300 rounded-md py-2 px-4 pl-10 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
           <Search className="absolute top-2.5 left-3 text-gray-400" size={16} />
@@ -83,7 +92,7 @@ const DoctorAppointment = () => {
             </tr>
           </thead>
           <tbody>
-            {appointments.map((appt, index) => (
+            {filteredAppointments.map((appt, index) => (
               <motion.tr
                 key={index}
                 initial={{ opacity: 0, y: 10 }}
