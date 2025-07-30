@@ -24,14 +24,6 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/api/v1/user',docLoginRouter)
 
-<<<<<<< HEAD
-app.use('/api/v1/user', patientRoutes);
-
-
-app.use('/',(req,res)=> {
-    res.send ("Hello World")
-})
-=======
 app.use('/api/v1/user',specialtiesRouter)
 
 app.use('/api/v1/user',donationRoute)
@@ -39,7 +31,6 @@ app.use('/api/v1/user',donationRoute)
 // app.use('/',(req,res)=> {
 //     res.send ("Hello World")
 // })
->>>>>>> 916c3320ff0a142dbb723cb492a4deace264d62c
 
 app.listen(PORT,()=>{
     console.log(`server is running on http://localhost:${PORT}`)
