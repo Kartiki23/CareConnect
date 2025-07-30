@@ -7,6 +7,7 @@ import patientRoutes from './route/PatientRegistrationRoute.js'
 import cors from 'cors';
 import specialtiesRouter from './route/SpecialtiesRoute.js';
 import donationRoute from './route/DonatinRoute.js';
+import patientLoginRouter from './route/PatientLoginRoute.js';
 
 const app = express()
 
@@ -24,6 +25,7 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/api/v1/user',docLoginRouter)
 
+app.use('/api/v1/user',patientLoginRouter)
 
 app.use('/api/v1/user', patientRoutes);
 
