@@ -38,6 +38,9 @@ const Login = () => {
         console.log("Login failed:", data.message);
         alert("Login failed: " + (data.message || "Invalid credentials"));
       }
+
+      localStorage.setItem("doctorEmail", response.data.doctor.email);
+
     } catch (err) {
       console.log("Error:", err);
       alert("Something went wrong. Check server or network.");

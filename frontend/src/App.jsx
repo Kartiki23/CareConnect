@@ -15,6 +15,7 @@ import DoctorSidebar from './DoctorFlow/DoctorSidebar';
 import DoctorMsg from './DoctorFlow/DoctorMsg';
 import PatientAppointments from './PatientFlow/PatientAppointments';
 import PatientSidebar from './PatientFlow/PatientSidebar';
+import BookAppointment from './PatientFlow/BookAppointment';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/patientDetails" element={<PatientDetails />} />
         <Route path='/doctorsidebar' element={<DoctorSidebar/>}/>
         <Route path='/doctormsg' element={<DoctorMsg/>}/>
+        <Route path='/bookAppointment' element={<BookAppointment/>} />
 
       </Routes>
     </BrowserRouter>

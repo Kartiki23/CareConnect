@@ -18,11 +18,11 @@ const DoctorSidebar = ({ children }) => {
           <div className="hover:text-indigo-600 cursor-pointer flex mt-2"><Wallet className="mr-2" />Finances</div>
           <div className="hover:text-indigo-600 cursor-pointer flex mt-2"><Settings className="mr-2" />Settings</div>
         </nav>
-        <div className="absolute bottom-6">
+        <Link to = "/login"><div className="absolute bottom-6">
           <button className="bg-indigo-600 text-white mb-20 w-30 h-9 rounded-md hover:bg-indigo-700 flex">
             <LogOut className='mr-1 mt-1'/>Logout
           </button>
-        </div>
+        </div></Link>
       </aside>
       {/* Main Content */}
       <main className="ml-64 flex-1 p-8 overflow-auto">

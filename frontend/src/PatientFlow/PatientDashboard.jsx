@@ -1,5 +1,6 @@
 import React from "react";
-import { CalendarIcon, HeartPulse, ThermometerSun, Syringe, Droplet, Stethoscope } from "lucide-react"; 
+import { CalendarIcon, HeartPulse, ThermometerSun, Syringe, Droplet, Stethoscope} from "lucide-react"; 
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PatientSidebar from "./PatientSidebar";
@@ -21,9 +22,10 @@ export default function PatientDashboard() {
     >
       <h2 className="text-lg text-gray-700">Good Morning, <span className="text-blue-600 font-semibold">Jared Terry</span></h2>
       <p className="text-sm text-gray-500 mb-4">Let's care with your health</p>
+      <Link to="/bookAppointment">
       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
-        Connect To Doctor
-      </button>
+          Book Appointment
+      </button></Link>
     </motion.div>
 
     {/* Stats Cards */}

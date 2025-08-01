@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -164,9 +165,9 @@ const Home = () => {
                       />
                       <h3 className="text-md font-semibold text-gray-800 text-center">{item.name}</h3>
                       <p className="text-gray-500 text-sm mt-1">₹{item.price}</p>
-                      <button className="text-blue-600 text-sm mt-2 hover:underline">
+                      <Link to="/login"><button className="text-blue-600 text-sm mt-2 hover:underline">
                         Consult now →
-                      </button>
+                      </button></Link>
                     </motion.div>
                   ))}
                 </div>

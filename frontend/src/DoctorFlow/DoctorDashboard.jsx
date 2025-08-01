@@ -1,6 +1,4 @@
-
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -16,8 +14,9 @@ import {
   Legend,
 } from "recharts";
 import DoctorSidebar from "./DoctorSidebar";
+import axios from "axios";
 
-// Sample data
+// Sample Data
 const activityData = [
   { name: "Jan", thisYear: 100, lastYear: 80 },
   { name: "Feb", thisYear: 120, lastYear: 90 },
@@ -56,100 +55,127 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
 );
 
 const DoctorDashboard = () => {
+  const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
+
+  const getDoctorInfo = async () => {
+    try {
+      const email = localStorage.getItem("email");
+      if (!email) return;
+
+      const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", {email });
+
+      // const response = await axios.get(`http://localhost:3001/api/v1/user/doctorProfile?email=${email}`
+      // );
+
+      console.log("Doctor Data:", response.data);
+
+      setDoctor({
+        fullName: response.data.fullName || "Doctor",
+        doctorPhoto: response.data.doctorPhoto || "https://i.pravatar.cc/40",
+      });
+    } catch (error) {
+      console.log("Error fetching doctor info:", error);
+    }
+  };
+
+  useEffect(() => {
+    getDoctorInfo();
+  }, []);
+
   return (
     <DoctorSidebar>
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white">
-  
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-semibold">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <span className="font-semibold">Dr. Hamam Zai</span>
-            <img
-              src="https://i.pravatar.cc/40"
-              alt="Avatar"
-              className="w-10 h-10 rounded-full"
+      <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white">
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-semibold">Dashboard</h1>
+            <div className="flex items-center gap-4">
+              <span className="font-semibold">Dr.{doctor.fullName}</span>
+              <img
+                src={doctor.doctorPhoto || "https://i.pravatar.cc/40"}
+                alt="Doctor Avatar"
+                className="w-10 h-10 rounded-full"
+              />
+
+            </div>
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <Card title="Important Tasks" value="160" sub="42 tasks high priority" />
+            <Card title="New Patients" value="240" sub="78 Patients waiting" />
+            <Card title="Total Patients" value="3,240" sub="100 Increase" />
+            <Card
+              title="Total Payments"
+              value="$64m"
+              sub="24% Increase"
+              subColor="text-green-500"
             />
           </div>
-        </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <Card title="Important Tasks" value="160" sub="42 tasks high priority" />
-          <Card title="New Patients" value="240" sub="78 Patients waiting" />
-          <Card title="Total Patients" value="3,240" sub="100 Increase" />
-          <Card title="Total Payments" value="$64m" sub="24% Increase" subColor="text-green-500" />
-        </div>
+          {/* Activity and Division */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl shadow-md p-4 md:col-span-2">
+              <h2 className="font-semibold mb-4">Activity</h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={activityData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="thisYear" stroke="#4F46E5" strokeWidth={2} />
+                  <Line type="monotone" dataKey="lastYear" stroke="#9CA3AF" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Activity */}
-          <div className="bg-white rounded-xl shadow-md p-4 md:col-span-2">
-            <h2 className=" font-semibold mb-4">Activity</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={activityData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="thisYear" stroke="#4F46E5" strokeWidth={2} />
-                <Line type="monotone" dataKey="lastYear" stroke="#9CA3AF" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="bg-white rounded-xl shadow-md p-4">
+              <h2 className="font-semibold mb-4">Top Division</h2>
+              <ul className="text-gray-700 space-y-2 text-sm">
+                <li>General Physician</li>
+                <li>Internal Medicine</li>
+                <li>Skin Specialist</li>
+                <li>Cardiologist</li>
+                <li>Reproduction</li>
+              </ul>
+            </div>
           </div>
 
-          {/* Top Division */}
-          <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className=" font-semibold mb-4">Top Division</h2>
-            <ul className="text-gray-700 space-y-2 text-sm">
-              <li>General Physician</li>
-              <li>Internal Medicine</li>
-              <li>Skin Specialist</li>
-              <li>Cardiologist</li>
-              <li>Reproduction</li>
-            </ul>
-          </div>
-        </div>
+          {/* Age and Gender Charts */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="bg-white rounded-xl shadow-md p-4">
+              <h2 className="font-semibold mb-4">Age</h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={ageData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="patients" fill="#6366F1" barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-        {/* Age and Gender */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* Age Chart */}
-          <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className=" font-semibold mb-4">Age</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={ageData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="patients" fill="#6366F1" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="bg-white rounded-xl shadow-md p-4">
+              <h2 className="font-semibold mb-4">Gender</h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={genderData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={60}
+                    dataKey="value"
+                    label
+                  >
+                    {genderData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-
-          {/* Gender Chart */}
-          <div className="bg-white rounded-xl shadow-md p-4">
-            <h2 className=" font-semibold mb-4">Gender</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={genderData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={50}
-                  dataKey="value"
-                  label
-                >
-                  {genderData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
     </DoctorSidebar>
   );
 };
