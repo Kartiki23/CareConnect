@@ -8,7 +8,6 @@ const bookAppointmentSchema = new Schema({
     email:{
         type:String,
         required: true,
-        unique:true
     },
     contactNo:{
         type:Number,
