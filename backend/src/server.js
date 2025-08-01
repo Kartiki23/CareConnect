@@ -9,6 +9,7 @@ import specialtiesRouter from './route/SpecialtiesRoute.js';
 import donationRoute from './route/DonatinRoute.js';
 import patientLoginRouter from './route/PatientLoginRoute.js';
 import docDashboardRouter from './route/DoctorDashboardRoute.js';
+import bookAppointmentRoute from './route/BookAppointmentRoute.js';
 
 const app = express()
 
@@ -32,15 +33,11 @@ app.use('/api/v1/user', patientRoutes);
 
 app.use('/api/v1/user', docDashboardRouter);
 
-
-// app.use('/',(req,res)=> {
-//     res.send ("Hello World")
-// })
-
-
 app.use('/api/v1/user',specialtiesRouter)
 
 app.use('/api/v1/user',donationRoute)
+
+app.use('/api/v1/user',bookAppointmentRoute)
 
 // app.use('/',(req,res)=> {
 //     res.send ("Hello World")
