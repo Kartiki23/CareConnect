@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FaUserMd, FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
+import book_appointment from '../assets/book_appointment.gif'
 
 const BookAppointment = () => {
   const [form, setForm] = useState({
@@ -234,6 +235,10 @@ const BookAppointment = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
+            <img src={book_appointment} // Replace with your GIF link
+            alt="Doctor"
+            className="h-100 w-100 object-cover mt-40 ml-10"
+          />
             
            
           </motion.div>
