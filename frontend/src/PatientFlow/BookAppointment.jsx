@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
+import { FaUserMd, FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
 
 const BookAppointment = () => {
   const [form, setForm] = useState({
@@ -27,7 +28,6 @@ const BookAppointment = () => {
     try {
       const res = await axios.post("http://localhost:3001/api/v1/user/bookAppointment", form);
       alert("Appointment booked successfully!");
-      console.log("Response:", res.data);
       setForm({
         name: "",
         email: "",
@@ -42,139 +42,204 @@ const BookAppointment = () => {
         medicalHistory: "",
       });
     } catch (error) {
-      console.log("Booking failed:", error);
+      console.error("Booking failed:", error);
       alert("Failed to book appointment. Please try again.");
     }
   };
 
   return (
-    <motion.form
-      onSubmit={handleSubmit}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-150 mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl"
-    >
-      <motion.h2
-        className="text-3xl font-bold text-center text-blue-700 mb-6"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-20">
+      <motion.div
+        className="w-full max-w-6xl bg-white rounded-2xl shadow-xl p-8 md:p-12"
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        Book Appointment
-      </motion.h2>
+        <div className="grid md:grid-cols-2 gap-10">
 
-      {[
-        { label: "Name", name: "name", type: "text", placeholder: "Enter your full name" },
-        { label: "Email", name: "email", type: "email", placeholder: "Enter your Email" },
-        { label: "Contact Number", name: "contactNo", type: "tel", placeholder: "Enter contact number" },
-        { label: "Age", name: "age", type: "number", placeholder: "Enter your age" },
-      ].map((input, idx) => (
-        <motion.div key={input.name} className="mb-4"
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.1 * idx }}
-        >
-          <label className="block font-semibold mb-1 text-xl">{input.label}</label>
-          <input
-            type={input.type}
-            name={input.name}
-            value={form[input.name]}
-            onChange={handleChange}
-            placeholder={input.placeholder}
-            className="w-full border-2 rounded px-3 py-2"
-            required
-          />
-        </motion.div>
-      ))}
-
-      {/* Dropdowns and Date/Time */}
-      {[
-        {
-          label: "Gender", name: "gender", options: ["Male", "Female", "Other"]
-        },
-        {
-          label: "Specialization", name: "specialization", options: ["Cardiologist", "Dermatologist", "Orthopedic"]
-        },
-        {
-          label: "Doctor Name", name: "doctorName", options: ["Dr. Aarti Mehra", "Dr. Rakesh Shah"]
-        }
-      ].map((select, idx) => (
-        <motion.div key={select.name} className="mb-4"
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.15 * idx }}
-        >
-          <label className="block font-semibold mb-1 text-xl">{select.label}</label>
-          <select
-            name={select.name}
-            value={form[select.name]}
-            onChange={handleChange}
-            className="w-full border-2 rounded px-3 py-2"
-            required
+          {/* Left- Appointment Form */}
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            initial={{ opacity: 0, x: -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <option value="">Select {select.label}</option>
-            {select.options.map((opt) => (
-              <option key={opt}>{opt}</option>
-            ))}
-          </select>
-        </motion.div>
-      ))}
+            <h2 className="text-4xl font-bold text-blue-800 mb-4">Book Appointment</h2>
+            <div>
+              <label className="block text-sm font-medium ">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
 
-      {/* Date and Time */}
-      {[
-        { label: "Appointment Date", name: "appointmentDate", type: "date" },
-        { label: "Appointment Time", name: "appointmentTime", type: "time" }
-      ].map((input, idx) => (
-        <motion.div key={input.name} className="mb-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.25 + 0.1 * idx }}
-        >
-          <label className="block font-semibold mb-1 text-xl">{input.label}</label>
-          <input
-            type={input.type}
-            name={input.name}
-            value={form[input.name]}
-            onChange={handleChange}
-            className="w-full border-2 rounded px-3 py-2"
-            required
-          />
-        </motion.div>
-      ))}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium ">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium ">Contact No.</label>
+                <input
+                  type="tel"
+                  name="contactNo"
+                  value={form.contactNo}
+                  onChange={handleChange}
+                  placeholder="Enter contact number"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+            </div>
 
-      {/* Textareas */}
-      {[
-        { label: "Reason to Visit", name: "reason", placeholder: "Reason for Visit" },
-        { label: "Medical History", name: "medicalHistory", placeholder: "Previous Medical History" }
-      ].map((area, idx) => (
-        <motion.div key={area.name} className="mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 + 0.1 * idx }}
-        >
-          <label className="block font-semibold mb-1 text-xl">{area.label}</label>
-          <textarea
-            name={area.name}
-            value={form[area.name]}
-            onChange={handleChange}
-            placeholder={area.placeholder}
-            className="w-full border-2 rounded px-3 py-2"
-            required={area.name === "reason"}
-          />
-        </motion.div>
-      ))}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium ">Gender</label>
+                <select
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium ">Age</label>
+                <input
+                  type="number"
+                  name="age"
+                  value={form.age}
+                  onChange={handleChange}
+                  placeholder="Your age"
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+            </div>
 
-      {/* Submit Button */}
-      <motion.button
-        type="submit"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="w-full mt-6 py-3 text-lg bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
-      >
-        Book Appointment
-      </motion.button>
-    </motion.form>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium ">Specialization</label>
+                <select
+                  name="specialization"
+                  value={form.specialization}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option>Cardiologist</option>
+                  <option>Dermatologist</option>
+                  <option>Orthopedic</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium ">Doctor</label>
+                <select
+                  name="doctorName"
+                  value={form.doctorName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option>Dr. Aarti Mehra</option>
+                  <option>Dr. Rakesh Shah</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium ">Date</label>
+                <input
+                  type="date"
+                  name="appointmentDate"
+                  value={form.appointmentDate}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium ">Time</label>
+                <input
+                  type="time"
+                  name="appointmentTime"
+                  value={form.appointmentTime}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium ">Reason</label>
+              <textarea
+                name="reason"
+                value={form.reason}
+                onChange={handleChange}
+                placeholder="Reason for visit"
+                rows="3"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm resize-none focus:ring-2 focus:ring-blue-400"
+                required
+              ></textarea>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium ">Medical History</label>
+              <textarea
+                name="medicalHistory"
+                value={form.medicalHistory}
+                onChange={handleChange}
+                placeholder="Mention if any"
+                rows="3"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm resize-none focus:ring-2 focus:ring-blue-400"
+              ></textarea>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+            >
+              Book Appointment
+            </motion.button>
+          </motion.form>
+          {/* Right side-Info Section */}
+          <motion.div
+            className="space-y-6"
+             initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            
+           
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
