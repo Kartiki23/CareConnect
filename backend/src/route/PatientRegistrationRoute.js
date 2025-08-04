@@ -3,8 +3,8 @@
 import express from 'express';
 import { registerPatient } from '../controller/PatientRegistrationController.js';
 
-const router = express.Router();
+const patientRegisterrouter = express.Router();
 
-router.post('/Pregister', registerPatient);
+patientRegisterrouter.post('/Pregister', registerPatient);
 
-export default router;
+export default patientRegisterrouter;

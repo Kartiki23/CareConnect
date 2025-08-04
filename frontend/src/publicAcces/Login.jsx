@@ -39,7 +39,7 @@ const Login = () => {
         alert("Login failed: " + (data.message || "Invalid credentials"));
       }
 
-      localStorage.setItem("doctorEmail", response.data.doctor.email);
+     
 
     } catch (err) {
       console.log("Error:", err);

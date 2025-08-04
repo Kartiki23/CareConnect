@@ -15,8 +15,8 @@ const DoctorRegistration = () => {
     specialization: "",
     hospital: "",
     licenseNumber: "",
-    licensePhoto: null,
-    doctorPhoto: null,
+    licensePhoto: "",
+    doctorPhoto: "",
   });
 
   const handleChange = (e) => {
@@ -45,6 +45,7 @@ const DoctorRegistration = () => {
       const result = await res.json();
 
       if (res.ok) {
+        localStorage.setItem("doctorInfo",JSON.stringify(res.data.doctor));
         alert(result.message || "Doctor registered successfully ✅");
         navigate("/doctorDashboard");
       } else {

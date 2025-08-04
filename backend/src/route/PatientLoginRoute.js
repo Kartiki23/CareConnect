@@ -1,8 +1,8 @@
 import express from "express";
 import { loginPatient } from "../controller/PatientLoginController.js";
 
-const router = express.Router();
+const  patientloginRoutes= express.Router();
 
-router.post("/Plogin", loginPatient);
+patientloginRoutes.post("/Plogin", loginPatient);
 
-export default router;
+export default patientloginRoutes;

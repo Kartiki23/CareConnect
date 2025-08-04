@@ -17,8 +17,8 @@ export const registerDoctor = async (req, res) => {
       licenseNumber,
     } = req.body;
 
-    console.log("✅ req.body:", req.body);
-    console.log("✅ req.files:", req.files);
+    console.log(" req.body:", req.body);
+    console.log("req.files:", req.files);
 
     // File uploads
     const licensePhoto = req.files?.licensePhoto?.[0]?.filename || "";
@@ -68,9 +68,18 @@ export const registerDoctor = async (req, res) => {
     });
 
     await newDoctor.save();
-    res.status(201).json({ message: "Doctor registered successfully." });
+
+    res.status(201).json({ message: "Doctor registered successfully.",
+      doctor:{
+        fullName:newDoctor.fullName,
+        email:newDoctor.email,
+        doctorPhoto:newDoctor.doctorPhoto,
+
+
+      }
+     });
   } catch (error) {
-    console.error("❌ Registration Error:", error.message);
+    console.log("Registration Error:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
