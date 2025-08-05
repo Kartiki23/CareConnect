@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FaUserMd, FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
@@ -18,6 +18,20 @@ const BookAppointment = () => {
     reason: "",
     medicalHistory: "",
   });
+
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/api/v1/user/doctor");
+        setDoctors(res.data);
+      } catch (err) {
+        console.log("Error fetching doctors", err);
+      }
+    };
+    fetchDoctors();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -140,32 +154,23 @@ const BookAppointment = () => {
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium ">Specialization</label>
-                <select
-                  name="specialization"
-                  value={form.specialization}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
-                  required
-                >
-                  <option value="">Select</option>
-                  <option>Cardiologist</option>
-                  <option>Dermatologist</option>
-                  <option>Orthopedic</option>
-                </select>
+                <select name="specialization" value={form.specialization} onChange={handleChange} 
+                className="input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" required>
+              <option value=""> Specialization</option>
+              {[...new Set(doctors.map(doc => doc.specialization))].map((spec, i) => (
+                <option key={i} value={spec}>{spec}</option>
+              ))}
+            </select>
               </div>
               <div>
                 <label className="block text-sm font-medium ">Doctor</label>
-                <select
-                  name="doctorName"
-                  value={form.doctorName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
-                  required
-                >
-                  <option value="">Select</option>
-                  <option>Dr. Aarti Mehra</option>
-                  <option>Dr. Rakesh Shah</option>
-                </select>
+                <select name="doctorName" value={form.doctorName} onChange={handleChange} 
+                className="input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" required>
+              <option value="">Doctor</option>
+              {doctors.filter(doc => doc.specialization === form.specialization || form.specialization === "").map((doc, i) => (
+                <option key={i} value={doc.fullName}>Dr.{doc.fullName}</option>
+              ))}
+            </select>
               </div>
             </div>
 

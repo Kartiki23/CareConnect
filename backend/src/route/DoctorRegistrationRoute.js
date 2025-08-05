@@ -3,7 +3,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { registerDoctor } from "../controller/DoctorRegistrationController.js";
+import { getAllDoctors, registerDoctor } from "../controller/DoctorRegistrationController.js";
 
 const authRoutes = express.Router();
 
@@ -34,5 +34,8 @@ authRoutes.post(
   ]),
   registerDoctor
 );
+
+
+authRoutes.get('/doctor',getAllDoctors);
 
 export default authRoutes;

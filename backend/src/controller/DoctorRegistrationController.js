@@ -83,3 +83,14 @@ export const registerDoctor = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+
+export const getAllDoctors = async (req, res) => {
+  try {
+    const doctors = await docRegModel.find({}, 'fullName specialization');
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch doctors', error });
+  }
+};

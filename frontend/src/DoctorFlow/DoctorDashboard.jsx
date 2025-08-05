@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react"; import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend, } from "recharts"; import DoctorSidebar from "./DoctorSidebar"; import axios from "axios";
+import React, { useEffect, useState } from "react"; 
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend, } from "recharts"; 
+import DoctorSidebar from "./DoctorSidebar"; import axios from "axios";
 
 const activityData = [ { name: "Jan", thisYear: 100, lastYear: 80 }, { name: "Feb", thisYear: 120, lastYear: 90 }, { name: "Mar", thisYear: 150, lastYear: 130 }, { name: "Apr", thisYear: 170, lastYear: 140 }, { name: "May", thisYear: 210, lastYear: 160 }, { name: "Jun", thisYear: 180, lastYear: 150 }, { name: "Jul", thisYear: 200, lastYear: 160 }, { name: "Aug", thisYear: 210, lastYear: 170 }, { name: "Sep", thisYear: 180, lastYear: 150 }, { name: "Oct", thisYear: 170, lastYear: 140 }, { name: "Nov", thisYear: 160, lastYear: 130 }, { name: "Dec", thisYear: 190, lastYear: 160 }, ];
 
@@ -17,13 +19,21 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
   </div>
 );const DoctorDashboard = () => { const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
 
-const getDoctorInfo = async () => { try { const storedDoctor = localStorage.getItem("doctor"); if (!storedDoctor) return;
+const getDoctorInfo = async () => { 
+  try { 
+    const storedDoctor = localStorage.getItem("doctor"); 
+    if (!storedDoctor) return;
 
 const { email } = JSON.parse(storedDoctor);
 
-  const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", { email });
+  const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", {
+    email,
+  });
 
-  const imageUrl = response.data.doctorPhoto ? http://localhost:3001/uploads/${response.data.doctorPhoto} : "https://i.pravatar.cc/40";
+  console.log("doctor data:",response.data)
+
+
+  const imageUrl = response.data.doctorPhoto ? `http://localhost:3001/uploads/${response.data.doctorPhoto}`: "https://i.pravatar.cc/40";
 
   setDoctor({
     fullName: response.data.fullName || "Doctor",
@@ -37,19 +47,21 @@ const { email } = JSON.parse(storedDoctor);
 
 useEffect(() => { getDoctorInfo(); }, []);
 
-return (
-   <DoctorSidebar> 
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white"> 
-      <main className="flex-1 p-6 overflow-auto"> 
-        <div className="flex justify-between items-center mb-6"> 
-          <h1 className="text-3xl font-semibold">Dashboard</h1> 
-          <div className="flex items-center gap-4">
-             <span className="font-semibold">Dr.{doctor.fullName}</span> 
-             <img
-                src={doctor.doctorPhoto}
-alt="Doctor Avatar"
-className="w-10 h-10 rounded-full"
-/> </div> </div>
+return ( 
+<DoctorSidebar> 
+  <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white"> 
+    <main className="flex-1 p-6 overflow-auto"> 
+      <div className="flex justify-between items-center mb-6"> 
+        <h1 className="text-3xl font-semibold">Dashboard</h1> 
+        <div className="flex items-center gap-4"> 
+          <span className="font-semibold">Dr.{doctor.fullName}</span> 
+          <img
+            src={doctor.doctorPhoto}
+            alt="Doctor Avatar"
+            className="w-10 h-10 rounded-full"
+          /> 
+        </div> 
+      </div>
 
 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <Card title="Important Tasks" value="160" sub="42 tasks high priority" />
@@ -110,12 +122,12 @@ className="w-10 h-10 rounded-full"
                 data={genderData}
                 cx="50%"
                 cy="50%"
-                outerRadius={60}
+                outerRadius={50}
                 dataKey="value"
                 label
               >
                 {genderData.map((entry, index) => (
-                  <Cell key={`cell-${index}} fill={COLORS[index % COLORS.length]`} />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Legend />

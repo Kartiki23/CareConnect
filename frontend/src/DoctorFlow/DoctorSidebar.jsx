@@ -20,7 +20,7 @@ const DoctorSidebar = ({ children }) => {
         </nav>
         <Link to = "/login"><div className="absolute bottom-6">
           <button className="bg-indigo-600 text-white mb-20 w-30 h-9 rounded-md hover:bg-indigo-700 flex">
-            <LogOut className='mr-1 mt-1'/>Logout
+            <LogOut className='mr-1 mt-1'/><h1 className='mt-1 font-bold text-lg'>Logout</h1>
           </button>
         </div></Link>
       </aside>

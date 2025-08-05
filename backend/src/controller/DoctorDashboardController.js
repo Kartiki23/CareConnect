@@ -1,9 +1,8 @@
-// backend/controller/doctorController.js
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 export const getDoctorProfile = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { fullName,email,doctorPhoto } = req.body;
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -16,8 +15,10 @@ export const getDoctorProfile = async (req, res) => {
     }
 
     res.status(200).json({
-      fullName: doctor.fullName,
-      doctorPhoto: doctor.doctorPhoto, // Only return filename, not full URL
+      doctor: {
+    fullName: doctor.fullName,
+    doctorPhoto: doctor.doctorPhoto
+  }
     });
   } catch (error) {
     console.log("Error fetching doctor profile:", error);
