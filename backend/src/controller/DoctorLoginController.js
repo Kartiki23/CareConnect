@@ -1,12 +1,13 @@
 import { docLogin } from "../model/doctorLoginModel.js ";
 import bcrypt from "bcrypt";
+import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 export const loginDoctor = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     // Check if user exists
-    const existingDoctor = await docLogin.findOne({ email });
+    const existingDoctor = await docRegModel.findOne({ email });
 
     if (!existingDoctor) {
       return res
@@ -21,7 +22,12 @@ export const loginDoctor = async (req, res) => {
     }
 
     // Success
-    res.status(200).json({ message: "Login successful", doctor: existingDoctor });
+    res.status(200).json({ message: "Login successful",
+      doctor: {
+        _id: existingDoctor._id,
+        email: existingDoctor.email,
+      } 
+    });
   } catch (error) {
     console.log("Doctor login error:", error);
     res.status(500).json({ message: "Server error" });

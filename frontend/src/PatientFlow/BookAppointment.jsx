@@ -12,7 +12,7 @@ const BookAppointment = () => {
     gender: "",
     age: "",
     specialization: "",
-    doctorName: "",
+    doctorId: "",
     appointmentDate: "",
     appointmentTime: "",
     reason: "",
@@ -50,14 +50,14 @@ const BookAppointment = () => {
         gender: "",
         age: "",
         specialization: "",
-        doctorName: "",
+        doctorId: "",
         appointmentDate: "",
         appointmentTime: "",
         reason: "",
         medicalHistory: "",
       });
     } catch (error) {
-      console.error("Booking failed:", error);
+      console.log("Booking failed:", error);
       alert("Failed to book appointment. Please try again.");
     }
   };
@@ -164,11 +164,11 @@ const BookAppointment = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium ">Doctor</label>
-                <select name="doctorName" value={form.doctorName} onChange={handleChange} 
+                <select name="doctorId" value={form.doctorName} onChange={handleChange} 
                 className="input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" required>
               <option value="">Doctor</option>
-              {doctors.filter(doc => doc.specialization === form.specialization || form.specialization === "").map((doc, i) => (
-                <option key={i} value={doc.fullName}>Dr.{doc.fullName}</option>
+              {doctors.filter(doc => doc.specialization === form.specialization || form.specialization === "").map((doc) => (
+                <option key={doc._id} value={doc._id}>Dr.{doc.fullName}</option>
               ))}
             </select>
               </div>

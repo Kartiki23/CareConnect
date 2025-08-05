@@ -25,9 +25,10 @@ const bookAppointmentSchema = new Schema({
         type:String,
         required:true
     },
-    doctorName:{
-        type:String,
-        required:true
+    doctorId:{ 
+        type: Schema.Types.ObjectId, 
+        ref: 'docregmodels', 
+        required: true 
     },
     appointmentDate:{
         type:String,
@@ -44,7 +45,12 @@ const bookAppointmentSchema = new Schema({
     medicalHistory:{
         type:String,
         required:true
-    }
+    },
+    status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  }
 });
 
 export const appointment = mongoose.model('appointment',bookAppointmentSchema);

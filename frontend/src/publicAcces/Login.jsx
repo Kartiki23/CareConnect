@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [role, setRole] = useState("patient");
@@ -16,34 +17,35 @@ const Login = () => {
     e.preventDefault();
 
     const endpoint =
-      role === "patient" ? "http://localhost:3001/api/v1/user/Plogin" : "http://localhost:3001/api/v1/user/login";
+      role === "patient"
+        ? "http://localhost:3001/api/v1/user/Plogin"
+        : "http://localhost:3001/api/v1/user/login";
 
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await axios.post(endpoint, { email, password });
+      
+      const doctor = response.data?.doctor;
+      const patient = response.data?.patient;
 
-      const data = await response.json();
+      if (role === "doctor" && doctor?._id) {
+       // During login or registration
+        localStorage.setItem("doctorId", response.data.doctor._id);
 
-      if (response.ok) {
-        console.log("Login successful:", data);
-        // Optionally store token if your backend returns one
-        // localStorage.setItem("token", data.token);
-        navigate(role === "patient" ? "/patientDashboard" : "/doctorDashboard");
+       localStorage.setItem("doctorEmail", doctor.email);
+        navigate("/doctorDashboard");
+      } else if (role === "patient" && patient?._id) {
+        localStorage.setItem("patientId", patient._id);
+        localStorage.setItem("patientEmail", patient.email);
+        navigate("/patientDashboard");
       } else {
-        console.log("Login failed:", data.message);
-        alert("Login failed: " + (data.message || "Invalid credentials"));
+        alert("Login failed: Invalid credentials or server error.");
       }
 
-     
-
     } catch (err) {
-      console.log("Error:", err);
-      alert("Something went wrong. Check server or network.");
+      console.error("Login error:", err);
+      alert(
+        err.response?.data?.message || "Login failed. Check your credentials."
+      );
     }
   };
 
@@ -59,7 +61,6 @@ const Login = () => {
           {role === "patient" ? "Patient" : "Doctor"} Login
         </h2>
 
-        {/* Toggle Button */}
         <div className="flex justify-center mb-6">
           <motion.button
             whileTap={{ scale: 0.9 }}
@@ -109,7 +110,6 @@ const Login = () => {
           </motion.form>
         </AnimatePresence>
 
-        {/* Registration Links */}
         <div className="mt-6 text-center text-sm text-gray-600">
           {role === "patient" ? (
             <>

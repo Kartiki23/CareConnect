@@ -71,6 +71,7 @@ export const registerDoctor = async (req, res) => {
 
     res.status(201).json({ message: "Doctor registered successfully.",
       doctor:{
+        _id:newDoctor._id,
         fullName:newDoctor.fullName,
         email:newDoctor.email,
         doctorPhoto:newDoctor.doctorPhoto,
