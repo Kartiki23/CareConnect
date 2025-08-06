@@ -19,31 +19,30 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
   </div>
 );const DoctorDashboard = () => { const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
 
-const getDoctorInfo = async () => { 
-  try { 
-    const storedDoctor = localStorage.getItem("doctor"); 
-    if (!storedDoctor) return;
+const getDoctorInfo = async () => {
+  try {
+    const storedDoctorId = localStorage.getItem("doctorId");
+    if (!storedDoctorId) return;
 
-const { email } = JSON.parse(storedDoctor);
+    const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", {
+      doctorId: storedDoctorId,
+    });
 
-  const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", {
-    email,
-  });
+    console.log("doctor data:", response.data);
 
-  console.log("doctor data:",response.data)
+    const imageUrl = response.data.doctorPhoto
+      ? `http://localhost:3001/uploads/${response.data.doctorPhoto}`
+      : "https://i.pravatar.cc/40";
 
-
-  const imageUrl = response.data.doctorPhoto ? `http://localhost:3001/uploads/${response.data.doctorPhoto}`: "https://i.pravatar.cc/40";
-
-  setDoctor({
-    fullName: response.data.fullName || "Doctor",
-    doctorPhoto: imageUrl,
-  });
-} catch (error) {
-  console.log("Error fetching doctor info:", error);
-}
-
+    setDoctor({
+      fullName: response.data.fullName || "Doctor",
+      doctorPhoto: imageUrl,
+    });
+  } catch (error) {
+    console.error("Error fetching doctor info:", error);
+  }
 };
+
 
 useEffect(() => { getDoctorInfo(); }, []);
 

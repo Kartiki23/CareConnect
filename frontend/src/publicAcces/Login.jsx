@@ -42,7 +42,7 @@ const Login = () => {
       }
 
     } catch (err) {
-      console.error("Login error:", err);
+      console.log("Login error:", err);
       alert(
         err.response?.data?.message || "Login failed. Check your credentials."
       );

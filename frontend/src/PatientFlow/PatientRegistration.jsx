@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 
 const PatientRegistration = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "",
@@ -12,27 +13,30 @@ const PatientRegistration = () => {
     password: ""
   });
 
+  // Handles input changes
   const handleChanges = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3001/api/v1/user/Pregister", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+      const response = await axios.post(
+        "http://localhost:3001/api/v1/user/Pregister",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
 
-      const data = await response.json();
+      if (response.status === 200) {
+        alert(" Patient Registered Successfully");
+        console.log("Server Response:", response.data);
 
-      if (response.ok) {
-        alert("✅ Patient Registered Successfully");
-        console.log("Server Response:", data);
         setFormData({
           fullName: "",
           gender: "",
@@ -41,14 +45,15 @@ const PatientRegistration = () => {
           phone: "",
           password: ""
         });
-        navigate("/patientDashboard"); 
+
+        navigate("/patientDashboard");
       } else {
-        alert(`❌ Registration failed: ${data.message || "Server error"}`);
-        console.log("Backend error:", data);
+        alert(` Registration failed: ${response.data.message || "Server error"}`);
+        console.log("Backend error:", response.data);
       }
     } catch (error) {
-      console.log("Network error:", error);
-      alert("❌ Could not connect to server. Please check if backend is running on port 3001.");
+      console.error("Axios error:", error);
+      alert("Could not connect to server. Please check if backend is running on port 3001.");
     }
   };
 
@@ -58,8 +63,8 @@ const PatientRegistration = () => {
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           Patient Registration
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* All input fields unchanged */}
           <div>
             <label className="block font-medium mb-1">Full Name</label>
             <input

@@ -25,7 +25,7 @@ const DoctorAppointment = () => {
       });
       setAppointments(res.data.appointments);
     } catch (error) {
-      console.error("Error fetching appointments:", error);
+      console.log("Error fetching appointments:", error);
     }
   };
 
@@ -35,9 +35,9 @@ const DoctorAppointment = () => {
         appointmentId: id,
         status,
       });
-      fetchAppointments(); // Refresh after update
+      fetchAppointments(); 
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.log("Error updating status:", error);
     }
   };
 

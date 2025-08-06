@@ -53,7 +53,7 @@ export const bookAppointment = async (req, res) => {
 
     res.status(201).json({ message: "Appointment Booked Successfully!" });
   } catch (error) {
-    console.error("Booking error:", error);
+    console.log("Booking error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -73,7 +73,7 @@ export const getAppointmentsForDoctor = async (req, res) => {
 
     res.status(200).json({ appointments });
   } catch (error) {
-    console.error("Error fetching appointments:", error);
+    console.log("Error fetching appointments:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -100,7 +100,7 @@ export const updateAppointmentStatus = async (req, res) => {
 
     res.status(200).json({ message: `Appointment status updated`, appointment: updated });
   } catch (error) {
-    console.error("Update error:", error);
+    console.log("Update error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

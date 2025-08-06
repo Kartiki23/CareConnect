@@ -240,7 +240,7 @@ const BookAppointment = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <img src={book_appointment} // Replace with your GIF link
+            <img src={book_appointment} 
             alt="Doctor"
             className="h-100 w-100 object-cover mt-40 ml-10"
           />

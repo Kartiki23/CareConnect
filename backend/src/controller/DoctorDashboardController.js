@@ -2,23 +2,22 @@ import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 export const getDoctorProfile = async (req, res) => {
   try {
-    const { fullName,email,doctorPhoto } = req.body;
+    const { doctorId } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
+    if (!doctorId) {
+      return res.status(400).json({ message: "Doctor ID is required" });
     }
 
-    const doctor = await docRegModel.findOne({ email });
+    const doctor = await docRegModel.findById(doctorId);
 
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
     res.status(200).json({
-      doctor: {
-    fullName: doctor.fullName,
-    doctorPhoto: doctor.doctorPhoto
-  }
+      _id: doctor._id,
+      fullName: doctor.fullName,
+      doctorPhoto: doctor.doctorPhoto,
     });
   } catch (error) {
     console.log("Error fetching doctor profile:", error);
