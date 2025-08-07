@@ -108,8 +108,8 @@ export const updateAppointmentStatus = async (req, res) => {
   }
 };
 
-// Fetch appointment for specific patient
-// ✅ BACKEND - Get Appointments For Patient
+
+// Get Appointments For Patient
 export const getAppointmentsForPatient = async (req, res) => {
   try {
     const { patientId } = req.query;
@@ -118,15 +118,20 @@ export const getAppointmentsForPatient = async (req, res) => {
       return res.status(400).json({ error: "Patient ID is required" });
     }
 
-    const appointments = await appointment.find({ patientId });
+   const appointments = await appointment.find({ patientId ,});
+
+    // const appointments = await appointment
+    //   .find({ patientId })
+    //   .populate("doctorId", "fullName"); // <-- THIS POPULATES fullName from doctor
+
     res.status(200).json({ appointments });
   } catch (error) {
-    console.error("Fetching error:", error);
+    console.log("Fetching error:", error);
     res.status(500).json({ error: "Failed to fetch appointments" });
   }
 };
 
-// ✅ BACKEND - Cancel Appointment
+// Cancel Appointment
 export const cancelAppointment = async (req, res) => {
   try {
     const { appointmentId } = req.params;

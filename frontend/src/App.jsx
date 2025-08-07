@@ -17,6 +17,7 @@ import PatientAppointments from './PatientFlow/PatientAppointments';
 import PatientSidebar from './PatientFlow/PatientSidebar';
 import BookAppointment from './PatientFlow/BookAppointment';
 import PatientMessages from './PatientFlow/PatientMessages';
+import DoctorProfile from './DoctorFlow/DoctorProfile';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
         <Route path='/doctorsidebar' element={<DoctorSidebar/>}/>
         <Route path='/doctormsg' element={<DoctorMsg/>}/>
         <Route path='/patientmsg' element={<PatientMessages/>} />
+        <Route path='/doctorProfile' element={<DoctorProfile/>} />
         <Route path='/bookAppointment' element={<BookAppointment/>} />
 
       </Routes>
