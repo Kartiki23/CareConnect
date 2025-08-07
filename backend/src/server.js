@@ -5,6 +5,7 @@ import { connectDB } from './config/Db.js';
 import docLoginRouter from './route/DoctorLoginRoute.js';
 import patientRoutes from './route/PatientRegistrationRoute.js'
 import cors from 'cors';
+import dotenv from "dotenv";
 import specialtiesRouter from './route/SpecialtiesRoute.js';
 import donationRoute from './route/DonatinRoute.js';
 import docDashboardRouter from './route/DoctorDashboardRoute.js';
@@ -18,6 +19,8 @@ const app = express()
 app.use(express.json())
 
 app.use(cors());
+
+dotenv.config();
 
 connectDB();
 

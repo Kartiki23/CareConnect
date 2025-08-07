@@ -50,6 +50,11 @@ const bookAppointmentSchema = new Schema({
     type: String,
     enum: ["pending", "accepted", "rejected"],
     default: "pending",
+  },
+  patientId: {
+    type: Schema.Types.ObjectId,
+    ref: 'patients',
+    required: true
   }
 });
 

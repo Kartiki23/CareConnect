@@ -20,6 +20,7 @@ const BookAppointment = () => {
   });
 
   const [doctors, setDoctors] = useState([]);
+  const patientId = localStorage.getItem("patientId");
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -41,7 +42,8 @@ const BookAppointment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3001/api/v1/user/bookAppointment", form);
+      const fullForm = { ...form, patientId };
+      const res = await axios.post("http://localhost:3001/api/v1/user/bookAppointment", fullForm);
       alert("Appointment booked successfully!");
       setForm({
         name: "",

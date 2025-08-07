@@ -30,11 +30,11 @@ const Login = () => {
       if (role === "doctor" && doctor?._id) {
        // During login or registration
         localStorage.setItem("doctorId", response.data.doctor._id);
-
-       localStorage.setItem("doctorEmail", doctor.email);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("doctorEmail", doctor.email);
         navigate("/doctorDashboard");
       } else if (role === "patient" && patient?._id) {
-        localStorage.setItem("patientId", patient._id);
+        localStorage.setItem("patientId", response.data.patient._id);
         localStorage.setItem("patientEmail", patient.email);
         navigate("/patientDashboard");
       } else {

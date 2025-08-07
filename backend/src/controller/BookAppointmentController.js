@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { appointment } from "../model/BookAppointmentModel.js";
+import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 // Book an appointment
 export const bookAppointment = async (req, res) => {
@@ -16,6 +17,7 @@ export const bookAppointment = async (req, res) => {
       appointmentTime,
       reason,
       medicalHistory,
+      patientId
     } = req.body;
 
     if (
@@ -46,6 +48,7 @@ export const bookAppointment = async (req, res) => {
       appointmentTime,
       reason,
       medicalHistory,
+      patientId,
       status: "pending",
     });
 
@@ -102,5 +105,35 @@ export const updateAppointmentStatus = async (req, res) => {
   } catch (error) {
     console.log("Update error:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Fetch appointment for specific patient
+// ✅ BACKEND - Get Appointments For Patient
+export const getAppointmentsForPatient = async (req, res) => {
+  try {
+    const { patientId } = req.query;
+
+    if (!patientId) {
+      return res.status(400).json({ error: "Patient ID is required" });
+    }
+
+    const appointments = await appointment.find({ patientId });
+    res.status(200).json({ appointments });
+  } catch (error) {
+    console.error("Fetching error:", error);
+    res.status(500).json({ error: "Failed to fetch appointments" });
+  }
+};
+
+// ✅ BACKEND - Cancel Appointment
+export const cancelAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    await appointment.findByIdAndDelete(appointmentId);
+    res.status(200).json({ message: "Appointment cancelled" });
+  } catch (error) {
+    console.error("Cancellation error:", error);
+    res.status(500).json({ error: "Failed to cancel appointment" });
   }
 };

@@ -22,11 +22,18 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
 const getDoctorInfo = async () => {
   try {
     const storedDoctorId = localStorage.getItem("doctorId");
+    const token = localStorage.getItem("token");
     if (!storedDoctorId) return;
 
     const response = await axios.post("http://localhost:3001/api/v1/user/doctorProfile", {
       doctorId: storedDoctorId,
-    });
+    },
+    {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+    }
+);
 
     console.log("doctor data:", response.data);
 
