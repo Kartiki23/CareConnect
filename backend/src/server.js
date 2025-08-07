@@ -13,13 +13,14 @@ import docDashboardRouter from './route/DoctorDashboardRoute.js';
 import bookAppointmentRoute from './route/BookAppointmentRoute.js';
 import patientloginRoutes from './route/PatientLoginRoute.js';
 import patientRegisterrouter from './route/PatientRegistrationRoute.js';
+import patientDashboardRoute from './route/PatientDashboardRoute.js';
 
 
 const app = express()
 
-app.use(express.json())
+app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
@@ -49,6 +50,7 @@ app.use('/api/v1/user',donationRoute)
 
 app.use('/api/v1/user',bookAppointmentRoute)
 
+app.use('/api/v1/user',patientDashboardRoute);
 
 // app.use('/',(req,res)=> {
 //     res.send ("Hello World")

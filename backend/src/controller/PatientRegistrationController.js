@@ -16,7 +16,14 @@ export const registerPatient = async (req, res) => {
     const newPatient = new Patient({ fullName, gender, age, email, phone, password });
     await newPatient.save();
 
-    res.status(201).json({ message: "Patient registered successfully", patient: newPatient });
+     res.status(201).json({ message: "Patient registered successfully.",
+      doctor:{
+        _id:newPatient._id,
+        fullName:newPatient.fullName,
+        email:newPatient.email,
+        //doctorPhoto:newDoctor.doctorPhoto,
+      }
+     });
   } catch (error) {
     console.log("Register error:", error);
     res.status(500).json({ message: "Internal server error" });

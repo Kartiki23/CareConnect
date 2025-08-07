@@ -1,6 +1,7 @@
 
-import { CalendarIcon, HeartPulse, Sidebar } from 'lucide-react';
+import { CalendarIcon, HeartPulse, MessageSquare, Sidebar } from 'lucide-react';
 import React from 'react';
+import { FaUserMd } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const PatientSidebar = ({ children }) => {
@@ -21,8 +22,14 @@ const PatientSidebar = ({ children }) => {
                 </Link>
 
                 <Link to ="/patientmsg"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"> 
-                <CalendarIcon className="mr-2" /> 
+                <MessageSquare className="mr-2" /> 
                 Message
+                </div> 
+                </Link>
+
+                <Link to ="/patientProfile"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"> 
+                <FaUserMd className="mr-2" /> 
+                Your Profile
                 </div> 
                 </Link>
             </nav> 
