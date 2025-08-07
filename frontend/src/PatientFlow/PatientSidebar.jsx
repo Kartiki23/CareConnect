@@ -19,6 +19,12 @@ const PatientSidebar = ({ children }) => {
                 Appointments 
                 </div> 
                 </Link>
+
+                <Link to ="/patientmsg"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"> 
+                <CalendarIcon className="mr-2" /> 
+                Message
+                </div> 
+                </Link>
             </nav> 
         </aside>
 
