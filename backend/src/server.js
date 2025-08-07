@@ -6,6 +6,7 @@ import docLoginRouter from './route/DoctorLoginRoute.js';
 import patientRoutes from './route/PatientRegistrationRoute.js'
 import cors from 'cors';
 import dotenv from "dotenv";
+import path from "path";
 import specialtiesRouter from './route/SpecialtiesRoute.js';
 import donationRoute from './route/DonatinRoute.js';
 import docDashboardRouter from './route/DoctorDashboardRoute.js';
@@ -18,6 +19,8 @@ const app = express()
 
 app.use(express.json())
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 
 dotenv.config();
@@ -29,6 +32,8 @@ const PORT = 3001
 app.use('/api/v1/user',authRoutes)
 
 app.use('/uploads', express.static('uploads')); 
+
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 app.use('/api/v1/user',docLoginRouter)
 
