@@ -1,5 +1,5 @@
 
-import { CalendarIcon, HeartPulse, LogOut, MessageSquare, Sidebar } from 'lucide-react';
+import { CalendarIcon, HeartPulse, LogOut, MessageSquare, Sidebar, StickyNote } from 'lucide-react';
 import React from 'react';
 import { FaUserMd } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,13 @@ const PatientSidebar = ({ children }) => {
                 Appointments 
                 </div> 
                 </Link>
+
+                <Link to ="/appointmentHistory"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
+                <StickyNote className="mr-2" /> 
+                Appointment Deatils
+                </div> 
+                </Link>
+
 
                 <Link to ="/patientmsg"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
                 <MessageSquare className="mr-2" /> 

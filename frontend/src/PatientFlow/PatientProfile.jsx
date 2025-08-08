@@ -33,9 +33,9 @@ useEffect(() => {
         imageUrl = `http://localhost:3001/uploads/${response.data.patientPhoto}`;
       } else {
         if (response.data.gender?.toLowerCase() === "female") {
-          imageUrl = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // female avatar icon
+          imageUrl = "https://cdn-icons-png.flaticon.com/512/6997/6997662.png"; // female avatar icon
         } else {
-          imageUrl = "https://cdn-icons-png.flaticon.com/512/847/847969.png"; // male avatar icon
+          imageUrl = "https://up.yimg.com/ib/th/id/OIP.SJcycEiCnXZ6_AePYM_EZQHaHa?pid=Api&rs=1&c=1&qlt=95&w=123&h=123"; // male avatar icon
         }
       }
 
@@ -51,7 +51,7 @@ useEffect(() => {
       setPatient(patientData);
       setFormData(patientData);
     } catch (error) {
-      console.error("Error fetching patient profile:", error);
+      console.log("Error fetching patient profile:", error);
       toast.error("Failed to load profile.");
     }
   };
@@ -74,43 +74,53 @@ useEffect(() => {
   };
 
   const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const patientId = localStorage.getItem("patientId");
+  try {
+    const token = localStorage.getItem("token");
+    const patientId = localStorage.getItem("patientId");
 
-      const data = new FormData();
-      data.append("patientId", patientId);
-      Object.entries(formData).forEach(([key, val]) =>
-        data.append(key, val)
-      );
-      if (newPhoto) {
-        data.append("patientPhoto", newPhoto);
-      }
-
-      await axios.put(
-        "http://localhost:3001/api/v1/user/updatePatientInfo",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      toast.success("Profile updated successfully!");
-
-      setTimeout(() => {
-        setEditMode(false);
-        setNewPhoto(null);
-        setPreview(null);
-        window.location.reload();
-      }, 1500);
-    } catch (error) {
-      console.error("Error updating patient profile:", error);
-      toast.error("Failed to update profile.");
+    if (!patientId) {
+      toast.error("Patient ID is missing. Please log in again.");
+      return;
     }
-  };
+
+    const data = new FormData();
+    data.append("patientId", patientId);
+
+    // Append all form fields
+    Object.entries(formData).forEach(([key, val]) => {
+      data.append(key, val);
+    });
+
+    // Append new photo if chosen
+    if (newPhoto) {
+      data.append("patientPhoto", newPhoto);
+    }
+
+    await axios.put(
+      "http://localhost:3001/api/v1/user/updatePatientInfo",
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toast.success("Profile updated successfully!");
+
+    setTimeout(() => {
+      setEditMode(false);
+      setNewPhoto(null);
+      setPreview(null);
+      window.location.reload();
+    }, 1500);
+  } catch (error) {
+    console.log("Error updating patient profile:", error.response?.data || error);
+    toast.error(error.response?.data?.message || "Failed to update profile.");
+  }
+};
+
 
   if (!patient) {
     return (

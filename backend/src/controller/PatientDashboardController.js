@@ -58,7 +58,7 @@ export const PatientProfile = async (req, res) => {
 // Update profile 
 export const updatePatientInfo = async (req, res) => {
   try {
-    const { patientId } = req.query; // ✅ Fixed typo here
+    const { patientId } = req.body; 
 
     if (!patientId) {
       return res.status(400).json({ message: "Patient ID is required" });

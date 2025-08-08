@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import Navbar from './publicAcces/Navbar';
 import Home from './publicAcces/Home';
 import Login from './publicAcces/Login';
@@ -19,6 +18,7 @@ import BookAppointment from './PatientFlow/BookAppointment';
 import PatientMessages from './PatientFlow/PatientMessages';
 import DoctorProfile from './DoctorFlow/DoctorProfile';
 import PatientProfile from './PatientFlow/PatientProfile';
+import PatientAppointmentHistory from './PatientFlow/PatientAppointmentHistory';
 
 const App = () => {
   return (
@@ -43,6 +43,7 @@ const App = () => {
         <Route path='/doctorProfile' element={<DoctorProfile/>} />
         <Route path='/patientProfile' element={<PatientProfile/>}/>
         <Route path='/bookAppointment' element={<BookAppointment/>} />
+        <Route path='/appointmentHistory' element={<PatientAppointmentHistory/>}/>
 
       </Routes>
     </BrowserRouter>

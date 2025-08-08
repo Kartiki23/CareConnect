@@ -69,4 +69,4 @@ export const docRegSchema = new Schema({
   }
 }, { timestamps: true });
 
-export const docRegModel = mongoose.model('docRegModel', docRegSchema);
+export const docRegModel = mongoose.model('docregmodels', docRegSchema);

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { appointment } from "../model/BookAppointmentModel.js";
+import { Patient } from "../model/PatientRegistrationModel.js";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 // Book an appointment
@@ -118,7 +119,7 @@ export const getAppointmentsForPatient = async (req, res) => {
       return res.status(400).json({ error: "Patient ID is required" });
     }
 
-   const appointments = await appointment.find({ patientId ,});
+   const appointments = await appointment.find({ patientId ,}).populate("doctorId", "fullName specialization");
 
     // const appointments = await appointment
     //   .find({ patientId })

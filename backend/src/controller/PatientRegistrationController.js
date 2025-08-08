@@ -1,19 +1,29 @@
 
-
+import bcrypt from "bcrypt";
 import { Patient } from "../model/PatientRegistrationModel.js";
 
 export const registerPatient = async (req, res) => {
   try {
     console.log("received data:",req.body);
     
-    const { fullName, gender, age, email, phone, password } = req.body;
+    const { fullName, gender, age, email, phone, password , patientPhoto} = req.body;
 
     const existing = await Patient.findOne({ email });
     if (existing) {
       return res.status(400).json({ message: "Patient already registered" });
     }
 
-    const newPatient = new Patient({ fullName, gender, age, email, phone, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newPatient = new Patient({ 
+      fullName, 
+      gender, 
+      age, 
+      email, 
+      phone, 
+      password : hashedPassword,
+      patientPhoto,
+    });
     await newPatient.save();
 
      res.status(201).json({ message: "Patient registered successfully.",
@@ -21,7 +31,7 @@ export const registerPatient = async (req, res) => {
         _id:newPatient._id,
         fullName:newPatient.fullName,
         email:newPatient.email,
-        //doctorPhoto:newDoctor.doctorPhoto,
+        patientPhoto:newDoctor.patientPhoto,
       }
      });
   } catch (error) {
