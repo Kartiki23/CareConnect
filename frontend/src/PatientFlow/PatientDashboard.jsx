@@ -1,13 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CalendarIcon, HeartPulse, ThermometerSun, Syringe, Droplet, Stethoscope} from "lucide-react"; 
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PatientSidebar from "./PatientSidebar";
+import axios from "axios";
 
 const data = [ { name: 'Jan', value: 10 }, { name: 'Feb', value: 15 }, { name: 'Mar', value: 5 }, { name: 'Apr', value: 20 }, { name: 'May', value: 8 }, { name: 'Jun', value: 25 }, { name: 'Jul', value: 18 }, ];
 
 export default function PatientDashboard() { 
+
+  const [patient, setPatient] = useState({ fullName: ""});
+  const [greeting, setGreeting] = useState("Hello");
+
+  const getPatientInfo = async () => {
+  try {
+    const storedpatientId = localStorage.getItem("patientId");
+    const token = localStorage.getItem("token");
+    if (!storedpatientId) return;
+
+    const response = await axios.post("http://localhost:3001/api/v1/user/patientProfile", {
+      patientId: storedpatientId,
+    },
+    {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+    }
+);
+
+    console.log("doctor data:", response.data);
+
+    setPatient({
+      fullName: response.data.fullName || "Patient",
+    });
+  } catch (error) {
+    console.log("Error fetching doctor info:", error);
+  }
+};
+
+const updateGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour >= 12 && hour < 12) {
+    setGreeting("Good Morning");
+  } else if (hour >= 12 && hour < 17) {
+    setGreeting("Good Afternoon");
+  } else {
+    setGreeting("Good Evening");
+  }
+};
+
+
+useEffect(() => { 
+  getPatientInfo(); 
+  updateGreeting();
+}, []);
+
+
   return ( 
   <PatientSidebar>
   <div className="flex min-h-screen w-full bg-[#eef0ff]">
@@ -20,7 +69,7 @@ export default function PatientDashboard() {
       transition={{ duration: 0.6 }}
       className="bg-white p-6 rounded-lg shadow-md mb-6"
     >
-      <h2 className="text-lg text-gray-700">Good Morning, <span className="text-blue-600 font-semibold">Jared Terry</span></h2>
+      <h2 className="text-lg text-gray-700">{greeting}, <span className="text-blue-600 font-semibold">{patient.fullName}</span></h2>
       <p className="text-sm text-gray-500 mb-4">Let's care with your health</p>
       <Link to="/bookAppointment">
       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">

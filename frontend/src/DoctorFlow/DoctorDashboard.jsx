@@ -17,7 +17,9 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
     <p className="text-2xl font-bold mt-1">{value}</p>
     <p className={`text-xs mt-1 ${subColor}`}>{sub}</p>
   </div>
-);const DoctorDashboard = () => { const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
+);
+const DoctorDashboard = () => { 
+  const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
 
 const getDoctorInfo = async () => {
   try {
