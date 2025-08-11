@@ -1,7 +1,8 @@
 // src/controllers/messagesController.js
-import { Message } from "../models/MessageModel.js";
+//import { Message } from "../models/MessageModel.js";
 import { docRegModel } from "../model/DoctorRegistrationModel.js"; // optional: to get doctor details
 import { Patient } from "../model/PatientRegistrationModel.js";   // optional: to get patient details
+import { messageModel } from "../model/PatientMessageModel.js";
 
 // GET contacts for a user (with last message preview)
 export const getContacts = async (req, res) => {
@@ -10,7 +11,7 @@ export const getContacts = async (req, res) => {
     if (!userId) return res.status(400).json({ message: "userId required" });
 
     // Find last message per conversation (otherParty)
-    const agg = await Message.aggregate([
+    const agg = await messageModel.aggregate([
       {
         $match: {
           $or: [{ senderId: userId }, { receiverId: userId }]

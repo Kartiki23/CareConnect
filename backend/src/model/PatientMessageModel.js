@@ -6,4 +6,5 @@ const messageSchema = new mongoose.Schema({
   message: { type: String, required: true },
 }, { timestamps: true });
 
-export default mongoose.model("Message", messageSchema);
+export const messageModel= mongoose.model('messageModel',messageSchema);
+//export default mongoose.model("Message", messageSchema);

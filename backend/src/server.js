@@ -2,6 +2,9 @@
 import express from 'express'
 import authRoutes from './route/DoctorRegistrationRoute.js';
 import { connectDB } from './config/Db.js';
+import http from 'http';
+import { Server } from 'socket.io';
+import mongoose from 'mongoose';
 import docLoginRouter from './route/DoctorLoginRoute.js';
 import patientRoutes from './route/PatientRegistrationRoute.js'
 import cors from 'cors';
@@ -15,10 +18,20 @@ import patientloginRoutes from './route/PatientLoginRoute.js';
 import patientRegisterrouter from './route/PatientRegistrationRoute.js';
 import patientDashboardRoute from './route/PatientDashboardRoute.js';
 import patientMessageRoutes from './route/PatientMessageRoute.js';
+import { getDoctorDashboard } from './controller/DoctorDashboardController.js';
+
 
 const app = express()
 
 app.use(express.json());
+
+const server = http.createServer(app);
+const io = new Server(server,{
+    cors:{
+        origin:'http://localhost:3001',
+        methods:['GET','POST']
+    }
+});
 
 //app.use(express.urlencoded({ extended: true }));
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import { getDoctorProfile, updateDoctorInfo } from '../controller/DoctorDashboardController.js';
+import { getDoctorDashboard, getDoctorProfile, updateDoctorInfo } from '../controller/DoctorDashboardController.js';
 import { authenticateDoctor } from '../middleware/DoctorLoginMiddleware.js';
 import multer from "multer";
 import path from "path";
@@ -18,5 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 docDashboardRouter.put('/updatedoctorInfo',upload.single("doctorPhoto"),authenticateDoctor,updateDoctorInfo);
+
+docDashboardRouter.get('/dashboard/:doctorId',authenticateDoctor,getDoctorDashboard)
 
 export default docDashboardRouter;
