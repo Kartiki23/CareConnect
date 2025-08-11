@@ -28,7 +28,7 @@ const PatientSidebar = ({ children }) => {
                 </Link>
 
 
-                <Link to ="/patientmsg"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
+                <Link to ="/patientMessages"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
                 <MessageSquare className="mr-2" /> 
                 Message
                 </div> 
