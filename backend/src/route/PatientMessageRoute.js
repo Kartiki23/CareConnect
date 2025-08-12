@@ -1,4 +1,12 @@
+// src/route/PatientMessageRoute.js
 import express from "express";
+
+import {
+  getMyDoctors,
+  getConversation,
+  createMessage,
+} from "../controller/MessageController.js";
+
 //import Message from "../models/MessageModel.js";
 //import Appointment from "../models/AppointmentModel.js";
 //import Doctor from "../models/DoctorModel.js";
@@ -8,7 +16,19 @@ import { appointment } from "../model/BookAppointmentModel.js";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 import { authenticateDoctor } from "../middleware/DoctorLoginMiddleware.js";
 
-const router = express.Router();
+
+const patientMessageRoutes = express.Router();
+
+// Get doctors for a patient (patientId param)
+patientMessageRoutes.get("/user/:patientId/doctors", getMyDoctors);
+
+// Get conversation messages between patient and doctor
+patientMessageRoutes.get("/:patientId/:doctorId", getConversation);
+
+// Create/send message (persist)
+patientMessageRoutes.post("/", createMessage);
+
+patientMessageRoutes.get("/user/:patientId/doctors", async (req, res) => {
 
 // Get doctors the patient has appointments with
 router.get("/my-doctors", authenticateDoctor , async (req, res) => {
@@ -48,9 +68,14 @@ router.get("/:doctorId", authenticateDoctor , async (req, res) => {
 
 // Send a message
 router.post("/",authenticateDoctor , async (req, res) => {
+
   try {
-    const { receiverId, message } = req.body;
-    const senderId = req.user.id;
+    const { patientId } = req.params;
+
+
+    // Find all doctorIds from appointments for this patient
+    const appts = await appointment.find({ patientId }).select("doctorId").lean();
+    const doctorIds = appts.map(a => a.doctorId);
 
     const newMessage = new messageModel({
       senderId,
@@ -58,11 +83,14 @@ router.post("/",authenticateDoctor , async (req, res) => {
       message
     });
 
-    await newMessage.save();
-    res.json(newMessage);
+
+    // Get doctor details
+    const doctors = await docRegModel.find({ _id: { $in: doctorIds } }, { password: 0, licensePhoto: 0 });
+    res.json(doctors);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching doctors:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-export default router;
+export default patientMessageRoutes;
