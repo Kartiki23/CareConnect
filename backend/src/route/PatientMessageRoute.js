@@ -1,64 +1,37 @@
+// src/route/PatientMessageRoute.js
 import express from "express";
-import Message from "../models/MessageModel.js";
-import Appointment from "../models/AppointmentModel.js";
-import Doctor from "../models/DoctorModel.js";
-import { verifyToken } from "../middleware/authMiddleware.js";
+import {
+  getMyDoctors,
+  getConversation,
+  createMessage,
+} from "../controller/MessageController.js";
 
-const router = express.Router();
+const patientMessageRoutes = express.Router();
 
-// Get doctors the patient has appointments with
-router.get("/my-doctors", verifyToken, async (req, res) => {
+// Get doctors for a patient (patientId param)
+patientMessageRoutes.get("/user/:patientId/doctors", getMyDoctors);
+
+// Get conversation messages between patient and doctor
+patientMessageRoutes.get("/:patientId/:doctorId", getConversation);
+
+// Create/send message (persist)
+patientMessageRoutes.post("/", createMessage);
+
+patientMessageRoutes.get("/user/:patientId/doctors", async (req, res) => {
   try {
-    const patientId = req.user.id;
+    const { patientId } = req.params;
 
-    const appointments = await Appointment.find({ patientId }).select("doctorId");
-    const doctorIds = [...new Set(appointments.map(a => a.doctorId.toString()))];
+    // Find all doctorIds from appointments for this patient
+    const appts = await appointment.find({ patientId }).select("doctorId").lean();
+    const doctorIds = appts.map(a => a.doctorId);
 
-    const doctors = await Doctor.find({ _id: { $in: doctorIds } })
-      .select("_id fullName doctorPhoto");
-
+    // Get doctor details
+    const doctors = await docRegModel.find({ _id: { $in: doctorIds } }, { password: 0, licensePhoto: 0 });
     res.json(doctors);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching doctors:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Get messages for a conversation
-router.get("/:doctorId", verifyToken, async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const doctorId = req.params.doctorId;
-
-    const messages = await Message.find({
-      $or: [
-        { senderId: patientId, receiverId: doctorId },
-        { senderId: doctorId, receiverId: patientId }
-      ]
-    }).sort({ createdAt: 1 });
-
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Send a message
-router.post("/", verifyToken, async (req, res) => {
-  try {
-    const { receiverId, message } = req.body;
-    const senderId = req.user.id;
-
-    const newMessage = new Message({
-      senderId,
-      receiverId,
-      message
-    });
-
-    await newMessage.save();
-    res.json(newMessage);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-export default router;
+export default patientMessageRoutes;
