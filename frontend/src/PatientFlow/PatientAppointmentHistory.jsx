@@ -42,7 +42,7 @@ const PatientAppointmentHistory = () => {
   );
 
   return (
-    <PatientSidebar>
+
       <motion.div className="p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Appointment Details</h1>
@@ -106,7 +106,7 @@ const PatientAppointmentHistory = () => {
           </table>
         </div>
       </motion.div>
-      </PatientSidebar>
+
   );
 };
 

@@ -26,7 +26,7 @@ const DoctorSidebar = ({ children }) => {
        
       </aside>
       {/* Main Content */}
-      <main className="ml-64 flex-1 p-8 overflow-auto">
+      <main className="ml-50 flex-1 p-8 overflow-auto">
         {children}
       </main>
     </div>

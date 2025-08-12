@@ -131,7 +131,7 @@ useEffect(() => {
   }
 
   return (
-    <PatientSidebar>
+    <div>
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -244,7 +244,7 @@ useEffect(() => {
           )}
         </div>
       </div>
-    </PatientSidebar>
+    </div>
   );
 };
 

@@ -77,7 +77,7 @@ const DoctorDashboard = () => {
   }, []);
 
   return (
-    <DoctorSidebar>
+ 
       <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white">
         <main className="flex-1 p-6 overflow-auto">
           {/* Header */}
@@ -195,7 +195,7 @@ const DoctorDashboard = () => {
           </div>
         </main>
       </div>
-    </DoctorSidebar>
+    
   );
 };
 

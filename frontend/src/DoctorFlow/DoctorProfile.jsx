@@ -118,7 +118,7 @@ const DoctorProfile = () => {
   }
 
   return (
-    <DoctorSidebar>
+    <div>
       <ToastContainer position="top-right" autoClose={2000} toastClassName="bg-blue-500 text-white rounded-lg shadow-md" />
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
         <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
@@ -238,7 +238,7 @@ const DoctorProfile = () => {
           )}
         </div>
       </div>
-    </DoctorSidebar>
+   </div>
   );
 };
 

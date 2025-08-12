@@ -58,7 +58,7 @@ useEffect(() => {
 
 
   return ( 
-  <PatientSidebar>
+  
   <div className="flex min-h-screen w-full bg-[#eef0ff]">
 
 {/* Main Content */}
@@ -140,5 +140,5 @@ useEffect(() => {
   </main>
 </div>
 
-</PatientSidebar>
+
 ); }

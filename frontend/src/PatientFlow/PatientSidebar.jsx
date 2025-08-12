@@ -8,7 +8,7 @@ const PatientSidebar = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */} 
-      <aside className="w-64 bg-white shadow-md p-6">
+      <aside className="w-full md:w-64 bg-white shadow-md fixed h-190 p-6">
          <div className="text-xl font-bold text-blue-600 mb-8">CareConnect</div> 
          <nav className="space-y-4"> 
             <Link to ="/PatientDashboard"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2">
@@ -50,7 +50,7 @@ const PatientSidebar = ({ children }) => {
         </aside>
 
       {/* Main Content */}
-      <main className=" flex-1 p-8 overflow-auto">
+      <main className=" ml-50 flex-1 p-8 overflow-auto">
         {children}
       </main>
     </div>
