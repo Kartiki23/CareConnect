@@ -1,6 +1,6 @@
 import express from 'express'
 import { getDoctorDashboard, getDoctorProfile, updateDoctorInfo } from '../controller/DoctorDashboardController.js';
-import { authenticateDoctor } from '../middleware/DoctorLoginMiddleware.js';
+import { authenticateDoctor } from '../middleware/LoginMiddleware.js';
 import multer from "multer";
 import path from "path";
 
