@@ -41,7 +41,7 @@ export default function PatientDashboard() {
 
 const updateGreeting = () => {
   const hour = new Date().getHours();
-  if (hour >= 12 && hour < 12) {
+  if (hour >= 0 && hour < 12) {
     setGreeting("Good Morning");
   } else if (hour >= 12 && hour < 17) {
     setGreeting("Good Afternoon");

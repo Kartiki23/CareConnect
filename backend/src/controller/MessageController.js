@@ -3,10 +3,18 @@ import { MessageModel } from "../model/PatientMessageModel.js";
 import { appointment } from "../model/BookAppointmentModel.js"; // path/name from your project
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
+// src/controllers/messagesController.js
+//import { Message } from "../models/MessageModel.js";
+import { docRegModel } from "../model/DoctorRegistrationModel.js"; // optional: to get doctor details
+import { Patient } from "../model/PatientRegistrationModel.js";   // optional: to get patient details
+import { messageModel } from "../model/PatientMessageModel.js";
+
+
 /**
  * Helper deterministic conversation id
  */
 const makeConversationId = (a, b) => [String(a), String(b)].sort().join("_");
+
 
 /**
  * GET /api/v1/messages/user/:patientId/doctors
@@ -17,6 +25,36 @@ export const getMyDoctors = async (req, res) => {
   try {
     const { patientId } = req.params;
     if (!patientId) return res.status(400).json({ message: "patientId required" });
+
+    // Find last message per conversation (otherParty)
+    const agg = await messageModel.aggregate([
+      {
+        $match: {
+          $or: [{ senderId: userId }, { receiverId: userId }]
+        }
+      },
+      {
+        $project: {
+          senderId: 1,
+          receiverId: 1,
+          content: 1,
+          createdAt: 1,
+          other: {
+            $cond: [{ $eq: ["$senderId", userId] }, "$receiverId", "$senderId"]
+          }
+        }
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: "$other",
+          lastMessage: { $first: "$content" },
+          lastAt: { $first: "$createdAt" },
+          lastSender: { $first: "$senderId" }
+        }
+      },
+      { $sort: { lastAt: -1 } }
+    ]);
 
     // Get doctor IDs from appointment collection
     const appts = await appointment.find({ patientId }).select("doctorId").lean();

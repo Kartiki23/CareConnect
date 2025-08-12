@@ -9,4 +9,8 @@ const messageSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 
+
 export const MessageModel = mongoose.model("messages", messageSchema);
+
+export const messageModel= mongoose.model('messageModel',messageSchema);
+//export default mongoose.model("Message", messageSchema);
