@@ -32,48 +32,73 @@ const io = new Server(server,{
         methods:['GET','POST']
     }
 });
-
 //app.use(express.urlencoded({ extended: true }));
-
-app.use(cors());
-
 dotenv.config();
+
+app.use(express.json());
+app.use(cors());
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 connectDB();
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 
-app.use('/api/v1/user',authRoutes)
+// mount existing routes (keep your other imports/router uses)
+app.use("/api/v1/user", authRoutes);
+app.use("/api/v1/user", docLoginRouter);
+app.use("/api/v1/user", patientloginRoutes);
+app.use("/api/v1/user", patientRegisterrouter);
+app.use("/api/v1/user", docDashboardRouter);
+app.use("/api/v1/user", specialtiesRouter);
+app.use("/api/v1/user", donationRoute);
+app.use("/api/v1/user", bookAppointmentRoute);
+app.use("/api/v1/user", patientDashboardRoute);
 
-app.use('/uploads', express.static('uploads')); 
+// messages router
+app.use("/api/v1/messages", patientMessageRoutes);
 
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
+// Socket.IO real-time logic
+io.on("connection", (socket) => {
+  console.log("Socket connected:", socket.id);
 
-app.use('/api/v1/user',docLoginRouter)
+  socket.on("joinRoom", (roomId) => {
+    if (!roomId) return;
+    socket.join(roomId);
+    // console.log(${socket.id} joined ${roomId});
+  });
 
-app.use('/api/v1/user',patientloginRoutes)
+  // Client emits sendMessage with payload containing conversationId, senderId, receiverId, message/text
+  socket.on("sendMessage", async (payload) => {
+    try {
+      if (!payload || !payload.conversationId) return;
 
-app.use('/api/v1/user', patientRegisterrouter);
+      // Save to DB
+      const doc = new MessageModel({
+        conversationId: payload.conversationId,
+        senderId: payload.senderId,
+        receiverId: payload.receiverId,
+        message: payload.message || payload.text || "",
+      });
+      await doc.save();
 
-app.use('/api/v1/user', docDashboardRouter);
+      // Emit to everyone in the room
+      io.to(payload.conversationId).emit("receiveMessage", {
+        conversationId: payload.conversationId,
+        senderId: payload.senderId,
+        receiverId: payload.receiverId,
+        text: payload.message || payload.text || "",
+        createdAt: doc.createdAt || new Date(),
+      });
+    } catch (err) {
+      console.error("Socket sendMessage error:", err);
+    }
+  });
 
-app.use('/api/v1/user',specialtiesRouter)
+  socket.on("disconnect", () => {
+    // console.log("Socket disconnected:", socket.id);
+  });
+});
 
-app.use('/api/v1/user',donationRoute)
-
-app.use('/api/v1/user',bookAppointmentRoute)
-
-app.use('/api/v1/user',patientDashboardRoute);
-
-app.use('/api/v1/messages', patientMessageRoutes);
-
-// app.use('/',(req,res)=> {
-//     res.send ("Hello World")
-// })
-
-
-
-app.listen(PORT,()=>{
-    console.log(`server is running on http://localhost:${PORT}`)
-})
-
+server.listen(PORT, () => {
+  console.log(`server is running on http://localhost:${PORT}`);
+});

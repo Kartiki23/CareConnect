@@ -1,14 +1,23 @@
-// src/controllers/messagesController.js
-//import { Message } from "../models/MessageModel.js";
-import { docRegModel } from "../model/DoctorRegistrationModel.js"; // optional: to get doctor details
-import { Patient } from "../model/PatientRegistrationModel.js";   // optional: to get patient details
-import { messageModel } from "../model/PatientMessageModel.js";
+// src/controller/PatientMessageController.js
+import { MessageModel } from "../model/PatientMessageModel.js";
+import { appointment } from "../model/BookAppointmentModel.js"; // path/name from your project
+import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
-// GET contacts for a user (with last message preview)
-export const getContacts = async (req, res) => {
+/**
+ * Helper deterministic conversation id
+ */
+const makeConversationId = (a, b) => [String(a), String(b)].sort().join("_");
+
+
+/**
+ * GET /api/v1/messages/user/:patientId/doctors
+ * Returns doctors that patient has appointments with.
+ * If no appointments are found, returns all doctors as a fallback.
+ */
+export const getMyDoctors = async (req, res) => {
   try {
-    const userId = req.query.userId;
-    if (!userId) return res.status(400).json({ message: "userId required" });
+    const { patientId } = req.params;
+    if (!patientId) return res.status(400).json({ message: "patientId required" });
 
     // Find last message per conversation (otherParty)
     const agg = await messageModel.aggregate([
@@ -40,75 +49,69 @@ export const getContacts = async (req, res) => {
       { $sort: { lastAt: -1 } }
     ]);
 
-    // Optionally fetch names/avatars for contacts (doctor or patient)
-    const contacts = await Promise.all(
-      agg.map(async (c) => {
-        let name = c._id;
-        let avatar = null;
+    // Get doctor IDs from appointment collection
+    const appts = await appointment.find({ patientId }).select("doctorId").lean();
+    const doctorIds = [...new Set(appts.map(a => String(a.doctorId)).filter(Boolean))];
 
-        try {
-          const doc = await docRegModel
-            .findOne({ email: c._id })
-            .select("fullName doctorPhoto email")
-            .lean();
+    let doctors;
+    if (doctorIds.length) {
+      doctors = await docRegModel.find({ _id: { $in: doctorIds } })
+        .select("fullName specialization doctorPhoto")
+        .lean();
+    } else {
+      // fallback (you can remove fallback in production)
+      doctors = await docRegModel.find().select("fullName specialization doctorPhoto").lean();
+    }
 
-          if (doc) {
-            name = doc.fullName;
-            avatar = doc.doctorPhoto ? `/uploads/${doc.doctorPhoto}` : null;
-          } else {
-            const pat = await Patient
-              .findOne({ email: c._id })
-              .select("fullName")
-              .lean();
-
-            if (pat) {
-              name = pat.fullName;
-            }
-          }
-        } catch (err) {
-          console.warn("Error fetching contact details for:", c._id, err);
-        }
-
-        return {
-          _id: c._id,
-          name,
-          avatar,
-          lastMessage: c.lastMessage,
-          lastAt: c.lastAt,
-          lastSender: c.lastSender
-        };
-      })
-    );
-
-    res.json(contacts);
+    res.json(doctors);
   } catch (err) {
-    console.error("getContacts:", err);
+    console.error("getMyDoctors error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// GET messages (conversation) between userId and contactId
+/**
+ * GET /api/v1/messages/:patientId/:doctorId
+ * Return conversation messages sorted by createdAt asc.
+ */
 export const getConversation = async (req, res) => {
   try {
-    const { contactId } = req.params;
-    const userId = req.query.userId;
+    const { patientId, doctorId } = req.params;
+    if (!patientId || !doctorId) return res.status(400).json({ message: "Missing ids" });
 
-    if (!userId || !contactId) {
-      return res.status(400).json({ message: "userId and contactId required" });
+    const conversationId = makeConversationId(patientId, doctorId);
+    const messages = await MessageModel.find({ conversationId }).sort({ createdAt: 1 }).lean();
+
+    res.json(messages.map(m => ({
+      senderId: m.senderId,
+      receiverId: m.receiverId,
+      message: m.message,
+      createdAt: m.createdAt
+    })));
+  } catch (err) {
+    console.error("getConversation error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * POST /api/v1/messages
+ * Create + save a message. Body: { senderId, receiverId, message }
+ */
+export const createMessage = async (req, res) => {
+  try {
+    const { senderId, receiverId, message } = req.body;
+    if (!senderId || !receiverId || !message) {
+      return res.status(400).json({ message: "senderId, receiverId and message are required" });
     }
 
-    const msgs = await Message.find({
-      $or: [
-        { senderId: userId, receiverId: contactId },
-        { senderId: contactId, receiverId: userId }
-      ]
-    })
-      .sort({ createdAt: 1 })
-      .lean();
+    const conversationId = makeConversationId(senderId, receiverId);
+    const newMsg = new MessageModel({ conversationId, senderId, receiverId, message });
+    await newMsg.save();
 
-    res.json(msgs);
+    res.status(201).json(newMsg);
   } catch (err) {
-    console.error("getConversation:", err);
+    console.error("createMessage error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
