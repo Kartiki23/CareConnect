@@ -18,30 +18,25 @@ import patientloginRoutes from './route/PatientLoginRoute.js';
 import patientRegisterrouter from './route/PatientRegistrationRoute.js';
 import patientDashboardRoute from './route/PatientDashboardRoute.js';
 import patientMessageRoutes from './route/PatientMessageRoute.js';
-import { getDoctorDashboard } from './controller/DoctorDashboardController.js';
 
 
 const app = express()
-
+app.use(cors());
 app.use(express.json());
-
-const server = http.createServer(app);
-const io = new Server(server,{
-    cors:{
-        origin:'http://localhost:3001',
-        methods:['GET','POST']
-    }
-});
+// const server = http.createServer(app);
+// const io = new Server(server,{
+//     cors:{
+//         origin:'http://localhost:3001',
+//         methods:['GET','POST']
+//     }
+// });
 //app.use(express.urlencoded({ extended: true }));
 dotenv.config();
-
-app.use(express.json());
-app.use(cors());
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 connectDB();
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 // mount existing routes (keep your other imports/router uses)
 app.use("/api/v1/user", authRoutes);
@@ -55,50 +50,50 @@ app.use("/api/v1/user", bookAppointmentRoute);
 app.use("/api/v1/user", patientDashboardRoute);
 
 // messages router
-app.use("/api/v1/messages", patientMessageRoutes);
+//app.use("/api/v1/messages", patientMessageRoutes);
 
 // Socket.IO real-time logic
-io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("Socket connected:", socket.id);
 
-  socket.on("joinRoom", (roomId) => {
-    if (!roomId) return;
-    socket.join(roomId);
-    // console.log(${socket.id} joined ${roomId});
-  });
+//   socket.on("joinRoom", (roomId) => {
+//     if (!roomId) return;
+//     socket.join(roomId);
+//     // console.log(${socket.id} joined ${roomId});
+//   });
 
   // Client emits sendMessage with payload containing conversationId, senderId, receiverId, message/text
-  socket.on("sendMessage", async (payload) => {
-    try {
-      if (!payload || !payload.conversationId) return;
+//   socket.on("sendMessage", async (payload) => {
+//     try {
+//       if (!payload || !payload.conversationId) return;
 
-      // Save to DB
-      const doc = new MessageModel({
-        conversationId: payload.conversationId,
-        senderId: payload.senderId,
-        receiverId: payload.receiverId,
-        message: payload.message || payload.text || "",
-      });
-      await doc.save();
+//       // Save to DB
+//       const doc = new MessageModel({
+//         conversationId: payload.conversationId,
+//         senderId: payload.senderId,
+//         receiverId: payload.receiverId,
+//         message: payload.message || payload.text || "",
+//       });
+//       await doc.save();
 
-      // Emit to everyone in the room
-      io.to(payload.conversationId).emit("receiveMessage", {
-        conversationId: payload.conversationId,
-        senderId: payload.senderId,
-        receiverId: payload.receiverId,
-        text: payload.message || payload.text || "",
-        createdAt: doc.createdAt || new Date(),
-      });
-    } catch (err) {
-      console.error("Socket sendMessage error:", err);
-    }
-  });
+//       // Emit to everyone in the room
+//       io.to(payload.conversationId).emit("receiveMessage", {
+//         conversationId: payload.conversationId,
+//         senderId: payload.senderId,
+//         receiverId: payload.receiverId,
+//         text: payload.message || payload.text || "",
+//         createdAt: doc.createdAt || new Date(),
+//       });
+//     } catch (err) {
+//       console.error("Socket sendMessage error:", err);
+//     }
+//   });
 
-  socket.on("disconnect", () => {
-    // console.log("Socket disconnected:", socket.id);
-  });
-});
+//   socket.on("disconnect", () => {
+//     // console.log("Socket disconnected:", socket.id);
+//   });
+// });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);
 });

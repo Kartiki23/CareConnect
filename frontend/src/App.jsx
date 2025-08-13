@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Navbar from './publicAcces/Navbar';
 import Home from './publicAcces/Home';
 import Login from './publicAcces/Login';
@@ -19,19 +19,31 @@ import PatientMessages from './PatientFlow/PatientMessages';
 import DoctorProfile from './DoctorFlow/DoctorProfile';
 import PatientProfile from './PatientFlow/PatientProfile';
 import PatientAppointmentHistory from './PatientFlow/PatientAppointmentHistory';
-import { Outlet } from 'react-router-dom';
 
-// Layout for patient with constant sidebar
+// ===== Secure Routing Wrappers =====
+
+// For Patient Routes
+// const PrivateRoutePatient = () => {
+//   const token = localStorage.getItem('token');
+//   return token ? <Outlet /> : <Navigate to="/login" replace />;
+// };
+
+// For Doctor Routes
+const PrivateRouteDoctor = () => {
+  const token = localStorage.getItem('doctortoken');
+  return token ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
+// ===== Layouts =====
 const PatientLayout = () => (
   <div className="flex m-0 p-0">
-    <PatientSidebar className="w-64"/>
-   <div className="flex-1 m-0 p-0">
+    <PatientSidebar className="w-64" />
+    <div className="flex-1 m-0 p-0">
       <Outlet />
     </div>
   </div>
 );
 
-// Layout for doctor with constant sidebar
 const DoctorLayout = () => (
   <div className="flex m-0 p-0">
     <DoctorSidebar className="w-64" />
@@ -41,6 +53,7 @@ const DoctorLayout = () => (
   </div>
 );
 
+// ===== App Component =====
 const App = () => {
   return (
     <BrowserRouter>
@@ -53,23 +66,27 @@ const App = () => {
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
-        {/* Patient Layout Routes */}
-        <Route element={<PatientLayout />}>
-          <Route path="/patientDashboard" element={<PatientDashboard />} />
-          <Route path="/patientAppointments" element={<PatientAppointments />} />
-          <Route path="/bookAppointment" element={<BookAppointment />} />
-          <Route path="/patientMessages" element={<PatientMessages />} />
-          <Route path="/patientProfile" element={<PatientProfile />} />
-          <Route path="/appointmentHistory" element={<PatientAppointmentHistory />} />
-        </Route>
+        {/* Patient Protected Routes */}
+        {/* <Route element={<PrivateRoutePatient />}> */}
+          <Route element={<PatientLayout />}>
+            <Route path="/patientDashboard" element={<PatientDashboard />} />
+            <Route path="/patientAppointments" element={<PatientAppointments />} />
+            <Route path="/bookAppointment" element={<BookAppointment />} />
+            {/* <Route path="/patientMessages" element={<PatientMessages />} /> */}
+            <Route path="/patientProfile" element={<PatientProfile />} />
+            <Route path="/appointmentHistory" element={<PatientAppointmentHistory />} />
+          </Route>
+        {/* </Route> */}
 
-        {/* Doctor Layout Routes */}
-        <Route element={<DoctorLayout />}>
-          <Route path="/doctorDashboard" element={<DoctorDashboard />} />
-          <Route path="/doctorAppointment" element={<DoctorAppointment />} />
-          <Route path="/patientDetails" element={<PatientDetails />} />
-          <Route path="/doctormsg" element={<DoctorMsg />} />
-          <Route path="/doctorProfile" element={<DoctorProfile />} />
+        {/* Doctor Protected Routes */}
+        <Route element={<PrivateRouteDoctor />}>
+          <Route element={<DoctorLayout />}>
+            <Route path="/doctorDashboard" element={<DoctorDashboard />} />
+            <Route path="/doctorAppointment" element={<DoctorAppointment />} />
+            <Route path="/patientDetails" element={<PatientDetails />} />
+            <Route path="/doctormsg" element={<DoctorMsg />} />
+            <Route path="/doctorProfile" element={<DoctorProfile />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

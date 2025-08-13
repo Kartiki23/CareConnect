@@ -16,11 +16,10 @@ import mongoose, { Schema } from 'mongoose';
   phone: { type: String, required: true },
 
   password: { type: String, required: true },
-
-  patientPhoto: { 
-    type: String, 
-    required: true 
-  }
+  patientPhoto: {
+      type: String, // stores filename of uploaded photo
+      default: null, // optional, can be null if no photo uploaded
+    },
 }, {
   timestamps: true
 });

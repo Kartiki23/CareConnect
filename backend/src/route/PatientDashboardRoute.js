@@ -5,8 +5,8 @@ import { authenticatePatient } from '../middleware/LoginMiddleware.js';
 
 const patientDashboardRoute = express.Router();
 
-patientDashboardRoute.post("/patientProfile", authenticatePatient,getPatientProfile);
+patientDashboardRoute.post("/patientProfile",getPatientProfile);
 
-patientDashboardRoute.put("/updatePatientInfo",upload.single("patientPhoto"),authenticatePatient,updatePatientInfo)
+patientDashboardRoute.put("/updatePatientInfo",upload.single("patientPhoto"),updatePatientInfo)
 
 export default patientDashboardRoute;
