@@ -92,6 +92,10 @@ const PatientAppointments = () => {
                 Doctor: {appt.doctorId?.fullName || "Unknown"}
               </div>
 
+              <div className="text-gray-600 mb-2">
+                Consultation Fee: {appt.consultationFeeAtBooking || "Unknown"}
+              </div>
+
               <motion.span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
                   appt.status === "Pending"

@@ -1,4 +1,3 @@
-
 import bcrypt from "bcrypt";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
@@ -15,6 +14,7 @@ export const registerDoctor = async (req, res) => {
       specialization,
       hospital,
       licenseNumber,
+      consultationFee // 💰 New field
     } = req.body;
 
     console.log(" req.body:", req.body);
@@ -37,7 +37,8 @@ export const registerDoctor = async (req, res) => {
       !hospital ||
       !licenseNumber ||
       !licensePhoto ||
-      !doctorPhoto
+      !doctorPhoto ||
+      consultationFee === undefined
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -65,31 +66,31 @@ export const registerDoctor = async (req, res) => {
       licenseNumber,
       licensePhoto,
       doctorPhoto,
+      consultationFee // 💰 Save fee
     });
 
     await newDoctor.save();
 
-    res.status(201).json({ message: "Doctor registered successfully.",
-      doctor:{
-        _id:newDoctor._id,
-        fullName:newDoctor.fullName,
-        email:newDoctor.email,
-        doctorPhoto:newDoctor.doctorPhoto,
-
-
+    res.status(201).json({
+      message: "Doctor registered successfully.",
+      doctor: {
+        _id: newDoctor._id,
+        fullName: newDoctor.fullName,
+        email: newDoctor.email,
+        doctorPhoto: newDoctor.doctorPhoto,
+        consultationFee: newDoctor.consultationFee // 💰 Send fee in response
       }
-     });
+    });
   } catch (error) {
     console.log("Registration Error:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
-
 export const getAllDoctors = async (req, res) => {
   try {
-    const doctors = await docRegModel.find({}, 'fullName specialization');
+    // 💰 Also return consultationFee
+    const doctors = await docRegModel.find({}, 'fullName specialization consultationFee');
     res.status(200).json(doctors);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch doctors', error });

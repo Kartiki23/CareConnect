@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { FaUserMd, FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
-import book_appointment from '../assets/book_appointment.gif'
+import book_appointment from '../assets/book_appointment.gif';
 
 const BookAppointment = () => {
   const [form, setForm] = useState({
@@ -17,9 +16,11 @@ const BookAppointment = () => {
     appointmentTime: "",
     reason: "",
     medicalHistory: "",
+    consultationFee: "", // added so fee is stored when booking
   });
 
   const [doctors, setDoctors] = useState([]);
+  const [doctorFee, setDoctorFee] = useState(null); // for display
   const patientId = localStorage.getItem("patientId");
 
   useEffect(() => {
@@ -37,13 +38,31 @@ const BookAppointment = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+
+    // If doctor is selected, fetch its fee
+    if (name === "doctorId") {
+      const selectedDoctor = doctors.find((doc) => doc._id === value);
+      if (selectedDoctor) {
+        setDoctorFee(selectedDoctor.consultationFee);
+        setForm((prev) => ({
+          ...prev,
+          consultationFee: selectedDoctor.consultationFee,
+        }));
+      } else {
+        setDoctorFee(null);
+        setForm((prev) => ({ ...prev, consultationFee: "" }));
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const fullForm = { ...form, patientId };
-      const res = await axios.post("http://localhost:3001/api/v1/user/bookAppointment", fullForm);
+      await axios.post(
+        "http://localhost:3001/api/v1/user/bookAppointment",
+        fullForm
+      );
       alert("Appointment booked successfully!");
       setForm({
         name: "",
@@ -57,7 +76,9 @@ const BookAppointment = () => {
         appointmentTime: "",
         reason: "",
         medicalHistory: "",
+        consultationFee: "",
       });
+      setDoctorFee(null);
     } catch (error) {
       console.log("Booking failed:", error);
       alert("Failed to book appointment. Please try again.");
@@ -73,8 +94,7 @@ const BookAppointment = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="grid md:grid-cols-2 gap-10">
-
-          {/* Left- Appointment Form */}
+          {/* Left - Appointment Form */}
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-6"
@@ -82,7 +102,11 @@ const BookAppointment = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold text-blue-800 mb-4">Book Appointment</h2>
+            <h2 className="text-4xl font-bold text-blue-800 mb-4">
+              Book Appointment
+            </h2>
+
+            {/* Name */}
             <div>
               <label className="block text-sm font-medium ">Full Name</label>
               <input
@@ -96,6 +120,7 @@ const BookAppointment = () => {
               />
             </div>
 
+            {/* Email & Contact */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium ">Email</label>
@@ -123,6 +148,7 @@ const BookAppointment = () => {
               </div>
             </div>
 
+            {/* Gender & Age */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium ">Gender</label>
@@ -153,29 +179,70 @@ const BookAppointment = () => {
               </div>
             </div>
 
+            {/* Specialization & Doctor */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ">Specialization</label>
-                <select name="specialization" value={form.specialization} onChange={handleChange} 
-                className="input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" required>
-              <option value=""> Specialization</option>
-              {[...new Set(doctors.map(doc => doc.specialization))].map((spec, i) => (
-                <option key={i} value={spec}>{spec}</option>
-              ))}
-            </select>
+                <label className="block text-sm font-medium ">
+                  Specialization
+                </label>
+                <select
+                  name="specialization"
+                  value={form.specialization}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  <option value="">Specialization</option>
+                  {[...new Set(doctors.map((doc) => doc.specialization))].map(
+                    (spec, i) => (
+                      <option key={i} value={spec}>
+                        {spec}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium ">Doctor</label>
-                <select name="doctorId" value={form.doctorName} onChange={handleChange} 
-                className="input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400" required>
-              <option value="">Doctor</option>
-              {doctors.filter(doc => doc.specialization === form.specialization || form.specialization === "").map((doc) => (
-                <option key={doc._id} value={doc._id}>Dr.{doc.fullName}</option>
-              ))}
-            </select>
+                <select
+                  name="doctorId"
+                  value={form.doctorId}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  <option value="">Doctor</option>
+                  {doctors
+                    .filter(
+                      (doc) =>
+                        doc.specialization === form.specialization ||
+                        form.specialization === ""
+                    )
+                    .map((doc) => (
+                      <option key={doc._id} value={doc._id}>
+                        Dr. {doc.fullName}
+                      </option>
+                    ))}
+                </select>
               </div>
             </div>
 
+            {/* Consultation Fee (Display only) */}
+            {doctorFee !== null && (
+              <div>
+                <label className="block text-sm font-medium ">
+                  Consultation Fee
+                </label>
+                <input
+                  type="text"
+                  value={`₹${doctorFee} (Cash Only)`}
+                  readOnly
+                  className="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl shadow-sm"
+                />
+              </div>
+            )}
+
+            {/* Date & Time */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium ">Date</label>
@@ -201,6 +268,7 @@ const BookAppointment = () => {
               </div>
             </div>
 
+            {/* Reason */}
             <div>
               <label className="block text-sm font-medium ">Reason</label>
               <textarea
@@ -214,8 +282,11 @@ const BookAppointment = () => {
               ></textarea>
             </div>
 
+            {/* Medical History */}
             <div>
-              <label className="block text-sm font-medium ">Medical History</label>
+              <label className="block text-sm font-medium ">
+                Medical History
+              </label>
               <textarea
                 name="medicalHistory"
                 value={form.medicalHistory}
@@ -226,6 +297,7 @@ const BookAppointment = () => {
               ></textarea>
             </div>
 
+            {/* Submit Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -235,19 +307,19 @@ const BookAppointment = () => {
               Book Appointment
             </motion.button>
           </motion.form>
-          {/* Right side-Info Section */}
+
+          {/* Right Side - Image */}
           <motion.div
             className="space-y-6"
-             initial={{ opacity: 0, x: 60 }}
+            initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <img src={book_appointment} 
-            alt="Doctor"
-            className="h-100 w-100 object-cover mt-40 ml-10"
-          />
-            
-           
+            <img
+              src={book_appointment}
+              alt="Doctor"
+              className="h-100 w-100 object-cover mt-40 ml-10"
+            />
           </motion.div>
         </div>
       </motion.div>

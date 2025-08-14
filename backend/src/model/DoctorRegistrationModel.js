@@ -66,7 +66,15 @@ export const docRegSchema = new Schema({
   doctorPhoto: { 
     type: String, 
     required: true 
+  },
+
+  // 💰 New field for doctor's consultation fee
+  consultationFee: { 
+    type: Number, 
+    required: true, 
+    min: 0 
   }
+
 }, { timestamps: true });
 
 export const docRegModel = mongoose.model('docregmodels', docRegSchema);
