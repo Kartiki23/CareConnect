@@ -7,7 +7,7 @@ export const loginPatient = async (req, res) => {
     const { email, password } = req.body;
 
     // Normalize email
-    const existingPatient = await Patient.findOne({ email: email.toLowerCase() });
+    const existingPatient = await Patient.findOne({ email});
 
     if (!existingPatient) {
       return res
@@ -21,7 +21,7 @@ export const loginPatient = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate JWT token
+    //Generate JWT token
     const token = jwt.sign({ patientId: existingPatient._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });

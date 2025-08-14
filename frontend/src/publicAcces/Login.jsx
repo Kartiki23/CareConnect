@@ -35,7 +35,7 @@ const Login = () => {
         navigate("/doctorDashboard");
       } else if (role === "patient" && patient?._id) {
         localStorage.setItem("patientId", response.data.patient._id);
-        //localStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("patientEmail", patient.email);
         navigate("/patientDashboard");
       } else {

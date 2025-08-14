@@ -20,20 +20,6 @@ import DoctorProfile from './DoctorFlow/DoctorProfile';
 import PatientProfile from './PatientFlow/PatientProfile';
 import PatientAppointmentHistory from './PatientFlow/PatientAppointmentHistory';
 
-// ===== Secure Routing Wrappers =====
-
-// For Patient Routes
-// const PrivateRoutePatient = () => {
-//   const token = localStorage.getItem('token');
-//   return token ? <Outlet /> : <Navigate to="/login" replace />;
-// };
-
-// For Doctor Routes
-const PrivateRouteDoctor = () => {
-  const token = localStorage.getItem('doctortoken');
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
-};
-
 // ===== Layouts =====
 const PatientLayout = () => (
   <div className="flex m-0 p-0">
@@ -67,7 +53,6 @@ const App = () => {
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
         {/* Patient Protected Routes */}
-        {/* <Route element={<PrivateRoutePatient />}> */}
           <Route element={<PatientLayout />}>
             <Route path="/patientDashboard" element={<PatientDashboard />} />
             <Route path="/patientAppointments" element={<PatientAppointments />} />
@@ -76,10 +61,10 @@ const App = () => {
             <Route path="/patientProfile" element={<PatientProfile />} />
             <Route path="/appointmentHistory" element={<PatientAppointmentHistory />} />
           </Route>
-        {/* </Route> */}
+      
 
         {/* Doctor Protected Routes */}
-        <Route element={<PrivateRouteDoctor />}>
+       
           <Route element={<DoctorLayout />}>
             <Route path="/doctorDashboard" element={<DoctorDashboard />} />
             <Route path="/doctorAppointment" element={<DoctorAppointment />} />
@@ -87,7 +72,6 @@ const App = () => {
             <Route path="/doctormsg" element={<DoctorMsg />} />
             <Route path="/doctorProfile" element={<DoctorProfile />} />
           </Route>
-        </Route>
       </Routes>
     </BrowserRouter>
   );
