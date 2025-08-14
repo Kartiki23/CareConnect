@@ -18,6 +18,7 @@ import patientloginRoutes from './route/PatientLoginRoute.js';
 import patientRegisterrouter from './route/PatientRegistrationRoute.js';
 import patientDashboardRoute from './route/PatientDashboardRoute.js';
 import patientMessageRoutes from './route/PatientMessageRoute.js';
+import resetTokenRoute from './route/ResetTokenRoute.js';
 
 
 const app = express()
@@ -48,6 +49,7 @@ app.use("/api/v1/user", specialtiesRouter);
 app.use("/api/v1/user", donationRoute);
 app.use("/api/v1/user", bookAppointmentRoute);
 app.use("/api/v1/user", patientDashboardRoute);
+app.use("/api/v1/user", resetTokenRoute);
 
 // messages router
 //app.use("/api/v1/messages", patientMessageRoutes);
