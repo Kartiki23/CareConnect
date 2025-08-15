@@ -127,6 +127,7 @@ const Login = () => {
           transition={{ duration: 0.4 }}
           className="space-y-4"
         >
+          <label className="font-semibold">Email</label>
           <input
             type="email"
             placeholder="Email"
@@ -136,6 +137,7 @@ const Login = () => {
             required
           />
 
+          <label className="font-semibold">Password</label>
           <input
             type="password"
             placeholder="Password"
@@ -213,10 +215,11 @@ const Login = () => {
               animate={{ scale: 1 }}
               exit={{ scale: 0.85 }}
             >
-              <h2 className="text-xl font-bold mb-4 text-blue-700">
+              <h2 className="text-xl font-bold mb-4 text-center text-blue-700">
                 Reset Password
               </h2>
 
+              <label className="font-semibold">Email</label>
               <input
                 type="email"
                 placeholder="Enter your registered email"
@@ -225,6 +228,7 @@ const Login = () => {
                 onChange={(e) => setFpEmail(e.target.value)}
               />
 
+              <label className="font-semibold">New Password</label>
               <input
                 type="password"
                 placeholder="Enter new password"
