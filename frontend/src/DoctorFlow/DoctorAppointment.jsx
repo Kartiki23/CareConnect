@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import axios from "axios";
+import ChatBox from "../Components/ChatBox";
+
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -17,7 +19,8 @@ const DoctorAppointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+  const [selectedAppointment, setSelectedAppointment] = useState(null); // ✅ for chat modal
+
   const doctorId = localStorage.getItem("doctorId");
 
   const fetchAppointments = async () => {
@@ -67,6 +70,7 @@ const DoctorAppointment = () => {
       alert("Failed to update payment status.");
     }
   };
+
   useEffect(() => {
     fetchAppointments();
   }, []);
@@ -88,6 +92,7 @@ const DoctorAppointment = () => {
         <h1 className="text-2xl font-bold">Manage Appointments</h1>
       </div>
 
+      {/* 🔍 Search */}
       <div className="mb-4 flex justify-between">
         <div className="relative w-full md:w-1/3">
           <input
@@ -141,7 +146,8 @@ const DoctorAppointment = () => {
                   <td className="px-6 py-4">
                     ₹{appt.consultationFeeAtBooking ?? "N/A"}
                   </td>
-                   {/* Payment (only when Accepted) */}
+
+                  {/* ✅ Payment Button */}
                   <td className="px-6 py-4">
                     {appt.paymentStatus === "Pending" ? (
                       <button
@@ -166,16 +172,18 @@ const DoctorAppointment = () => {
                     )}
                   </td>
 
+                  {/* ✅ Status */}
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                         appt.status
                       )}`}
                     >
-                      {appt.status.charAt(0).toUpperCase() +
-                        appt.status.slice(1)}
+                      {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
                     </span>
                   </td>
+
+                  {/* ✅ Actions */}
                   <td className="px-6 py-4 space-x-2">
                     <button
                       onClick={() => handleUpdateStatus(appt._id, "accepted")}
@@ -191,11 +199,37 @@ const DoctorAppointment = () => {
                     >
                       Reject
                     </button>
+                    {appt.status === "accepted" && (
+                      <button
+                        onClick={() => setSelectedAppointment(appt)}
+                        className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+                      >
+                        Chat
+                      </button>
+                    )}
                   </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ✅ Chat Modal */}
+      {selectedAppointment && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+          <div className="relative bg-white rounded-xl shadow-lg w-11/12 md:w-3/4 lg:w-2/3 h-4/5">
+            {/* <h2>Chat with {selectedAppointment.name}</h2> */}
+            <button 
+            className="absolute top-4 right-4 text-white font-bold text-xl z-10"
+           onClick={() => setSelectedAppointment(null)}> ✕</button>
+         
+          <ChatBox
+            appointmentId={selectedAppointment._id}
+            senderId={doctorId}
+            senderModel="docregmodels"
+          />
+           </div>
         </div>
       )}
     </motion.div>

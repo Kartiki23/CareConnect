@@ -1,24 +1,37 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import Navbar from './publicAcces/Navbar';
-import Home from './publicAcces/Home';
-import Login from './publicAcces/Login';
-import Contact from './publicAcces/Contact';
-import PatientRegistration from './PatientFlow/PatientRegistration';
-import PatientDashboard from './PatientFlow/PatientDashboard';
-import DoctorRegistration from './DoctorFlow/DoctorRegistration';
-import DoctorDashboard from './DoctorFlow/DoctorDashboard';
-import DoctorAppointment from './DoctorFlow/DoctorAppointment';
-import PatientDetails from './DoctorFlow/PatientsDetails';
-import DoctorSidebar from './DoctorFlow/DoctorSidebar';
-import DoctorMsg from './DoctorFlow/DoctorMsg';
-import PatientAppointments from './PatientFlow/PatientAppointments';
-import PatientSidebar from './PatientFlow/PatientSidebar';
-import BookAppointment from './PatientFlow/BookAppointment';
-import PatientMessages from './PatientFlow/PatientMessages';
-import DoctorProfile from './DoctorFlow/DoctorProfile';
-import PatientProfile from './PatientFlow/PatientProfile';
-import PatientAppointmentHistory from './PatientFlow/PatientAppointmentHistory';
+// src/App.jsx
+import React from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useParams,
+} from "react-router-dom";
+
+import Navbar from "./publicAcces/Navbar";
+import Home from "./publicAcces/Home";
+import Login from "./publicAcces/Login";
+import Contact from "./publicAcces/Contact";
+
+import PatientRegistration from "./PatientFlow/PatientRegistration";
+import PatientDashboard from "./PatientFlow/PatientDashboard";
+import PatientAppointments from "./PatientFlow/PatientAppointments";
+import PatientSidebar from "./PatientFlow/PatientSidebar";
+import BookAppointment from "./PatientFlow/BookAppointment";
+import PatientMessages from "./PatientFlow/PatientMessages";
+import PatientProfile from "./PatientFlow/PatientProfile";
+import PatientAppointmentHistory from "./PatientFlow/PatientAppointmentHistory";
+
+import DoctorRegistration from "./DoctorFlow/DoctorRegistration";
+import DoctorDashboard from "./DoctorFlow/DoctorDashboard";
+import DoctorAppointment from "./DoctorFlow/DoctorAppointment";
+import PatientDetails from "./DoctorFlow/PatientsDetails";
+import DoctorSidebar from "./DoctorFlow/DoctorSidebar";
+import DoctorMsg from "./DoctorFlow/DoctorMsg";
+import DoctorProfile from "./DoctorFlow/DoctorProfile";
+
+import ChatBox from "./Components/ChatBox"; // ✅ shared ChatBox
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -39,6 +52,33 @@ const DoctorLayout = () => (
   </div>
 );
 
+// ===== Protect Chat Route (Only if Appointment Accepted) =====
+const ChatGuard = ({ children }) => {
+  const isAccepted = localStorage.getItem("appointmentAccepted"); // set this when doctor accepts appointment
+  if (!isAccepted) {
+    return <Navigate to="/patientAppointments" replace />;
+  }
+  return children;
+};
+
+// ===== Wrapper for ChatBox =====
+const ChatWrapper = () => {
+  const { appointmentId } = useParams();
+  const senderId = localStorage.getItem("userId"); // patientId or doctorId
+  const role = localStorage.getItem("role"); // "doctor" or "patient"
+
+  // ✅ Match backend enums in your model
+  const senderModel = role === "doctor" ? "docregmodels" : "patients";
+
+  return (
+    <ChatBox
+      appointmentId={appointmentId}
+      senderId={senderId}
+      senderModel={senderModel}
+    />
+  );
+};
+
 // ===== App Component =====
 const App = () => {
   return (
@@ -53,25 +93,43 @@ const App = () => {
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
         {/* Patient Protected Routes */}
-          <Route element={<PatientLayout />}>
-            <Route path="/patientDashboard" element={<PatientDashboard />} />
-            <Route path="/patientAppointments" element={<PatientAppointments />} />
-            <Route path="/bookAppointment" element={<BookAppointment />} />
-            {/* <Route path="/patientMessages" element={<PatientMessages />} /> */}
-            <Route path="/patientProfile" element={<PatientProfile />} />
-            <Route path="/appointmentHistory" element={<PatientAppointmentHistory />} />
-          </Route>
-      
+        <Route element={<PatientLayout />}>
+          <Route path="/patientDashboard" element={<PatientDashboard />} />
+          <Route path="/patientAppointments" element={<PatientAppointments />} />
+          <Route path="/bookAppointment" element={<BookAppointment />} />
+          <Route
+            path="/patientMessages/:appointmentId"
+            element={
+              <ChatGuard>
+                <ChatWrapper />
+              </ChatGuard>
+            }
+          />
+          <Route path="/patientProfile" element={<PatientProfile />} />
+          <Route
+            path="/appointmentHistory"
+            element={<PatientAppointmentHistory />}
+          />
+        </Route>
 
         {/* Doctor Protected Routes */}
-       
-          <Route element={<DoctorLayout />}>
-            <Route path="/doctorDashboard" element={<DoctorDashboard />} />
-            <Route path="/doctorAppointment" element={<DoctorAppointment />} />
-            <Route path="/patientDetails" element={<PatientDetails />} />
-            <Route path="/doctormsg" element={<DoctorMsg />} />
-            <Route path="/doctorProfile" element={<DoctorProfile />} />
-          </Route>
+        <Route element={<DoctorLayout />}>
+          <Route path="/doctorDashboard" element={<DoctorDashboard />} />
+          <Route path="/doctorAppointment" element={<DoctorAppointment />} />
+          <Route path="/patientDetails" element={<PatientDetails />} />
+          <Route path="/doctormsg/:appointmentId" element={<ChatWrapper />} />
+          <Route path="/doctorProfile" element={<DoctorProfile />} />
+        </Route>
+
+        {/* ✅ Fallback Dynamic Chat Route */}
+        <Route
+          path="/chat/:appointmentId"
+          element={
+            <ChatGuard>
+              <ChatWrapper />
+            </ChatGuard>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
