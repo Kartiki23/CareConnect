@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import CareConnect_Logo from '../assets/CareConnect_Logo.png';
 
 const Navbar = () => {
   const location = useLocation();
@@ -36,12 +37,16 @@ const Navbar = () => {
         }`}
       >
         <div className="max-w-19xl mx-auto px-4 py-3 flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="text-3xl font-bold tracking-tight hover:text-gray-200 transition"
-          >
-            CareConnect
+          {/* ✅ Logo with text */}
+          <Link to="/" className="flex items-center space-x-3">
+            <img
+              src={CareConnect_Logo}
+              alt="CareConnect Logo"
+              className="h-15 w-15 object-contain"
+            />
+            <span className="text-3xl font-bold tracking-tight hover:text-gray-200 transition">
+              CareConnect
+            </span>
           </Link>
 
           {/* Navigation Links */}
@@ -96,3 +101,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
