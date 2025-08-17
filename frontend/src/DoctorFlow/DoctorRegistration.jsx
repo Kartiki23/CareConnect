@@ -1,168 +1,208 @@
+// frontend/src/DoctorFlow/DoctorRegistration.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { getBrowserPosition, reverseGeocode, forwardGeocode } from "../utils/Location";
+
+const API = "http://localhost:3001";
 
 const DoctorRegistration = () => {
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    gender: "",
-    age: "",
-    phone: "",
-    aadharNumber: "",
-    email: "",
-    password: "",
-    specialization: "",
-    consultationFee: "",
-    hospital: "",
-    licenseNumber: "",
-    licensePhoto: "",
-    doctorPhoto: "",
+  const [form, setForm] = useState({
+    fullName: "", gender: "", age: "", phone: "",
+    aadharNumber: "", email: "", password: "",
+    specialization: "", consultationFee: "", hospital: "", licenseNumber: "",
+    addressLine: "", city: "", state: "", postalCode: "", country: "",
+    latitude: "", longitude: ""
   });
 
-  // 🧭 NEW: location state
-  const [locationLat, setLocationLat] = useState("");
-  const [locationLng, setLocationLng] = useState("");
-  const [address, setAddress] = useState("");
-  const [locLoading, setLocLoading] = useState(false);
+  const [licensePhoto, setLicensePhoto] = useState(null);
+  const [doctorPhoto, setDoctorPhoto]   = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === "file") {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  const onChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  // 🧭 Auto-detect using browser GPS + reverse geocode via OpenStreetMap
   const useMyLocation = async () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
+    try {
+      const { lat, lon } = await getBrowserPosition();
+      const addr = await reverseGeocode(lat, lon);
+      setForm(p => ({
+        ...p,
+        addressLine: addr.addressLine || addr.formattedAddress || "",
+        city: addr.city || "", state: addr.state || "",
+        postalCode: addr.postalCode || "", country: addr.country || "",
+        latitude: String(lat), longitude: String(lon)
+      }));
+      alert("Location detected ✅");
+    } catch (e) {
+      alert("Could not get location ❌");
     }
-    setLocLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        setLocationLat(String(lat));
-        setLocationLng(String(lng));
-
-        try {
-          // Reverse geocode (free OSM service)
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-          );
-          const data = await resp.json();
-          setAddress(data.display_name || "");
-        } catch {
-          // ignore, coords are still saved
-        } finally {
-          setLocLoading(false);
-        }
-      },
-      (err) => {
-        setLocLoading(false);
-        alert("Unable to get location: " + err.message);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const submissionData = new FormData();
-    for (const key in formData) submissionData.append(key, formData[key]);
-
-    // 🧭 send location
-    submissionData.append("locationLat", locationLat);
-    submissionData.append("locationLng", locationLng);
-    submissionData.append("address", address);
-
+  const geocodeTyped = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:3001/api/v1/user/register",
-        submissionData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      const q = [form.addressLine, form.city, form.state, form.postalCode, form.country].filter(Boolean).join(", ");
+      if (!q) return alert("Type an address first");
+      const { lat, lon, formattedAddress } = await forwardGeocode(q);
+      setForm(p => ({ ...p, latitude: String(lat), longitude: String(lon), addressLine: formattedAddress || p.addressLine }));
+      alert("Address located 📍");
+    } catch {
+      alert("Could not find that address ❌");
+    }
+  };
 
-      if (res.data) {
-        alert(res.data.message || "Doctor registered successfully ✅");
-        navigate("/doctorDashboard");
-      }
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      if (licensePhoto) fd.append("licensePhoto", licensePhoto);
+      if (doctorPhoto)  fd.append("doctorPhoto", doctorPhoto);
+
+      const res = await axios.post(`${API}/api/v1/user/register`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert(res.data?.message || "Doctor registered 🎉");
+      navigate("/doctorDashboard");
     } catch (err) {
-      console.error("Frontend Error:", err);
+      console.error(err);
       alert(err.response?.data?.message || "Registration failed ❌");
     }
   };
 
+  // Animation Variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.07, delayChildren: 0.2 }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 70 } }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen p-6">
-      <div className="rounded-xl shadow-lg p-8 max-w-lg w-full">
-        <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">
-          Doctor Registration Form
-        </h2>
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      exit={{ opacity: 0 }} 
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100"
+    >
+      <motion.form
+        onSubmit={submit}
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="bg-white p-8 rounded-2xl shadow-xl max-w-3xl w-full grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
+        <motion.h2 
+          variants={item} 
+          className="md:col-span-2 text-3xl font-bold text-blue-700 text-center mb-4"
+        >
+          🩺 Doctor Registration
+        </motion.h2>
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
-          {/* ...your existing inputs unchanged... */}
-          {/* (Full Name, Gender, Age, Phone, Aadhar, Email, Password, Specialization, Fee, Hospital, LicenseNumber, Files) */}
-          {/* For brevity, keeping just a couple, keep the rest as you already have: */}
-
-          <label className="block font-medium mb-2">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-          />
-
-          {/* ... keep the rest of your existing fields exactly as in your file ... */}
-
-          <div>
-            <label className="block font-medium mb-1">Upload License Photo</label>
-            <input type="file" name="licensePhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Upload Profile Photo</label>
-            <input type="file" name="doctorPhoto" onChange={handleChange} className="w-full border rounded px-3 py-2" />
-          </div>
-
-          {/* 🧭 NEW: Location UI */}
-          <div className="border rounded-lg p-3">
-            <div className="font-semibold mb-2">Location</div>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={useMyLocation}
-                className="bg-blue-600 text-white px-3 py-2 rounded disabled:opacity-60"
-                disabled={locLoading}
+        {/* Inputs */}
+        {[
+          { name: "fullName", placeholder: "Full Name" },
+          { name: "gender", type: "select", options: ["Male", "Female", "Other"] },
+          { name: "age", type: "number", placeholder: "Age" },
+          { name: "phone", placeholder: "Phone" },
+          { name: "aadharNumber", placeholder: "Aadhar Number" },
+          { name: "email", type: "email", placeholder: "Email" },
+          { name: "password", type: "password", placeholder: "Password" },
+          { name: "specialization", placeholder: "Specialization" },
+          { name: "consultationFee", type: "number", placeholder: "Consultation Fee" },
+          { name: "hospital", placeholder: "Hospital / Clinic" },
+          { name: "licenseNumber", placeholder: "License Number" }
+        ].map((f, i) => (
+          <motion.div key={i} variants={item}>
+            {f.type === "select" ? (
+              <select
+                className="border p-2 rounded w-full"
+                name={f.name}
+                value={form[f.name]}
+                onChange={onChange}
+                required
               >
-                {locLoading ? "Detecting..." : "Use My Location"}
-              </button>
+                <option value="">{f.placeholder || "Select"}</option>
+                {f.options.map((o) => (
+                  <option key={o}>{o}</option>
+                ))}
+              </select>
+            ) : (
               <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Address (auto or edit)"
-                className="flex-1 border rounded px-3 py-2"
+                className="border p-2 rounded w-full"
+                type={f.type || "text"}
+                name={f.name}
+                value={form[f.name]}
+                onChange={onChange}
+                placeholder={f.placeholder}
+                required
               />
-            </div>
-            <div className="mt-2 text-sm text-gray-600">
-              Lat: {locationLat || "-"} | Lng: {locationLng || "-"}
-            </div>
-          </div>
+            )}
+          </motion.div>
+        ))}
 
-          <button type="submit" className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-lg">
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
+        {/* Address */}
+        <motion.div variants={item} className="md:col-span-2 font-semibold mt-2">Clinic Address</motion.div>
+        <motion.input variants={item} className="border p-2 rounded md:col-span-2" name="addressLine" value={form.addressLine} onChange={onChange} placeholder="House / Street / Area"/>
+        <motion.input variants={item} className="border p-2 rounded" name="city" value={form.city} onChange={onChange} placeholder="City"/>
+        <motion.input variants={item} className="border p-2 rounded" name="state" value={form.state} onChange={onChange} placeholder="State"/>
+        <motion.input variants={item} className="border p-2 rounded" name="postalCode" value={form.postalCode} onChange={onChange} placeholder="Postal Code"/>
+        <motion.input variants={item} className="border p-2 rounded" name="country" value={form.country} onChange={onChange} placeholder="Country"/>
+
+        {/* Location Buttons */}
+        <motion.div variants={item} className="flex gap-2 items-center md:col-span-2">
+          <motion.button 
+            type="button" 
+            onClick={useMyLocation} 
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-600 text-white px-3 py-2 rounded"
+          >
+            📍 Use my live location
+          </motion.button>
+          <motion.button 
+            type="button" 
+            onClick={geocodeTyped}
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+            className="border px-3 py-2 rounded"
+          >
+            🔍 Locate typed address
+          </motion.button>
+          <div className="text-sm text-gray-500">
+            lat: {form.latitude || "-"} | lon: {form.longitude || "-"}
+          </div>
+        </motion.div>
+
+        {/* File Uploads */}
+        <motion.div variants={item}>
+          <div className="font-medium mb-1">Upload License Photo</div>
+          <input type="file" onChange={(e) => setLicensePhoto(e.target.files?.[0] || null)} required />
+        </motion.div>
+        <motion.div variants={item}>
+          <div className="font-medium mb-1">Upload Profile Photo</div>
+          <input type="file" onChange={(e) => setDoctorPhoto(e.target.files?.[0] || null)} required />
+        </motion.div>
+
+        {/* Submit Button */}
+        <motion.button
+          variants={item}
+          type="submit"
+          whileHover={{ scale: 1.05, backgroundColor: "#16a34a" }}
+          whileTap={{ scale: 0.95 }}
+          className="md:col-span-2 bg-green-600 text-white py-3 rounded-lg font-semibold"
+        >
+          🚀 Register
+        </motion.button>
+      </motion.form>
+    </motion.div>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -135,7 +136,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-bold text-blue-800">25+ Specialties</h2>
-              <button className="text-blue-600 font-medium hover:underline">See all Specialties</button>
+              <Link to ="/specialties"><button className="text-blue-600 font-medium hover:underline">See all Specialties</button></Link>
             </div>
             <div className="relative">
               <button
@@ -164,7 +165,6 @@ const Home = () => {
                         className="w-30 h-30 rounded-full mb-4 object-cover bg-blue-100"
                       />
                       <h3 className="text-md font-semibold text-gray-800 text-center">{item.name}</h3>
-                      <p className="text-gray-500 text-sm mt-1">₹{item.price}</p>
                       <Link to="/login"><button className="text-blue-600 text-sm mt-2 hover:underline">
                         Consult now →
                       </button></Link>
@@ -211,9 +211,63 @@ const Home = () => {
       </motion.section>
 
       {/* Footer */}
-      <footer className="bg-blue-600 text-white py-6 text-center">
-        <p>&copy; {new Date().getFullYear()} CareConnect. All rights reserved.</p>
-      </footer>
+        <footer className="bg-blue-900 text-gray-200 px-6 py-10">
+  <div className="max-w-7xl mx-auto grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-8">
+    
+    {/* Company Info */}
+    <div>
+      <h2 className="text-white font-bold text-xl mb-4">CareConnect</h2>
+      <p className="text-sm">
+        Your trusted partner for online doctor consultations, hospital bookings, 
+        and healthcare solutions – anytime, anywhere.
+      </p>
+    </div>
+
+    {/* Quick Links */}
+    <div>
+      <h2 className="text-white font-semibold text-lg mb-4">Quick Links</h2>
+      <ul className="space-y-2 text-sm">
+        <li><a href="/about" className="hover:text-blue-400">About Us</a></li>
+        <li><a href="/services" className="hover:text-blue-400">Services</a></li>
+        <li><a href="/specialties" className="hover:text-blue-400">Specialties</a></li>
+        <li><a href="/contact" className="hover:text-blue-400">Contact</a></li>
+      </ul>
+    </div>
+
+    {/* Resources */}
+    <div>
+      <h2 className="text-white font-semibold text-lg mb-4">Resources</h2>
+      <ul className="space-y-2 text-sm">
+        <li><a href="/faqs" className="hover:text-blue-400">FAQs</a></li>
+        <li><a href="/blogs" className="hover:text-blue-400">Health Blogs</a></li>
+        <li><a href="/privacy" className="hover:text-blue-400">Privacy Policy</a></li>
+        <li><a href="/terms" className="hover:text-blue-400">Terms & Conditions</a></li>
+      </ul>
+    </div>
+
+    {/* Contact & Social Media */}
+    <div>
+      <h2 className="text-white font-semibold text-lg mb-4">Connect With Us</h2>
+      <p className="text-sm">📍 Pune, Maharashtra, India</p>
+      <p className="text-sm">📞 +91 98765 43210</p>
+      <p className="text-sm">✉ support@careconnect.com</p>
+
+      <div className="flex space-x-4 mt-4">
+        <a href="#" className="hover:text-blue-400"><Facebook size={20} /></a>
+        <a href="#" className="hover:text-blue-400"><Twitter size={20} /></a>
+        <a href="#" className="hover:text-blue-400"><Instagram size={20} /></a>
+        <a href="#" className="hover:text-blue-400"><Linkedin size={20} /></a>
+      </div>
+    </div>
+  </div>
+
+  {/* Copyright */}
+  <div className="text-center text-sm text-gray-300 mt-8 border-t border-blue-800 pt-4">
+    © {new Date().getFullYear()} CareConnect. All rights reserved.
+  </div>
+</footer>
+
+  
     </motion.div>
   );
 };

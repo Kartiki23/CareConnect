@@ -1,28 +1,16 @@
-// src/route/PatientRegistrationRoute.js
-import express from "express";
-import { registerPatient, reverseGeocodeEndpoint } from "../controller/PatientRegistrationController.js";
+// backend/src/route/PatientRegistrationRoute.js
+import express from 'express';
 import multer from "multer";
-import fs from "fs";
-import path from "path";
+import { registerPatient } from '../controller/PatientRegistrationController.js';
 
 const patientRegisterrouter = express.Router();
 
-// Ensure upload dir exists
-const uploadDir = path.join("uploads", "patients");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
+  destination: (req, file, cb) => cb(null, "uploads/patients"),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
-export const upload = multer({ storage });
+const upload = multer({ storage });
 
-patientRegisterrouter.post("/Pregister", upload.single("patientPhoto"), registerPatient);
-
-// reverse-geocode helper used by frontend to show address instantly
-patientRegisterrouter.get("/reverse-geocode", reverseGeocodeEndpoint);
+patientRegisterrouter.post('/Pregister', upload.single("patientPhoto"), registerPatient);
 
 export default patientRegisterrouter;

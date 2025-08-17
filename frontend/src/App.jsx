@@ -32,6 +32,9 @@ import DoctorMsg from "./DoctorFlow/DoctorMsg";
 import DoctorProfile from "./DoctorFlow/DoctorProfile";
 
 import ChatBox from "./Components/ChatBox"; // ✅ shared ChatBox
+import About from "./publicAcces/About";
+import Footer from "./publicAcces/Footer";
+import Specialties from "./publicAcces/Specialties";
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -89,6 +92,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/specialties" element={<Specialties/>}/>
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
