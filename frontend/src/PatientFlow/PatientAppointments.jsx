@@ -116,7 +116,7 @@ const PatientAppointments = () => {
               {/* Status */}
               <motion.span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                  appt.status === "Pending"
+                  appt.status === "pending"
                     ? "bg-yellow-100 text-yellow-700"
                     : appt.status === "Completed"
                     ? "bg-green-100 text-green-700"
@@ -131,7 +131,7 @@ const PatientAppointments = () => {
 
               {/* Buttons */}
               <div className="mt-4 flex gap-2">
-                {appt.status === "Pending" && (
+                {appt.status === "pending" && (
                   <motion.button
                     onClick={() => handleCancel(appt._id)}
                     className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600"
