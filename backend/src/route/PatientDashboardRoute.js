@@ -1,12 +1,12 @@
-import express from 'express'
-import { getPatientProfile, updatePatientInfo } from '../controller/PatientDashboardController.js';
+import express from 'express';
 import upload from '../middleware/MulterConfig.js';
-import { authenticatePatient } from '../middleware/LoginMiddleware.js';
+import { getPatientProfile, updatePatientInfo } from '../controller/PatientDashboardController.js';
+import { authenticate, authorizeRole } from '../middleware/LoginMiddleware.js';
+
 
 const patientDashboardRoute = express.Router();
 
-patientDashboardRoute.post("/patientProfile",getPatientProfile);
-
-patientDashboardRoute.put("/updatePatientInfo",upload.single("patientPhoto"),updatePatientInfo)
+patientDashboardRoute.post("/patientProfile", authenticate, authorizeRole("patient"), getPatientProfile);
+patientDashboardRoute.put("/updatePatientInfo", authenticate, authorizeRole("patient"), upload.single("patientPhoto"), updatePatientInfo);
 
 export default patientDashboardRoute;

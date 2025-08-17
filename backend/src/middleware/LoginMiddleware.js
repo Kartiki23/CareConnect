@@ -1,51 +1,33 @@
+// backend/middleware/auth.js
 import jwt from "jsonwebtoken";
 
-// Doctor authentication middleware
-export const authenticateDoctor = (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
+const JWT_SECRET = process.env.JWT_SECRET; // use ONE secret
 
-    if (!authHeader?.startsWith("Bearer ")) {
+export const authenticate = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || "";
+    if (!authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Access denied. No token provided." });
     }
-
     const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (!decoded.doctorId) {
-      return res.status(403).json({ message: "Invalid token for doctor." });
+    // decoded should contain: { sub: <id>, role: 'doctor' | 'patient', iat, exp }
+    if (!decoded?.sub || !decoded?.role) {
+      return res.status(403).json({ message: "Invalid token." });
     }
 
-    req.doctorId = decoded.doctorId; // Attach doctorId to request
+    req.user = { id: decoded.sub, role: decoded.role };
     next();
-  } catch (error) {
-    console.error("Doctor authentication error:", error.message);
-    res.status(403).json({ message: "Invalid or expired token." });
+  } catch (err) {
+    console.error("Auth error:", err.message);
+    return res.status(403).json({ message: "Invalid or expired token." });
   }
 };
 
-// Patient authentication middleware
-export const authenticatePatient = (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Access denied. No token provided." });
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Attach doctor ID to request object
-    req.patientId = decoded.patientId;
-
-    next(); // Proceed to next middleware or controller
-  } catch (error) {
-    console.log("Authentication error:", error.message);
-    res.status(403).json({ message: "Invalid or expired token." });
+export const authorizeRole = (...allowed) => (req, res, next) => {
+  if (!req.user?.role || !allowed.includes(req.user.role)) {
+    return res.status(403).json({ message: "Forbidden: insufficient role" });
   }
+  next();
 };
