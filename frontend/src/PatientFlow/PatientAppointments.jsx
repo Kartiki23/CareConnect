@@ -163,9 +163,9 @@ const PatientAppointments = () => {
       </div>
 
       {/* ✅ Render ChatBox if an appointment is selected */}
-      {selectedAppointment && (
-      <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="relative bg-white rounded-xl shadow-lg w-11/12 md:w-3/4 lg:w-2/3 h-4/5">
+     {selectedAppointment && (
+  <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div className="relative bg-white rounded-xl shadow-lg w-11/12 md:w-3/4 lg:w-2/3 h-4/5">
       {/* Close Button */}
       <button
         className="absolute top-4 right-4 text-white font-bold text-xl z-10"
