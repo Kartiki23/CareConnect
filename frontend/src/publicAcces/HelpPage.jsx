@@ -1,6 +1,7 @@
 // HelpPage.jsx
-import { useState } from "react";
+import React, { useState } from "react";
 import { Search, Phone, Mail, MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,18 +33,42 @@ export default function HelpPage() {
     faq.question.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const faqVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.4, type: "spring" },
+    }),
+  };
+
+  const contactVariants = {
+    hover: { scale: 1.05, boxShadow: "0px 10px 20px rgba(0,0,0,0.15)" },
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       {/* Page Title */}
-      <div className="max-w-4xl mx-auto text-center mb-12">
+      <motion.div
+        className="max-w-4xl mx-auto text-center mb-12"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h1 className="text-4xl font-bold text-blue-600">Help & Support</h1>
         <p className="text-gray-600 mt-2">
           Find answers to your questions or reach out to us directly.
         </p>
-      </div>
+      </motion.div>
 
       {/* Search Bar */}
-      <div className="max-w-2xl mx-auto mb-10 flex items-center gap-2 bg-white shadow p-3 rounded-xl">
+      <motion.div
+        className="max-w-2xl mx-auto mb-10 flex items-center gap-2 bg-white shadow p-3 rounded-xl"
+        whileFocus={{ scale: 1.02 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <Search className="text-gray-400 w-5 h-5" />
         <input
           type="text"
@@ -52,7 +77,7 @@ export default function HelpPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full outline-none text-gray-700"
         />
-      </div>
+      </motion.div>
 
       {/* FAQ Section */}
       <div className="max-w-4xl mx-auto">
@@ -62,15 +87,21 @@ export default function HelpPage() {
         <div className="space-y-4">
           {filteredFaqs.length > 0 ? (
             filteredFaqs.map((faq, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="bg-white shadow-md rounded-xl p-5 border border-gray-100"
+                custom={index}
+                variants={faqVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ scale: 1.03, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)" }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
                 <h3 className="text-lg font-medium text-blue-600">
                   {faq.question}
                 </h3>
                 <p className="text-gray-600 mt-2">{faq.answer}</p>
-              </div>
+              </motion.div>
             ))
           ) : (
             <p className="text-gray-500 italic">No results found...</p>
@@ -84,23 +115,32 @@ export default function HelpPage() {
           Still Need Help?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+          <motion.div
+            className="bg-white p-6 rounded-xl shadow cursor-pointer"
+            whileHover={contactVariants.hover}
+          >
             <Phone className="w-8 h-8 text-blue-600 mb-3" />
             <h3 className="font-medium text-gray-800">Call Us</h3>
             <p className="text-gray-600">+91 98765 43210</p>
-          </div>
+          </motion.div>
 
-          <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+          <motion.div
+            className="bg-white p-6 rounded-xl shadow cursor-pointer"
+            whileHover={contactVariants.hover}
+          >
             <Mail className="w-8 h-8 text-blue-600 mb-3" />
             <h3 className="font-medium text-gray-800">Email Support</h3>
             <p className="text-gray-600">support@careconnect.com</p>
-          </div>
+          </motion.div>
 
-          <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+          <motion.div
+            className="bg-white p-6 rounded-xl shadow cursor-pointer"
+            whileHover={contactVariants.hover}
+          >
             <MessageCircle className="w-8 h-8 text-blue-600 mb-3" />
             <h3 className="font-medium text-gray-800">Live Chat</h3>
             <p className="text-gray-600">Chat with us for instant help</p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

@@ -66,6 +66,9 @@ const Navbar = () => {
             >
               Donation
             </button>
+            <Link to="/helpPage" className="hover:text-gray-200 transition text-2xl">
+              Help
+            </Link>
             <Link
               to="/about"
               className="hover:text-gray-200 transition text-2xl"

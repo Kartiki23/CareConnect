@@ -36,6 +36,7 @@ import About from "./publicAcces/About";
 import Footer from "./publicAcces/Footer";
 import Specialties from "./publicAcces/Specialties";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import HelpPage from "./publicAcces/HelpPage";
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -95,6 +96,7 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About/>} />
         <Route path="/specialties" element={<Specialties/>}/>
+        <Route path="/helpPage" element={<HelpPage/>} />
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
