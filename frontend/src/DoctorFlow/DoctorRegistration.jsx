@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { getBrowserPosition, reverseGeocode, forwardGeocode } from "../utils/Location";
+import { 
+  User, Phone, Mail, Lock, Calendar, CreditCard, 
+  Building2, Stethoscope, Landmark, Hash, 
+  Home, Globe, Map, Navigation, UploadCloud 
+} from "lucide-react";
 
 const API = "http://localhost:3001";
 
@@ -85,6 +90,25 @@ const DoctorRegistration = () => {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 70 } }
   };
 
+  const iconMap = {
+    fullName: <User className="w-5 h-5 text-gray-400" />,
+    gender: <User className="w-5 h-5 text-gray-400" />,
+    age: <Calendar className="w-5 h-5 text-gray-400" />,
+    phone: <Phone className="w-5 h-5 text-gray-400" />,
+    aadharNumber: <CreditCard className="w-5 h-5 text-gray-400" />,
+    email: <Mail className="w-5 h-5 text-gray-400" />,
+    password: <Lock className="w-5 h-5 text-gray-400" />,
+    specialization: <Stethoscope className="w-5 h-5 text-gray-400" />,
+    consultationFee: <Landmark className="w-5 h-5 text-gray-400" />,
+    hospital: <Building2 className="w-5 h-5 text-gray-400" />,
+    licenseNumber: <Hash className="w-5 h-5 text-gray-400" />,
+    addressLine: <Home className="w-5 h-5 text-gray-400" />,
+    city: <Building2 className="w-5 h-5 text-gray-400" />,
+    state: <Map className="w-5 h-5 text-gray-400" />,
+    postalCode: <Navigation className="w-5 h-5 text-gray-400" />,
+    country: <Globe className="w-5 h-5 text-gray-400" />
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }} 
@@ -106,10 +130,10 @@ const DoctorRegistration = () => {
           🩺 Doctor Registration
         </motion.h2>
 
-        {/* Inputs */}
+        {/* Inputs with Icons */}
         {[
           { name: "fullName", placeholder: "Full Name" },
-          { name: "gender", type: "select", options: ["Male", "Female", "Other"] },
+          { name: "gender", type: "select", options: ["Male", "Female", "Other"], placeholder: "Gender" },
           { name: "age", type: "number", placeholder: "Age" },
           { name: "phone", placeholder: "Phone" },
           { name: "aadharNumber", placeholder: "Aadhar Number" },
@@ -120,41 +144,57 @@ const DoctorRegistration = () => {
           { name: "hospital", placeholder: "Hospital / Clinic" },
           { name: "licenseNumber", placeholder: "License Number" }
         ].map((f, i) => (
-          <motion.div key={i} variants={item}>
+          <motion.div key={i} variants={item} className="relative">
             {f.type === "select" ? (
-              <select
-                className="border p-2 rounded w-full"
-                name={f.name}
-                value={form[f.name]}
-                onChange={onChange}
-                required
-              >
-                <option value="">{f.placeholder || "Select"}</option>
-                {f.options.map((o) => (
-                  <option key={o}>{o}</option>
-                ))}
-              </select>
+              <div className="flex items-center border rounded">
+                <span className="pl-2">{iconMap[f.name]}</span>
+                <select
+                  className="p-2 rounded w-full focus:outline-none"
+                  name={f.name}
+                  value={form[f.name]}
+                  onChange={onChange}
+                  required
+                >
+                  <option value="">{f.placeholder || "Select"}</option>
+                  {f.options.map((o) => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </select>
+              </div>
             ) : (
-              <input
-                className="border p-2 rounded w-full"
-                type={f.type || "text"}
-                name={f.name}
-                value={form[f.name]}
-                onChange={onChange}
-                placeholder={f.placeholder}
-                required
-              />
+              <div className="flex items-center border rounded">
+                <span className="pl-2">{iconMap[f.name]}</span>
+                <input
+                  className="p-2 rounded w-full focus:outline-none"
+                  type={f.type || "text"}
+                  name={f.name}
+                  value={form[f.name]}
+                  onChange={onChange}
+                  placeholder={f.placeholder}
+                  required
+                />
+              </div>
             )}
           </motion.div>
         ))}
 
-        {/* Address */}
+        {/* Address Fields with Icons */}
         <motion.div variants={item} className="md:col-span-2 font-semibold mt-2">Clinic Address</motion.div>
-        <motion.input variants={item} className="border p-2 rounded md:col-span-2" name="addressLine" value={form.addressLine} onChange={onChange} placeholder="House / Street / Area"/>
-        <motion.input variants={item} className="border p-2 rounded" name="city" value={form.city} onChange={onChange} placeholder="City"/>
-        <motion.input variants={item} className="border p-2 rounded" name="state" value={form.state} onChange={onChange} placeholder="State"/>
-        <motion.input variants={item} className="border p-2 rounded" name="postalCode" value={form.postalCode} onChange={onChange} placeholder="Postal Code"/>
-        <motion.input variants={item} className="border p-2 rounded" name="country" value={form.country} onChange={onChange} placeholder="Country"/>
+
+        {["addressLine", "city", "state", "postalCode", "country"].map((field, i) => (
+          <motion.div key={i} variants={item} className={field === "addressLine" ? "md:col-span-2" : ""}>
+            <div className="flex items-center border rounded">
+              <span className="pl-2">{iconMap[field]}</span>
+              <input
+                className="p-2 rounded w-full focus:outline-none"
+                name={field}
+                value={form[field]}
+                onChange={onChange}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1")}
+              />
+            </div>
+          </motion.div>
+        ))}
 
         {/* Location Buttons */}
         <motion.div variants={item} className="flex gap-2 items-center md:col-span-2">
@@ -181,14 +221,29 @@ const DoctorRegistration = () => {
           </div>
         </motion.div>
 
-        {/* File Uploads */}
-        <motion.div variants={item}>
-          <div className="font-medium mb-1">Upload License Photo</div>
-          <input type="file" onChange={(e) => setLicensePhoto(e.target.files?.[0] || null)} required />
+        {/* File Uploads with Icons */}
+        <motion.div variants={item} className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 font-medium text-gray-700">
+            <UploadCloud className="w-5 h-5 text-blue-500" /> Upload License Photo
+          </label>
+          <input 
+            type="file" 
+            className="border p-2 rounded cursor-pointer" 
+            onChange={(e) => setLicensePhoto(e.target.files?.[0] || null)} 
+            required 
+          />
         </motion.div>
-        <motion.div variants={item}>
-          <div className="font-medium mb-1">Upload Profile Photo</div>
-          <input type="file" onChange={(e) => setDoctorPhoto(e.target.files?.[0] || null)} required />
+
+        <motion.div variants={item} className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 font-medium text-gray-700">
+            <UploadCloud className="w-5 h-5 text-green-500" /> Upload Profile Photo
+          </label>
+          <input 
+            type="file" 
+            className="border p-2 rounded cursor-pointer" 
+            onChange={(e) => setDoctorPhoto(e.target.files?.[0] || null)} 
+            required 
+          />
         </motion.div>
 
         {/* Submit Button */}
