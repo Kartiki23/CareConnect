@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const location = useLocation();
+  const [isLoginIn, setIsLoginIn] = useState(false);
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const doctorId = localStorage.getItem("doctorId");
+    const patientId = localStorage.getItem("patientId");
+
+    setIsLoginIn(!!token);
+
+    if (doctorId) {
+      setRole("doctor");
+    } else if (patientId) {
+      setRole("patient");
+    } else {
+      setRole(null);
+    }
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsLoginIn(false);
+    setRole(null);
+  };
 
   const handleScroll = (sectionId) => {
     const el = document.getElementById(sectionId);
@@ -13,6 +37,10 @@ const Navbar = () => {
       window.location.href = `/#${sectionId}`;
     }
   };
+
+  const isDashboardRoute =
+    location.pathname.includes("/doctor-dashboard") ||
+    location.pathname.includes("/patient-dashboard");
 
   return (
     <motion.nav
@@ -42,9 +70,30 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="space-x-3 text-sm font-medium hidden md:flex">
-          <Link to="/login" className="px-4 py-2 mr-7 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
-            Login
-          </Link>
+          {!isLoginIn && !isDashboardRoute ? (
+            <Link to="/login" className="px-4 py-2 mr-7 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
+              Login
+            </Link>
+          ) : (
+            <>
+              {role === "doctor" && (
+                <Link to="/doctorDashboard" className="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
+                  Doctor Dashboard
+                </Link>
+              )}
+              {role === "patient" && (
+                <Link to="/patientDashboard" className="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-100 transition">
+                  Patient Dashboard
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
       </div>
     </motion.nav>
