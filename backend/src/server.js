@@ -27,11 +27,15 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// ✅ Fix CORS to allow PATCH/PUT/DELETE
 app.use(cors({
   origin: "http://localhost:5173",
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
 app.use(express.json());
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
@@ -49,12 +53,15 @@ app.use("/api/v1/user", resetTokenRoute);
 app.use("/api/v1/chat", patientMessageRoutes);
 app.use("/api/v1/location", locationRoute);
 
-const PORT = process.env.PORT || 3001; // Use environment variable for port
+const PORT = process.env.PORT || 3001;
 const server = http.createServer(app);
 
 // -------------------- Socket.IO -------------------- //
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] }
+  cors: { 
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] // ✅ add PATCH here too
+  }
 });
 
 io.on("connection", (socket) => {

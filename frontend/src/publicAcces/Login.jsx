@@ -32,43 +32,41 @@ const Login = () => {
   };
 
   // ===== Login =====
-  // inside Login.jsx
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const endpoint =
-    role === "patient"
-      ? "http://localhost:3001/api/v1/user/Plogin"
-      : "http://localhost:3001/api/v1/user/login";
+    const endpoint =
+      role === "patient"
+        ? "http://localhost:3001/api/v1/user/Plogin"
+        : "http://localhost:3001/api/v1/user/login";
 
-  try {
-    const { data } = await axios.post(endpoint, { email, password });
+    try {
+      const response = await axios.post(endpoint, { email, password });
+      const doctor = response.data?.doctor;
+      const patient = response.data?.patient;
 
-    // Expect backend to return: { token, role: 'doctor'|'patient', doctor? , patient? }
-    const userPayload =
-      data.role === "doctor" ? { id: data.doctor?._id, email: data.doctor?.email } :
-      data.role === "patient" ? { id: data.patient?._id, email: data.patient?.email } :
-      null;
+      // Remember Me
+      if (rememberMe) localStorage.setItem("rememberedEmail", email);
+      else localStorage.removeItem("rememberedEmail");
 
-    if (!data?.token || !data?.role || !userPayload?.id) {
-      return alert("Login failed: Invalid server response.");
+      if (role === "doctor" && doctor?._id) {
+        localStorage.setItem("doctorId", doctor._id);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("doctorEmail", doctor.email);
+        navigate("/doctorDashboard");
+      } else if (role === "patient" && patient?._id) {
+        localStorage.setItem("patientId", patient._id);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("patientEmail", patient.email);
+        navigate("/patientDashboard");
+      } else {
+        alert("Login failed: Invalid credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert(err.response?.data?.message || "Login failed. Check credentials.");
     }
-
-    const auth = { token: data.token, role: data.role, user: userPayload };
-    localStorage.setItem("auth", JSON.stringify(auth));
-    if (rememberMe) localStorage.setItem("rememberedEmail", email);
-    else localStorage.removeItem("rememberedEmail");
-
-    if (data.role === "doctor") {
-      return navigate("/doctorDashboard");
-    } else {
-      return navigate("/patientDashboard");
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-    alert(err.response?.data?.message || "Login failed. Check credentials.");
-  }
-};
+  };
 
   // ===== Forgot Password =====
   const resetPasswordDirect = async () => {

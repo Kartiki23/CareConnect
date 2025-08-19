@@ -35,8 +35,6 @@ import ChatBox from "./Components/ChatBox"; // ✅ shared ChatBox
 import About from "./publicAcces/About";
 import Footer from "./publicAcces/Footer";
 import Specialties from "./publicAcces/Specialties";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import HelpPage from "./publicAcces/HelpPage";
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -96,37 +94,37 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About/>} />
         <Route path="/specialties" element={<Specialties/>}/>
-        <Route path="/helpPage" element={<HelpPage/>} />
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
-
         {/* Patient Protected Routes */}
-<Route element={
-  <ProtectedRoute expectedRole="patient">
-    <PatientLayout />
-  </ProtectedRoute>
-}>
-  <Route path="/patientDashboard" element={<PatientDashboard />} />
-  <Route path="/patientAppointments" element={<PatientAppointments />} />
-  <Route path="/bookAppointment" element={<BookAppointment />} />
-  <Route path="/patientMessages/:appointmentId" element={<ChatWrapper />} />
-  <Route path="/patientProfile" element={<PatientProfile />} />
-  <Route path="/appointmentHistory" element={<PatientAppointmentHistory />} />
-</Route>
+        <Route element={<PatientLayout />}>
+          <Route path="/patientDashboard" element={<PatientDashboard />} />
+          <Route path="/patientAppointments" element={<PatientAppointments />} />
+          <Route path="/bookAppointment" element={<BookAppointment />} />
+          <Route
+            path="/patientMessages/:appointmentId"
+            element={
+              <ChatGuard>
+                <ChatWrapper />
+              </ChatGuard>
+            }
+          />
+          <Route path="/patientProfile" element={<PatientProfile />} />
+          <Route
+            path="/appointmentHistory"
+            element={<PatientAppointmentHistory />}
+          />
+        </Route>
 
-{/* Doctor Protected Routes */}
-<Route element={
-  <ProtectedRoute expectedRole="doctor">
-    <DoctorLayout />
-  </ProtectedRoute>
-}>
-  <Route path="/doctorDashboard" element={<DoctorDashboard />} />
-  <Route path="/doctorAppointment" element={<DoctorAppointment />} />
-  <Route path="/patientDetails" element={<PatientDetails />} />
-  <Route path="/doctormsg/:appointmentId" element={<ChatWrapper />} />
-  <Route path="/doctorProfile" element={<DoctorProfile />} />
-</Route>
+        {/* Doctor Protected Routes */}
+        <Route element={<DoctorLayout />}>
+          <Route path="/doctorDashboard" element={<DoctorDashboard />} />
+          <Route path="/doctorAppointment" element={<DoctorAppointment />} />
+          <Route path="/patientDetails" element={<PatientDetails />} />
+          <Route path="/doctormsg/:appointmentId" element={<ChatWrapper />} />
+          <Route path="/doctorProfile" element={<DoctorProfile />} />
+        </Route>
 
         {/* ✅ Fallback Dynamic Chat Route */}
         <Route
