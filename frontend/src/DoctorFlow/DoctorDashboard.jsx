@@ -14,7 +14,7 @@ import {
   Legend,
 } from "recharts";
 import axios from "axios";
-import { motion } from "framer-motion"; // ✨ Import Framer Motion
+import { motion } from "framer-motion"; 
 
 const COLORS = ["#4F46E5", "#F59E0B"];
 

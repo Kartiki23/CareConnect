@@ -13,7 +13,6 @@ const DoctorSidebar = ({ children }) => {
           <Link to ="/doctorDashboard"><div className="hover:text-indigo-600 cursor-pointer flex"><LayoutDashboard  className='mr-2'/>Dashboard</div></Link>
           <Link to ="/doctorAppointment"><div className="hover:text-indigo-600 cursor-pointer mt-2 flex "><CalendarIcon className="mr-2" />Appointments</div></Link>
           <Link to ="/patientDetails"><div className="hover:text-indigo-600 cursor-pointer mt-2 flex"> <Users className="mr-2" />Patients</div></Link>
-          <Link to ="/doctormsg"><div className="hover:text-indigo-600 cursor-pointer flex mt-2"><MessageSquare className="mr-2" />Messages</div></Link>
           <Link to ='/doctorProfile'><div className="hover:text-indigo-600 cursor-pointer flex mt-2"><FaUserMd className="mr-2" />Your Profile</div></Link>
            <Link to = "/login"><div>
           <button className="bg-indigo-600 text-white w-30 h-9 rounded-md hover:bg-indigo-700 flex">

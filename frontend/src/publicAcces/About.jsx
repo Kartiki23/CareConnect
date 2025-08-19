@@ -155,7 +155,7 @@ export default function About() {
                 <h2 className="text-white font-semibold text-lg mb-4">Quick Links</h2>
                 <ul className="space-y-2 text-sm">
                     <li><a href="/about" className="hover:text-blue-400">About Us</a></li>
-                    <li><a href="/services" className="hover:text-blue-400">Services</a></li>
+                    <li><a href="/helppage" className="hover:text-blue-400">Services</a></li>
                     <li><a href="/specialties" className="hover:text-blue-400">Specialties</a></li>
                     <li><a href="/contact" className="hover:text-blue-400">Contact</a></li>
                  </ul>
