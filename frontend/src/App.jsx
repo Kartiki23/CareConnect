@@ -35,6 +35,9 @@ import ChatBox from "./Components/ChatBox"; // ✅ shared ChatBox
 import About from "./publicAcces/About";
 import Specialties from "./publicAcces/Specialties";
 import HelpPage from "./publicAcces/HelpPage";
+import BloodDonationForm from "./publicAcces/BlooddonationForm";
+import BloodDonarList from "./DoctorFlow/BloodDonarList";
+import BloodDonationPanel from "./PatientFlow/BloodDonationPanel";
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -95,6 +98,7 @@ const App = () => {
         <Route path="/about" element={<About/>} />
         <Route path="/specialties" element={<Specialties/>}/>
         <Route path="/helppage" element={<HelpPage/>} />
+        <Route path="/bloodDonationForm" element={<BloodDonationForm/>} />
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />
 
@@ -102,6 +106,7 @@ const App = () => {
         <Route element={<PatientLayout />}>
           <Route path="/patientDashboard" element={<PatientDashboard />} />
           <Route path="/patientAppointments" element={<PatientAppointments />} />
+          <Route path="/bloodDonationPanel" element={<BloodDonationPanel/>} />
           <Route path="/bookAppointment" element={<BookAppointment />} />
           <Route
             path="/patientMessages/:appointmentId"
@@ -123,6 +128,7 @@ const App = () => {
           <Route path="/doctorDashboard" element={<DoctorDashboard />} />
           <Route path="/doctorAppointment" element={<DoctorAppointment />} />
           <Route path="/patientDetails" element={<PatientDetails />} />
+          <Route path="/bloodDonationList" element={<BloodDonarList/>} />
           <Route path="/doctormsg/:appointmentId" element={<ChatWrapper />} />
           <Route path="/doctorProfile" element={<DoctorProfile />} />
         </Route>

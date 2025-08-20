@@ -22,6 +22,7 @@ import resetTokenRoute from './route/ResetTokenRoute.js';
 import { connectDB } from './config/Db.js';
 import { ChatMessage } from './model/PatientMessageModel.js';
 import locationRoute from './route/LocationRoute.js';
+import bloodDonationRoute from './route/BloodDonationRoute.js';
 
 dotenv.config();
 connectDB();
@@ -50,6 +51,7 @@ app.use("/api/v1/user", donationRoute);
 app.use("/api/v1/user", bookAppointmentRoute);
 app.use("/api/v1/user", patientDashboardRoute);
 app.use("/api/v1/user", resetTokenRoute);
+app.use("/api/v1/user", bloodDonationRoute);
 app.use("/api/v1/chat", patientMessageRoutes);
 app.use("/api/v1/location", locationRoute);
 

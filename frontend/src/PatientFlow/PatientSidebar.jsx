@@ -27,6 +27,12 @@ const PatientSidebar = ({ children }) => {
                 </div> 
                 </Link>
 
+                <Link to ="/bloodDonationPanel"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
+                <FaUserMd className="mr-2" /> 
+                Blood Donation
+                </div> 
+                </Link>
+
                 <Link to ="/patientProfile"><div className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer mt-2"> 
                 <FaUserMd className="mr-2" /> 
                 Your Profile

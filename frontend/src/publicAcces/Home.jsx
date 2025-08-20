@@ -91,7 +91,10 @@ const Home = () => {
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }} className="bg-gray-100 py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-10">Organ & Body Donation Awareness</h2>
-
+            <div className='flex justify-center gap-2 mb-5 '>
+               <h2>If you want to do donation</h2>
+               <Link to="/login"><h2 className='text-blue-400 underline'>Click here</h2></Link>
+            </div>
             {loadingDonations ? (
               <p className="text-center w-full py-10">Loading donation slides...</p>
             ) : (
@@ -165,9 +168,11 @@ const Home = () => {
                         className="w-30 h-30 rounded-full mb-4 object-cover bg-blue-100"
                       />
                       <h3 className="text-md font-semibold text-gray-800 text-center">{item.name}</h3>
-                      <Link to="/login"><button className="text-blue-600 text-sm mt-2 hover:underline">
-                        Consult now →
-                      </button></Link>
+                     <Link to="/login">
+                        <button className="text-blue-600 text-sm mt-2 hover:underline">
+                          Consult now →
+                         </button>
+                    </Link>
                     </motion.div>
                   ))}
                 </div>
