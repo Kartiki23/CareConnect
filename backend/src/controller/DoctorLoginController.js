@@ -1,4 +1,3 @@
-import { docLogin } from "../model/doctorLoginModel.js";
 import bcrypt from "bcrypt";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 import jwt from "jsonwebtoken";
