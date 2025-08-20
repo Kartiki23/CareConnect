@@ -11,7 +11,6 @@ import {
   forwardGeocode,
 } from "../utils/Location";
 
-// ✅ Lucide icons
 import {
   User,
   Mail,
@@ -21,12 +20,12 @@ import {
   MapPin,
   Building,
   Globe,
-  Image as ImageIcon,
-  Locate,
   Crosshair,
+  Locate,
+  UploadCloud,
 } from "lucide-react";
 
-const API = "http://localhost:3001";
+const API = "https://careconnect-9y8d.onrender.com";
 
 const PatientRegistration = () => {
   const navigate = useNavigate();
@@ -77,10 +76,10 @@ const PatientRegistration = () => {
         latitude: String(lat),
         longitude: String(lon),
       }));
-      toast.success("Location detected");
+      toast.success("Location detected ✅");
     } catch (e) {
       console.error(e);
-      toast.error("Could not get your location");
+      toast.error("Could not get your location ❌");
     } finally {
       setLoadingLoc(false);
     }
@@ -105,9 +104,9 @@ const PatientRegistration = () => {
         longitude: String(lon),
         addressLine: formattedAddress || p.addressLine,
       }));
-      toast.success("Address located on map");
+      toast.success("Address located 📍");
     } catch (e) {
-      toast.error("Could not find that address");
+      toast.error("Could not find that address ❌");
     }
   };
 
@@ -122,221 +121,205 @@ const PatientRegistration = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Patient registered!");
+      toast.success("Patient registered 🎉");
       navigate("/login");
     } catch (err) {
       console.log(err);
-      toast.error(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed ❌");
     }
   };
 
-  // 🔥 Animation Variants
-  const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
+  // 🔥 Animation Variants (same style as DoctorRegistration)
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
       opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-        when: "beforeChildren",
-        staggerChildren: 0.08,
-      },
+      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 70 } },
   };
-
-  // ✅ Wrapper for input with icons
-  const InputWithIcon = ({ icon: Icon, ...props }) => (
-    <motion.div
-      className="flex items-center border rounded p-2 gap-2"
-      variants={itemVariants}
-    >
-      <Icon className="text-blue-500 w-5 h-5" />
-      <input {...props} className="flex-1 outline-none" />
-    </motion.div>
-  );
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 p-6"
     >
       <ToastContainer />
-      <motion.div
-        className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full"
-        variants={containerVariants}
+      <motion.form
+        onSubmit={submit}
+        variants={container}
         initial="hidden"
-        animate="visible"
+        animate="show"
+        className="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         <motion.h2
-          className="text-2xl font-bold text-blue-700 mb-6 text-center"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          variants={item}
+          className="md:col-span-2 text-3xl font-bold text-blue-700 text-center mb-4"
         >
           🩺 Patient Registration
         </motion.h2>
 
-        <motion.form
-          onSubmit={submit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
-          variants={containerVariants}
-        >
-          {/* Basic */}
-          <InputWithIcon
-            icon={User}
+        {/* Inputs with icons */}
+        <motion.div variants={item} className="flex items-center border rounded">
+          <User className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            className="p-2 rounded w-full focus:outline-none"
             name="fullName"
-            placeholder="Full Name"
             value={formData.fullName}
             onChange={onChange}
+            placeholder="Full Name"
             required
           />
-          <InputWithIcon
-            icon={Mail}
+        </motion.div>
+
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Mail className="w-5 h-5 text-gray-400 ml-2" />
+          <input
             type="email"
+            className="p-2 rounded w-full focus:outline-none"
             name="email"
-            placeholder="Email"
             value={formData.email}
             onChange={onChange}
+            placeholder="Email"
             required
           />
-          <InputWithIcon
-            icon={Lock}
+        </motion.div>
+
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Lock className="w-5 h-5 text-gray-400 ml-2" />
+          <input
             type="password"
+            className="p-2 rounded w-full focus:outline-none"
             name="password"
-            placeholder="Password"
             value={formData.password}
             onChange={onChange}
+            placeholder="Password"
             required
           />
-          <InputWithIcon
-            icon={Calendar}
+        </motion.div>
+
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Calendar className="w-5 h-5 text-gray-400 ml-2" />
+          <input
             type="number"
+            className="p-2 rounded w-full focus:outline-none"
             name="age"
-            placeholder="Age"
             value={formData.age}
             onChange={onChange}
+            placeholder="Age"
             required
           />
-          <InputWithIcon
-            icon={Phone}
+        </motion.div>
+
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Phone className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            className="p-2 rounded w-full focus:outline-none"
             name="phone"
-            placeholder="Phone (10 digits)"
             value={formData.phone}
             onChange={onChange}
+            placeholder="Phone (10 digits)"
             required
           />
+        </motion.div>
 
-          <motion.div className="flex items-center border rounded p-2 gap-2" variants={itemVariants}>
-            <User className="text-blue-500 w-5 h-5" />
-            <select
-              className="flex-1 outline-none"
-              name="gender"
-              value={formData.gender}
+        <motion.div variants={item} className="flex items-center border rounded">
+          <User className="w-5 h-5 text-gray-400 ml-2" />
+          <select
+            className="p-2 rounded w-full focus:outline-none"
+            name="gender"
+            value={formData.gender}
+            onChange={onChange}
+            required
+          >
+            <option value="">--- Select Gender ---</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </motion.div>
+
+        {/* Address fields */}
+        <motion.div
+          variants={item}
+          className="md:col-span-2 font-semibold mt-2"
+        >
+          Address
+        </motion.div>
+
+        {[
+          { name: "addressLine", icon: <MapPin className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "House / Street / Area", span: "md:col-span-2" },
+          { name: "city", icon: <Building className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "City" },
+          { name: "state", icon: <Building className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "State" },
+          { name: "postalCode", icon: <MapPin className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "Postal Code" },
+          { name: "country", icon: <Globe className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "Country" },
+        ].map((f, i) => (
+          <motion.div
+            key={i}
+            variants={item}
+            className={`flex items-center border rounded ${f.span || ""}`}
+          >
+            {f.icon}
+            <input
+              className="p-2 rounded w-full focus:outline-none"
+              name={f.name}
+              value={formData[f.name]}
               onChange={onChange}
-              required
-            >
-              <option value="">--- Select Gender ---</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
+              placeholder={f.placeholder}
+            />
           </motion.div>
+        ))}
 
-          {/* Address */}
-          <motion.div
-            className="md:col-span-2 font-semibold mt-2"
-            variants={itemVariants}
-          >
-            Address
-          </motion.div>
-          <InputWithIcon
-            icon={MapPin}
-            name="addressLine"
-            placeholder="House / Street / Area"
-            value={formData.addressLine}
-            onChange={onChange}
-          />
-          <InputWithIcon
-            icon={Building}
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={onChange}
-          />
-          <InputWithIcon
-            icon={Building}
-            name="state"
-            placeholder="State"
-            value={formData.state}
-            onChange={onChange}
-          />
-          <InputWithIcon
-            icon={MapPin}
-            name="postalCode"
-            placeholder="Postal Code"
-            value={formData.postalCode}
-            onChange={onChange}
-          />
-          <InputWithIcon
-            icon={Globe}
-            name="country"
-            placeholder="Country"
-            value={formData.country}
-            onChange={onChange}
-          />
-
-          {/* Location Buttons */}
-          <motion.div
-            className="flex gap-2 items-center md:col-span-2"
-            variants={itemVariants}
-          >
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={useMyLocation}
-              className="flex items-center gap-1 bg-blue-600 text-white px-3 py-2 rounded disabled:opacity-60"
-              disabled={loadingLoc}
-            >
-              <Crosshair className="w-4 h-4" />
-              {loadingLoc ? "Detecting..." : "Use my live location"}
-            </motion.button>
-
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={geocodeTyped}
-              className="flex items-center gap-1 border px-3 py-2 rounded"
-            >
-              <Locate className="w-4 h-4" />
-              Locate typed address
-            </motion.button>
-
-            <div className="text-sm text-gray-500">
-              lat: {formData.latitude || "-"} | lon: {formData.longitude || "-"}
-            </div>
-          </motion.div>
-
-          {/* Submit */}
+        {/* Location buttons */}
+        <motion.div
+          variants={item}
+          className="flex gap-2 items-center md:col-span-2"
+        >
           <motion.button
-            type="submit"
-            className="md:col-span-2 bg-green-600 text-white py-3 rounded hover:bg-green-700 flex items-center justify-center gap-2"
+            type="button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            variants={itemVariants}
+            onClick={useMyLocation}
+            className="flex items-center gap-1 bg-blue-600 text-white px-3 py-2 rounded disabled:opacity-60"
+            disabled={loadingLoc}
           >
-            <User className="w-5 h-5" /> Register
+            <Crosshair className="w-4 h-4" />
+            {loadingLoc ? "Detecting..." : "Use my live location"}
           </motion.button>
-        </motion.form>
-      </motion.div>
+
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={geocodeTyped}
+            className="flex items-center gap-1 border px-3 py-2 rounded"
+          >
+            <Locate className="w-4 h-4" />
+            Locate typed address
+          </motion.button>
+
+          <div className="text-sm text-gray-500">
+            lat: {formData.latitude || "-"} | lon: {formData.longitude || "-"}
+          </div>
+        </motion.div>
+
+        {/* Submit button */}
+        <motion.button
+          variants={item}
+          type="submit"
+          whileHover={{ scale: 1.05, backgroundColor: "#0000cd" }}
+          whileTap={{ scale: 0.95 }}
+          className="md:col-span-2 bg-blue-600 text-white py-3 rounded-lg font-semibold"
+        >
+           Register
+        </motion.button>
+      </motion.form>
     </motion.div>
   );
 };

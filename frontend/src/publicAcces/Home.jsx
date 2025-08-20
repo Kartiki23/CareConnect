@@ -16,7 +16,7 @@ const Home = () => {
   // Fetch specialties from API
   const getSpecialties = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/user/specialties');
+      const response = await axios.get('https://careconnect-9y8d.onrender.com/api/v1/user/specialties');
       setSpecialties(response.data.specialties ?? []);
     } catch (error) {
       console.error('Error fetching specialties:', error);
@@ -29,7 +29,7 @@ const Home = () => {
   // Fetch donation slides from API
   const getDonations = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/user/donation');
+      const response = await axios.get('https://careconnect-9y8d.onrender.com/api/v1/user/donation');
       console.log('Donation response:', response.donation);
       setDonationSlides(response.data.donation ?? []);
 

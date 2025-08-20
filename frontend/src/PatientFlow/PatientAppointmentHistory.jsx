@@ -22,7 +22,7 @@ const PatientAppointmentHistory = () => {
 
   const getAppointments = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/v1/user/getAppointmentsForPatient", {
+      const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/getAppointmentsForPatient", {
         params: { patientId },
       });
       setAppointments(res.data.appointments);

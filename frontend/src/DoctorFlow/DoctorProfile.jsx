@@ -20,17 +20,17 @@ const DoctorProfile = () => {
         const token = localStorage.getItem("token");
 
         const response = await axios.post(
-          "http://localhost:3001/api/v1/user/doctorProfile",
+          "https://careconnect-9y8d.onrender.com/api/v1/user/doctorProfile",
           { doctorId: storedDoctorId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const imageUrl = response.data.doctorPhoto
-          ? `http://localhost:3001/uploads/${response.data.doctorPhoto}`
+          ? `https://careconnect-9y8d.onrender.com/uploads/${response.data.doctorPhoto}`
           : "https://i.pravatar.cc/100";
 
         const licenseUrl = response.data.licensePhoto
-          ? `http://localhost:3001/uploads/${response.data.licensePhoto}`
+          ? `https://careconnect-9y8d.onrender.com/uploads/${response.data.licensePhoto}`
           : null;
 
         const doc = {
@@ -84,7 +84,7 @@ const DoctorProfile = () => {
       }
 
       await axios.put(
-        "http://localhost:3001/api/v1/user/updatedoctorInfo",
+        "https://careconnect-9y8d.onrender.com/api/v1/user/updatedoctorInfo",
         data,
         {
           headers: {

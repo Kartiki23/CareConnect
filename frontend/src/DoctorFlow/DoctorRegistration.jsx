@@ -10,7 +10,7 @@ import {
   Home, Globe, Map, Navigation, UploadCloud 
 } from "lucide-react";
 
-const API = "http://localhost:3001";
+const API = "https://careconnect-9y8d.onrender.com";
 
 const DoctorRegistration = () => {
   const navigate = useNavigate();

@@ -19,7 +19,7 @@ export default function PatientDashboard() {
     const token = localStorage.getItem("token");
     if (!storedpatientId) return;
 
-    const response = await axios.post("http://localhost:3001/api/v1/user/patientProfile", {
+    const response = await axios.post("https://careconnect-9y8d.onrender.com/api/v1/user/patientProfile", {
       patientId: storedpatientId,
     },
     {

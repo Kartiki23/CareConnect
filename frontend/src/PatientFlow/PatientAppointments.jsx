@@ -13,7 +13,7 @@ const PatientAppointments = () => {
   const getAppointments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3001/api/v1/user/getAppointmentsForPatient",
+        "https://careconnect-9y8d.onrender.com/api/v1/user/getAppointmentsForPatient",
         { params: { patientId } }
       );
       setAppointments(res.data.appointments);
@@ -25,7 +25,7 @@ const PatientAppointments = () => {
   const handleCancel = async (appointmentId) => {
     try {
       await axios.delete(
-        `http://localhost:3001/api/v1/user/cancelAppointment/${appointmentId}`,
+        `https://careconnect-9y8d.onrender.com/api/v1/user/cancelAppointment/${appointmentId}`,
         { params: { patientId } }
       );
       setAppointments((prev) => prev.filter((appt) => appt._id !== appointmentId));
@@ -37,7 +37,7 @@ const PatientAppointments = () => {
   const fetchUnreadCounts = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3001/api/v1/chat/unreadCounts/${patientId}`
+        `https://careconnect-9y8d.onrender.com/api/v1/chat/unreadCounts/${patientId}`
       );
       setUnreadCounts(res.data);
     } catch (error) {

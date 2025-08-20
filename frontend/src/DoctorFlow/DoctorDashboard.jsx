@@ -54,18 +54,18 @@ const DoctorDashboard = () => {
 
       const [doctorRes, dashboardRes] = await Promise.all([
         axios.post(
-          "http://localhost:3001/api/v1/user/doctorProfile",
+          "https://careconnect-9y8d.onrender.com/api/v1/user/doctorProfile",
           { doctorId: storedDoctorId },
           { headers: { Authorization: `Bearer ${token}` } }
         ),
         axios.get(
-          `http://localhost:3001/api/v1/user/dashboard/${storedDoctorId}`,
+          `https://careconnect-9y8d.onrender.com/api/v1/user/dashboard/${storedDoctorId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         ),
       ]);
 
       const imageUrl = doctorRes.data.doctorPhoto
-        ? `http://localhost:3001/uploads/${doctorRes.data.doctorPhoto}`
+        ? `https://careconnect-9y8d.onrender.com/uploads/${doctorRes.data.doctorPhoto}`
         : "https://i.pravatar.cc/40";
 
       setDoctor({

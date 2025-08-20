@@ -19,7 +19,7 @@ const PatientProfile = () => {
         const token = localStorage.getItem("token");
 
         const response = await axios.post(
-          "http://localhost:3001/api/v1/user/patientProfile",
+          "https://careconnect-9y8d.onrender.com/api/v1/user/patientProfile",
           { patientId },
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -30,7 +30,7 @@ const PatientProfile = () => {
 
         // Use uploaded photo if available, otherwise default avatar based on gender
         let profilePhoto = data.patientPhoto
-          ? `http://localhost:3001/uploads/patients/${data.patientPhoto}`
+          ? `https://careconnect-9y8d.onrender.com/uploads/patients/${data.patientPhoto}`
           : data.gender?.toLowerCase() === "female"
           ? "https://cdn-icons-png.flaticon.com/512/6997/6997662.png"
           : "https://up.yimg.com/ib/th/id/OIP.SJcycEiCnXZ6_AePYM_EZQHaHa?pid=Api&rs=1&c=1&qlt=95&w=123&h=123";
@@ -79,7 +79,7 @@ const PatientProfile = () => {
 
       if (newPhoto) data.append("patientPhoto", newPhoto);
 
-      await axios.put("http://localhost:3001/api/v1/user/updatePatientInfo", data, {
+      await axios.put("https://careconnect-9y8d.onrender.com/api/v1/user/updatePatientInfo", data, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 

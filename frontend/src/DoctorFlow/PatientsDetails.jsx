@@ -20,7 +20,7 @@ const PatientsDetails = () => {
 
   const fetchAppointments = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/v1/user/getAppointmentsForDoctor", {
+      const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/getAppointmentsForDoctor", {
         params: { doctorId },
       });
       setAppointments(res.data.appointments);
@@ -31,7 +31,7 @@ const PatientsDetails = () => {
 
   const handleUpdateStatus = async (id, status) => {
     try {
-      await axios.patch("http://localhost:3001/api/v1/user/updateStatus", {
+      await axios.patch("https://careconnect-9y8d.onrender.com/api/v1/user/updateStatus", {
         appointmentId: id,
         status,
       });

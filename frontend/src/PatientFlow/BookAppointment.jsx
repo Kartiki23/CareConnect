@@ -26,7 +26,7 @@ const BookAppointment = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/v1/user/doctor");
+        const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/doctor");
         setDoctors(res.data);
       } catch (err) {
         console.log("Error fetching doctors", err);
@@ -60,7 +60,7 @@ const BookAppointment = () => {
     try {
       const fullForm = { ...form, patientId };
       await axios.post(
-        "http://localhost:3001/api/v1/user/bookAppointment",
+        "https://careconnect-9y8d.onrender.com/api/v1/user/bookAppointment",
         fullForm
       );
       alert("Appointment booked successfully!");

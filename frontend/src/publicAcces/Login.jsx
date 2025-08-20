@@ -37,8 +37,8 @@ const Login = () => {
 
     const endpoint =
       role === "patient"
-        ? "http://localhost:3001/api/v1/user/Plogin"
-        : "http://localhost:3001/api/v1/user/login";
+        ? "https://careconnect-9y8d.onrender.com/api/v1/user/Plogin"
+        : "https://careconnect-9y8d.onrender.com/api/v1/user/login";
 
     try {
       const response = await axios.post(endpoint, { email, password });
