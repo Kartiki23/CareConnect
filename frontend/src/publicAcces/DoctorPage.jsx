@@ -19,7 +19,7 @@ const DoctorPage = () => {
   const fetchDoctors = async (specialization) => {
     try {
       const res = await axios.get(
-        `http://localhost:3001/api/v1/user/specialty/${specialization}`
+        `https://careconnect-9y8d.onrender.com/api/v1/user/specialty/${specialization}`
       );
       setDoctors(res.data);
 
