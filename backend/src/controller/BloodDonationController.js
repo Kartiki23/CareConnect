@@ -10,13 +10,14 @@ export const submitBloodDonation = async (req, res) => {
       age,
       gender,
       bloodGroup,
+      donationType,
       lastDonation,
       healthIssues,
       address,
     } = req.body;
 
     // Simple validation
-    if (!fullName || !email || !phone || !age || !gender || !bloodGroup || !address) {
+    if (!fullName || !email || !phone || !age || !gender || !donationType || !bloodGroup || !address) {
       return res.status(400).json({ message: "Please fill all required fields." });
     }
 
@@ -27,6 +28,7 @@ export const submitBloodDonation = async (req, res) => {
       age,
       gender,
       bloodGroup,
+      donationType,
       lastDonation,
       healthIssues,
       address,

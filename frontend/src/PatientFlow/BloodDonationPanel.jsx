@@ -13,7 +13,7 @@ const BloodDonationPanel = () => {
     const fetchDonations = async () => {
       try {
         //const token = localStorage.getItem("token"); // ✅ JWT stored at login
-        const res = await axios.get("http://localhost:3001/api/v1/user/my-donations", {
+        const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/my-donations", {
           //headers: { Authorization: `Bearer ${token}` },
         });
         setDonations(res.data.donations);
@@ -73,21 +73,22 @@ const BloodDonationPanel = () => {
         <p className="text-center text-gray-600">No donations found yet.</p>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {donations.map((donation) => (
+          {donations.map((donat) => (
             <motion.div
-              key={donation._id}
+              key={donat._id}
               whileHover={{ scale: 1.02 }}
               className="p-5 bg-white rounded-xl shadow-lg border"
             >
-              <h3 className="text-xl font-semibold text-red-600">{donation.bloodGroup} Blood</h3>
-              <p><strong>Name:</strong> {donation.fullName}</p>
-              <p><strong>Age:</strong> {donation.age}</p>
-              <p><strong>Phone:</strong> {donation.phone}</p>
-              <p><strong>Last Donation:</strong> {donation.lastDonation || "N/A"}</p>
-              <p><strong>Health Issues:</strong> {donation.healthIssues || "None"}</p>
-              <p><strong>Address:</strong> {donation.address}</p>
+              <h3 className="text-xl font-semibold text-red-600">{donat.bloodGroup} Blood</h3>
+              <p><strong>Name:</strong> {donat.fullName}</p>
+              <p><strong>Age:</strong> {donat.age}</p>
+              <p><strong>Phone:</strong> {donat.phone}</p>
+              <p><strong>Donation Type:</strong> {donat.donationType}</p>
+              <p><strong>Last Donation:</strong> {donat.lastDonation || "N/A"}</p>
+              <p><strong>Health Issues:</strong> {donat.healthIssues || "None"}</p>
+              <p><strong>Address:</strong> {donat.address}</p>
               <p className="text-sm text-gray-500 mt-2">
-                Donated on {new Date(donation.createdAt).toLocaleDateString()}
+                Donated on {new Date(donat.createdAt).toLocaleDateString()}
               </p>
             </motion.div>
           ))}

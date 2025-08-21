@@ -14,7 +14,7 @@ const BloodDonarList = () => {
 
   const fetchDonors = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/v1/user/donors", {
+      const response = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/donors", {
         params: { search, bloodGroup: filter },
       });
       setDonors(response.data);
@@ -27,7 +27,7 @@ const BloodDonarList = () => {
   const deleteDonor = async (id) => {
     if (!window.confirm("Are you sure you want to delete this donor?")) return;
     try {
-      await axios.delete(`http://localhost:3001/api/v1/user/donors/${id}`);
+      await axios.delete(`https://careconnect-9y8d.onrender.com/api/v1/user/donors/${id}`);
       toast.success("Donor deleted successfully");
       fetchDonors();
     } catch (err) {
@@ -77,6 +77,7 @@ const BloodDonarList = () => {
               <th className="py-2 px-4 text-left">Age</th>
               <th className="py-2 px-4 text-left">Gender</th>
               <th className="py-2 px-4 text-left">Blood Group</th>
+              <th className="py-2 px-4 text-left">Donations</th>
               <th className="py-2 px-4 text-left">Last Donation</th>
               <th className="py-2 px-4 text-left">Health Issues</th>
               <th className="py-2 px-4 text-left">Address</th>
@@ -98,6 +99,7 @@ const BloodDonarList = () => {
                 <td className="py-2 px-4">{donor.age}</td>
                 <td className="py-2 px-4">{donor.gender}</td>
                 <td className="py-2 px-4 text-center">{donor.bloodGroup}</td>
+                <td className="py-2 px-4">{donor.donationType}</td>
                 <td className="py-2 px-4">{donor.lastDonation ? new Date(donor.lastDonation).toLocaleDateString() : "-"}</td>
                 <td className="py-2 px-4">{donor.healthIssues || "-"}</td>
                 <td className="py-2 px-4">{donor.address}</td>
