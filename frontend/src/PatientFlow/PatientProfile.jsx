@@ -42,6 +42,7 @@ const PatientProfile = () => {
           phone: data.phone,
           age: data.age,
           gender: data.gender,
+          addressLine: data.addressLine
         });
       } catch (error) {
         console.log("Error fetching profile:", error);
@@ -143,7 +144,7 @@ const PatientProfile = () => {
 
         {/* Editable Form */}
         <div className="space-y-4">
-          {["fullName", "email", "phone", "age", "gender"].map((field) => (
+          {["fullName", "email", "phone", "age", "gender","addressLine"].map((field) => (
             <div key={field} className="flex items-center gap-4 border-b pb-1">
               <label className="text-gray-700 w-32">{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
               {editMode ? (

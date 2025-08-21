@@ -27,6 +27,7 @@ export const getDoctorProfile = async (req, res) => {
       aadharNumber: doctor.aadharNumber,
       specialization: doctor.specialization,
       hospital: doctor.hospital,
+      addressLine: doctor.addressLine,
       licenseNumber: doctor.licenseNumber,
       licensePhoto: doctor.licensePhoto,
       doctorPhoto: doctor.doctorPhoto,
@@ -82,6 +83,7 @@ export const updateDoctorInfo = async (req, res) => {
       gender: req.body.gender,
       age: req.body.age,
       hospital: req.body.hospital,
+      addressLine: req.body.addressLine,
       licenseNumber: req.body.licenseNumber,
     };
 

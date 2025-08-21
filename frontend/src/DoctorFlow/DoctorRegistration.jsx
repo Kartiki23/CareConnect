@@ -1,5 +1,5 @@
 // frontend/src/DoctorFlow/DoctorRegistration.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -24,6 +24,30 @@ const DoctorRegistration = () => {
 
   const [licensePhoto, setLicensePhoto] = useState(null);
   const [doctorPhoto, setDoctorPhoto]   = useState(null);
+  const [specializations, setSpecializations] = useState([]); // ✅ store specializations
+
+  // Fetch specialization list
+  useEffect(() => {
+    const fetchSpecializations = async () => {
+      try {
+      const res = await axios.get(`${API}/api/v1/user/specialties`);
+      const data = res.data.specialties;
+
+      // ✅ handle if response is {specializations: [...]}
+      if (Array.isArray(data)) {
+        setSpecializations(data);
+      } else if (Array.isArray(data.specializations)) {
+        setSpecializations(data.specializations);
+      } else {
+        setSpecializations([]); // fallback
+      }
+    } catch (err) {
+      console.error("Failed to load specializations", err);
+      setSpecializations([]); // fallback
+    }
+    };
+    fetchSpecializations();
+  }, []);
 
   const onChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -139,7 +163,6 @@ const DoctorRegistration = () => {
           { name: "aadharNumber", placeholder: "Aadhar Number" },
           { name: "email", type: "email", placeholder: "Email" },
           { name: "password", type: "password", placeholder: "Password" },
-          { name: "specialization", placeholder: "Specialization" },
           { name: "consultationFee", type: "number", placeholder: "Consultation Fee" },
           { name: "hospital", placeholder: "Hospital / Clinic" },
           { name: "licenseNumber", placeholder: "License Number" }
@@ -177,6 +200,27 @@ const DoctorRegistration = () => {
             )}
           </motion.div>
         ))}
+
+        {/* Specialization Dropdown from backend */}
+        <motion.div variants={item} className="relative">
+          <div className="flex items-center border rounded">
+            <span className="pl-2">{iconMap.specialization}</span>
+            <select
+              className="p-2 rounded w-full focus:outline-none"
+              name="specialization"
+              value={form.specialization}
+              onChange={onChange}
+              required
+            >
+              <option value="">Select Specialization</option>
+              {specializations.map((s) => (
+                <option key={s._id} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </motion.div>
 
         {/* Address Fields with Icons */}
         <motion.div variants={item} className="md:col-span-2 font-semibold mt-2">Clinic Address</motion.div>
@@ -221,7 +265,7 @@ const DoctorRegistration = () => {
           </div>
         </motion.div>
 
-        {/* File Uploads with Icons */}
+        {/* File Uploads */}
         <motion.div variants={item} className="flex flex-col gap-2">
           <label className="flex items-center gap-2 font-medium text-gray-700">
             <UploadCloud className="w-5 h-5 text-blue-500" /> Upload License Photo
@@ -246,7 +290,7 @@ const DoctorRegistration = () => {
           />
         </motion.div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <motion.button
           variants={item}
           type="submit"

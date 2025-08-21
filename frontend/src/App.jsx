@@ -38,6 +38,7 @@ import HelpPage from "./publicAcces/HelpPage";
 import BloodDonationForm from "./publicAcces/BlooddonationForm";
 import BloodDonarList from "./DoctorFlow/BloodDonarList";
 import BloodDonationPanel from "./PatientFlow/BloodDonationPanel";
+import DoctorPage from "./publicAcces/DoctorPage";
 
 // ===== Layouts =====
 const PatientLayout = () => (
@@ -98,6 +99,7 @@ const App = () => {
         <Route path="/about" element={<About/>} />
         <Route path="/specialties" element={<Specialties/>}/>
         <Route path="/helppage" element={<HelpPage/>} />
+        <Route path="/doctorPage" element={<DoctorPage/>}/>
         <Route path="/bloodDonationForm" element={<BloodDonationForm/>} />
         <Route path="/patientRegistration" element={<PatientRegistration />} />
         <Route path="/doctorRegistration" element={<DoctorRegistration />} />

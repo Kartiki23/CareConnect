@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPen } from "react-icons/fa";
 import { motion } from "framer-motion";
-import DoctorSidebar from "./DoctorSidebar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -41,6 +40,7 @@ const DoctorProfile = () => {
           age: response.data.age,
           gender: response.data.gender,
           hospital: response.data.hospital,
+          addressLine: response.data.addressLine,
           licenseNumber: response.data.licenseNumber,
           licensePhoto: licenseUrl,
           doctorPhoto: imageUrl,
@@ -179,6 +179,7 @@ const DoctorProfile = () => {
               { label: "Age", name: "age" },
               { label: "Gender", name: "gender" },
               { label: "Hospital", name: "hospital" },
+              { label: "Address", name: "addressLine" },
               { label: "License Number", name: "licenseNumber" },
             ].map(({ label, name }) => (
               <div key={name} className="flex items-center gap-4 border-b pb-1">

@@ -168,7 +168,7 @@ const Home = () => {
                         className="w-30 h-30 rounded-full mb-4 object-cover bg-blue-100"
                       />
                       <h3 className="text-md font-semibold text-gray-800 text-center">{item.name}</h3>
-                     <Link to="/login">
+                     <Link to="/doctorPage" state={{ specialization: item.name }}>
                         <button className="text-blue-600 text-sm mt-2 hover:underline">
                           Consult now →
                          </button>
