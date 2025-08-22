@@ -4,11 +4,12 @@ import axios from "axios";
 
 const socket = io("https://careconnect-9y8d.onrender.com", { transports: ["websocket"] });
 
-const ChatBox = ({ senderId, senderModel, onClose }) => {
+const ChatBox = ({ senderId, senderModel }) => {
   const [appointments, setAppointments] = useState([]);
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const chatEndRef = useRef(null);
 
   const isDoctor = senderModel === "Doctor";
@@ -21,7 +22,7 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
         const res = await axios.get(
           `https://careconnect-9y8d.onrender.com/api/v1/chat/myChats/${senderId}/${senderModel}`
         );
-        setAppointments(res.data); // backend already provides displayName & lastMessage
+        setAppointments(res.data);
       } catch (err) {
         console.error("Error fetching chats:", err);
       }
@@ -89,36 +90,61 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
   };
 
   return (
-    <div className="flex h-[600px] bg-gray-100 rounded-lg">
-      {/* Sidebar */}
-      <div className="w-1/4 bg-white border-r overflow-y-auto">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      {/* Sidebar / Chat list */}
+      <div className={`
+        fixed md:relative z-20 md:z-auto w-64 md:w-1/4 h-full bg-white border-r
+        transform transition-transform duration-300
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+      `}>
         <div className="p-4 font-bold border-b bg-blue-500 text-white flex justify-between items-center">
           Chats
+          <button
+            className="md:hidden font-bold text-white text-lg"
+            onClick={() => setSidebarOpen(false)}
+          >
+            ✕
+          </button>
         </div>
         {appointments.length > 0 ? (
-          appointments.map((chat) => (
-            <div
-              key={chat.appointmentId}
-              onClick={() => setActiveAppointment(chat)}
-              className={`p-4 cursor-pointer border-b hover:bg-gray-200 ${
-                activeAppointment?.appointmentId === chat.appointmentId
-                  ? "bg-gray-100"
-                  : ""
-              }`}
-            >
-              <p className="font-semibold">{chat.name}</p>
-              <p className="text-sm text-gray-500 truncate">
-                {chat.lastMessage || "No messages yet"}
-              </p>
-            </div>
-          ))
+          <div className="overflow-y-auto h-full">
+            {appointments.map((chat) => (
+              <div
+                key={chat.appointmentId}
+                onClick={() => {
+                  setActiveAppointment(chat);
+                  setSidebarOpen(false);
+                }}
+                className={`p-4 cursor-pointer border-b hover:bg-gray-200 ${
+                  activeAppointment?.appointmentId === chat.appointmentId
+                    ? "bg-gray-100"
+                    : ""
+                }`}
+              >
+                <p className="font-semibold">{chat.name}</p>
+                <p className="text-sm text-gray-500 truncate">
+                  {chat.lastMessage || "No messages yet"}
+                </p>
+              </div>
+            ))}
+          </div>
         ) : (
           <p className="p-4 text-gray-500">No accepted chats available</p>
         )}
       </div>
 
-      {/* Chat Area */}
-      <div className="flex flex-col flex-1">
+      {/* Hamburger for mobile */}
+      {!sidebarOpen && (
+        <button
+          className="md:hidden fixed top-4 left-4 z-30 bg-blue-500 text-white p-2 rounded-full"
+          onClick={() => setSidebarOpen(true)}
+        >
+          ☰
+        </button>
+      )}
+
+      {/* Chat area */}
+      <div className="flex-1 flex flex-col md:ml-0 md:w-3/4 ml-0">
         <div className="flex items-center justify-between p-4 border-b bg-blue-500 text-white">
           <h2 className="font-bold">
             {activeAppointment ? activeAppointment.name : "Select a chat"}
@@ -126,14 +152,18 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
           {activeAppointment && (
             <button
               onClick={() => setActiveAppointment(null)}
-              className="text-white font-bold text-lg hover:text-gray-200"
+              className="text-white font-bold text-lg hover:text-gray-200 md:hidden"
             >
               ✕
             </button>
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-50">
+        {/* Messages */}
+        <div
+          className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-50 flex flex-col"
+          style={{ minHeight: 0 }}
+        >
           {messages.length > 0 ? (
             messages.map((msg, i) => {
               const senderIdStr = msg.senderId?._id || msg.senderId;
@@ -144,13 +174,12 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
                   className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-xs px-4 py-2 rounded-lg shadow ${
+                    className={`max-w-xs sm:max-w-sm md:max-w-md px-4 py-2 rounded-lg shadow ${
                       isMine
                         ? "bg-green-500 text-white rounded-br-none"
                         : "bg-white text-gray-800 rounded-bl-none"
                     }`}
                   >
-                    {/* Show sender name for received messages */}
                     {!isMine && (
                       <p className="font-semibold text-sm mb-1">
                         {msg.senderName || "Doctor/Patient"}
@@ -173,6 +202,7 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
           <div ref={chatEndRef} />
         </div>
 
+        {/* Input */}
         {activeAppointment && (
           <div className="p-3 border-t bg-white flex">
             <input
@@ -190,10 +220,6 @@ const ChatBox = ({ senderId, senderModel, onClose }) => {
             </button>
           </div>
         )}
-      </div>
-
-      <div>
-        
       </div>
     </div>
   );

@@ -44,12 +44,12 @@ const DoctorPage = () => {
         {specialization ? `${specialization} Doctors` : "All Doctors"}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {doctors.length > 0 ? (
           doctors.map((doc) => (
             <div
               key={doc._id}
-              className="bg-white shadow-md rounded-xl overflow-hidden border 
+              className="bg-white shadow-md rounded-xl overflow-hidden
                          hover:shadow-xl transform hover:-translate-y-2 
                          transition duration-300 w-80 max-w-sm mx-auto"
             >
@@ -76,7 +76,7 @@ const DoctorPage = () => {
                   {doc.hospital}
                 </p>
                 <p className="flex items-center text-gray-600 mt-1 text-sm">
-                  <Building className="mr-1 text-green-500" />
+                  <Building className="mr-2 text-green-500" />
                   {doc.addressLine}
                 </p>
                 <p className="flex items-center text-gray-600 mt-1 text-sm">

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import book_appointment from '../assets/book_appointment.gif';
 
 const BookAppointment = () => {
+  // Form state
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -16,13 +17,16 @@ const BookAppointment = () => {
     appointmentTime: "",
     reason: "",
     medicalHistory: "",
-    consultationFee: "", // added so fee is stored when booking
+    consultationFee: "",
   });
 
+  // Doctors list
   const [doctors, setDoctors] = useState([]);
-  const [doctorFee, setDoctorFee] = useState(null); // for display
+  // Selected doctor's fee for display
+  const [doctorFee, setDoctorFee] = useState(null);
   const patientId = localStorage.getItem("patientId");
 
+  // Fetch doctors from backend
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -35,6 +39,7 @@ const BookAppointment = () => {
     fetchDoctors();
   }, []);
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -55,6 +60,7 @@ const BookAppointment = () => {
     }
   };
 
+  // Submit appointment
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -64,6 +70,7 @@ const BookAppointment = () => {
         fullForm
       );
       alert("Appointment booked successfully!");
+      // Reset form
       setForm({
         name: "",
         email: "",
@@ -86,14 +93,16 @@ const BookAppointment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-10">
       <motion.div
-        className="w-full max-w-6xl bg-white rounded-2xl shadow-xl p-8 md:p-12"
+        className="w-full max-w-6xl bg-white rounded-2xl shadow-xl p-6 md:p-12"
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="grid md:grid-cols-2 gap-10">
+        {/* Grid container for form and image */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+          
           {/* Left - Appointment Form */}
           <motion.form
             onSubmit={handleSubmit}
@@ -102,13 +111,13 @@ const BookAppointment = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <h2 className="text-4xl font-bold text-blue-800 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-800 mb-4">
               Book Appointment
             </h2>
 
-            {/* Name */}
+            {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium ">Full Name</label>
+              <label className="block text-sm font-medium">Full Name</label>
               <input
                 type="text"
                 name="name"
@@ -120,10 +129,10 @@ const BookAppointment = () => {
               />
             </div>
 
-            {/* Email & Contact */}
-            <div className="grid md:grid-cols-2 gap-4">
+            {/* Email & Contact Number */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ">Email</label>
+                <label className="block text-sm font-medium">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -135,7 +144,7 @@ const BookAppointment = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium ">Contact No.</label>
+                <label className="block text-sm font-medium">Contact No.</label>
                 <input
                   type="tel"
                   name="contactNo"
@@ -149,9 +158,9 @@ const BookAppointment = () => {
             </div>
 
             {/* Gender & Age */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ">Gender</label>
+                <label className="block text-sm font-medium">Gender</label>
                 <select
                   name="gender"
                   value={form.gender}
@@ -166,7 +175,7 @@ const BookAppointment = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium ">Age</label>
+                <label className="block text-sm font-medium">Age</label>
                 <input
                   type="number"
                   name="age"
@@ -180,11 +189,9 @@ const BookAppointment = () => {
             </div>
 
             {/* Specialization & Doctor */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ">
-                  Specialization
-                </label>
+                <label className="block text-sm font-medium">Specialization</label>
                 <select
                   name="specialization"
                   value={form.specialization}
@@ -195,15 +202,13 @@ const BookAppointment = () => {
                   <option value="">Specialization</option>
                   {[...new Set(doctors.map((doc) => doc.specialization))].map(
                     (spec, i) => (
-                      <option key={i} value={spec}>
-                        {spec}
-                      </option>
+                      <option key={i} value={spec}>{spec}</option>
                     )
                   )}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium ">Doctor</label>
+                <label className="block text-sm font-medium">Doctor</label>
                 <select
                   name="doctorId"
                   value={form.doctorId}
@@ -214,9 +219,7 @@ const BookAppointment = () => {
                   <option value="">Doctor</option>
                   {doctors
                     .filter(
-                      (doc) =>
-                        doc.specialization === form.specialization ||
-                        form.specialization === ""
+                      (doc) => doc.specialization === form.specialization || form.specialization === ""
                     )
                     .map((doc) => (
                       <option key={doc._id} value={doc._id}>
@@ -227,12 +230,10 @@ const BookAppointment = () => {
               </div>
             </div>
 
-            {/* Consultation Fee (Display only) */}
+            {/* Consultation Fee */}
             {doctorFee !== null && (
               <div>
-                <label className="block text-sm font-medium ">
-                  Consultation Fee
-                </label>
+                <label className="block text-sm font-medium">Consultation Fee</label>
                 <input
                   type="text"
                   value={`₹${doctorFee} (Cash Only)`}
@@ -243,9 +244,9 @@ const BookAppointment = () => {
             )}
 
             {/* Date & Time */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ">Date</label>
+                <label className="block text-sm font-medium">Date</label>
                 <input
                   type="date"
                   name="appointmentDate"
@@ -256,7 +257,7 @@ const BookAppointment = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium ">Time</label>
+                <label className="block text-sm font-medium">Time</label>
                 <input
                   type="time"
                   name="appointmentTime"
@@ -268,9 +269,9 @@ const BookAppointment = () => {
               </div>
             </div>
 
-            {/* Reason */}
+            {/* Reason & Medical History */}
             <div>
-              <label className="block text-sm font-medium ">Reason</label>
+              <label className="block text-sm font-medium">Reason</label>
               <textarea
                 name="reason"
                 value={form.reason}
@@ -281,12 +282,8 @@ const BookAppointment = () => {
                 required
               ></textarea>
             </div>
-
-            {/* Medical History */}
             <div>
-              <label className="block text-sm font-medium ">
-                Medical History
-              </label>
+              <label className="block text-sm font-medium">Medical History</label>
               <textarea
                 name="medicalHistory"
                 value={form.medicalHistory}
@@ -310,7 +307,7 @@ const BookAppointment = () => {
 
           {/* Right Side - Image */}
           <motion.div
-            className="space-y-6"
+            className="flex justify-center md:justify-end mt-6 md:mt-0"
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
@@ -318,7 +315,7 @@ const BookAppointment = () => {
             <img
               src={book_appointment}
               alt="Doctor"
-              className="h-100 w-100 object-cover mt-40 ml-10"
+              className="w-full max-w-md h-auto object-contain"
             />
           </motion.div>
         </div>

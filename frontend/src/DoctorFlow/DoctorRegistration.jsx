@@ -135,173 +135,176 @@ const DoctorRegistration = () => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }} 
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100"
+  initial={{ opacity: 0 }} 
+  animate={{ opacity: 1 }} 
+  exit={{ opacity: 0 }} 
+  className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 lg:p-12"
+>
+  <motion.form
+    onSubmit={submit}
+    variants={container}
+    initial="hidden"
+    animate="show"
+    className="bg-white p-6 sm:p-8 lg:p-10 rounded-2xl shadow-xl w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-4"
+  >
+    <motion.h2 
+      variants={item} 
+      className="sm:col-span-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-700 text-center mb-4"
     >
-      <motion.form
-        onSubmit={submit}
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="bg-white p-8 rounded-2xl shadow-xl max-w-3xl w-full grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <motion.h2 
-          variants={item} 
-          className="md:col-span-2 text-3xl font-bold text-blue-700 text-center mb-4"
-        >
-          🩺 Doctor Registration
-        </motion.h2>
+      🩺 Doctor Registration
+    </motion.h2>
 
-        {/* Inputs with Icons */}
-        {[
-          { name: "fullName", placeholder: "Full Name" },
-          { name: "gender", type: "select", options: ["Male", "Female", "Other"], placeholder: "Gender" },
-          { name: "age", type: "number", placeholder: "Age" },
-          { name: "phone", placeholder: "Phone" },
-          { name: "aadharNumber", placeholder: "Aadhar Number" },
-          { name: "email", type: "email", placeholder: "Email" },
-          { name: "password", type: "password", placeholder: "Password" },
-          { name: "consultationFee", type: "number", placeholder: "Consultation Fee" },
-          { name: "hospital", placeholder: "Hospital / Clinic" },
-          { name: "licenseNumber", placeholder: "License Number" }
-        ].map((f, i) => (
-          <motion.div key={i} variants={item} className="relative">
-            {f.type === "select" ? (
-              <div className="flex items-center border rounded">
-                <span className="pl-2">{iconMap[f.name]}</span>
-                <select
-                  className="p-2 rounded w-full focus:outline-none"
-                  name={f.name}
-                  value={form[f.name]}
-                  onChange={onChange}
-                  required
-                >
-                  <option value="">{f.placeholder || "Select"}</option>
-                  {f.options.map((o) => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <div className="flex items-center border rounded">
-                <span className="pl-2">{iconMap[f.name]}</span>
-                <input
-                  className="p-2 rounded w-full focus:outline-none"
-                  type={f.type || "text"}
-                  name={f.name}
-                  value={form[f.name]}
-                  onChange={onChange}
-                  placeholder={f.placeholder}
-                  required
-                />
-              </div>
-            )}
-          </motion.div>
-        ))}
-
-        {/* Specialization Dropdown from backend */}
-        <motion.div variants={item} className="relative">
-          <div className="flex items-center border rounded">
-            <span className="pl-2">{iconMap.specialization}</span>
+    {/* Inputs with Icons */}
+    {[ 
+      { name: "fullName", placeholder: "Full Name" },
+      { name: "gender", type: "select", options: ["Male", "Female", "Other"], placeholder: "Gender" },
+      { name: "age", type: "number", placeholder: "Age" },
+      { name: "phone", placeholder: "Phone" },
+      { name: "aadharNumber", placeholder: "Aadhar Number" },
+      { name: "email", type: "email", placeholder: "Email" },
+      { name: "password", type: "password", placeholder: "Password" },
+      { name: "consultationFee", type: "number", placeholder: "Consultation Fee" },
+      { name: "hospital", placeholder: "Hospital / Clinic" },
+      { name: "licenseNumber", placeholder: "License Number" }
+    ].map((f, i) => (
+      <motion.div key={i} variants={item} className="relative w-full">
+        {f.type === "select" ? (
+          <div className="flex items-center border rounded w-full">
+            <span className="pl-2">{iconMap[f.name]}</span>
             <select
               className="p-2 rounded w-full focus:outline-none"
-              name="specialization"
-              value={form.specialization}
+              name={f.name}
+              value={form[f.name]}
               onChange={onChange}
               required
             >
-              <option value="">Select Specialization</option>
-              {specializations.map((s) => (
-                <option key={s._id} value={s.name}>
-                  {s.name}
-                </option>
+              <option value="">{f.placeholder || "Select"}</option>
+              {f.options.map((o) => (
+                <option key={o}>{o}</option>
               ))}
             </select>
           </div>
-        </motion.div>
-
-        {/* Address Fields with Icons */}
-        <motion.div variants={item} className="md:col-span-2 font-semibold mt-2">Clinic Address</motion.div>
-
-        {["addressLine", "city", "state", "postalCode", "country"].map((field, i) => (
-          <motion.div key={i} variants={item} className={field === "addressLine" ? "md:col-span-2" : ""}>
-            <div className="flex items-center border rounded">
-              <span className="pl-2">{iconMap[field]}</span>
-              <input
-                className="p-2 rounded w-full focus:outline-none"
-                name={field}
-                value={form[field]}
-                onChange={onChange}
-                placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1")}
-              />
-            </div>
-          </motion.div>
-        ))}
-
-        {/* Location Buttons */}
-        <motion.div variants={item} className="flex gap-2 items-center md:col-span-2">
-          <motion.button 
-            type="button" 
-            onClick={useMyLocation} 
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }}
-            className="bg-blue-600 text-white px-3 py-2 rounded"
-          >
-            📍 Use my live location
-          </motion.button>
-          <motion.button 
-            type="button" 
-            onClick={geocodeTyped}
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }}
-            className="border px-3 py-2 rounded"
-          >
-            🔍 Locate typed address
-          </motion.button>
-          <div className="text-sm text-gray-500">
-            lat: {form.latitude || "-"} | lon: {form.longitude || "-"}
+        ) : (
+          <div className="flex items-center border rounded w-full">
+            <span className="pl-2">{iconMap[f.name]}</span>
+            <input
+              className="p-2 rounded w-full focus:outline-none"
+              type={f.type || "text"}
+              name={f.name}
+              value={form[f.name]}
+              onChange={onChange}
+              placeholder={f.placeholder}
+              required
+            />
           </div>
-        </motion.div>
+        )}
+      </motion.div>
+    ))}
 
-        {/* File Uploads */}
-        <motion.div variants={item} className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 font-medium text-gray-700">
-            <UploadCloud className="w-5 h-5 text-blue-500" /> Upload License Photo
-          </label>
-          <input 
-            type="file" 
-            className="border p-2 rounded cursor-pointer" 
-            onChange={(e) => setLicensePhoto(e.target.files?.[0] || null)} 
-            required 
-          />
-        </motion.div>
-
-        <motion.div variants={item} className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 font-medium text-gray-700">
-            <UploadCloud className="w-5 h-5 text-green-500" /> Upload Profile Photo
-          </label>
-          <input 
-            type="file" 
-            className="border p-2 rounded cursor-pointer" 
-            onChange={(e) => setDoctorPhoto(e.target.files?.[0] || null)} 
-            required 
-          />
-        </motion.div>
-
-        {/* Submit */}
-        <motion.button
-          variants={item}
-          type="submit"
-          whileHover={{ scale: 1.05, backgroundColor: "#16a34a" }}
-          whileTap={{ scale: 0.95 }}
-          className="md:col-span-2 bg-green-600 text-white py-3 rounded-lg font-semibold"
+    {/* Specialization Dropdown */}
+    <motion.div variants={item} className="relative w-full">
+      <div className="flex items-center border rounded w-full">
+        <span className="pl-2">{iconMap.specialization}</span>
+        <select
+          className="p-2 rounded w-full focus:outline-none"
+          name="specialization"
+          value={form.specialization}
+          onChange={onChange}
+          required
         >
-          🚀 Register
-        </motion.button>
-      </motion.form>
+          <option value="">Select Specialization</option>
+          {specializations.map((s) => (
+            <option key={s._id} value={s.name}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </motion.div>
+
+    {/* Address Section */}
+    <motion.div variants={item} className="sm:col-span-2 font-semibold mt-2 text-lg sm:text-xl">Clinic Address</motion.div>
+
+    {["addressLine", "city", "state", "postalCode", "country"].map((field, i) => (
+      <motion.div key={i} variants={item} className={field === "addressLine" ? "sm:col-span-2 w-full" : "w-full"}>
+        <div className="flex items-center border rounded w-full">
+          <span className="pl-2">{iconMap[field]}</span>
+          <input
+            className="p-2 rounded w-full focus:outline-none"
+            name={field}
+            value={form[field]}
+            onChange={onChange}
+            placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1")}
+          />
+        </div>
+      </motion.div>
+    ))}
+
+    {/* Location Buttons */}
+    <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 items-center sm:col-span-2 w-full">
+      <motion.button 
+        type="button" 
+        onClick={useMyLocation} 
+        whileHover={{ scale: 1.05 }} 
+        whileTap={{ scale: 0.95 }}
+        className="bg-blue-600 text-white px-3 py-2 rounded w-full sm:w-auto text-center"
+      >
+        📍 Use my live location
+      </motion.button>
+      <motion.button 
+        type="button" 
+        onClick={geocodeTyped}
+        whileHover={{ scale: 1.05 }} 
+        whileTap={{ scale: 0.95 }}
+        className="border px-3 py-2 rounded w-full sm:w-auto text-center"
+      >
+        🔍 Locate typed address
+      </motion.button>
+      <div className="text-sm text-gray-500 mt-2 sm:mt-0">
+        lat: {form.latitude || "-"} | lon: {form.longitude || "-"}
+      </div>
+    </motion.div>
+
+    {/* File Uploads */}
+    <motion.div variants={item} className="flex flex-col sm:flex-row gap-4 w-full">
+      <div className="flex-1 flex flex-col gap-2">
+        <label className="flex items-center gap-2 font-medium text-gray-700">
+          <UploadCloud className="w-5 h-5 text-blue-500" /> Upload License Photo
+        </label>
+        <input 
+          type="file" 
+          className="border p-2 rounded cursor-pointer w-full" 
+          onChange={(e) => setLicensePhoto(e.target.files?.[0] || null)} 
+          required 
+        />
+      </div>
+
+      <div className="flex-1 flex flex-col gap-2">
+        <label className="flex items-center gap-2 font-medium text-gray-700">
+          <UploadCloud className="w-5 h-5 text-green-500" /> Upload Profile Photo
+        </label>
+        <input 
+          type="file" 
+          className="border p-2 rounded cursor-pointer w-full" 
+          onChange={(e) => setDoctorPhoto(e.target.files?.[0] || null)} 
+          required 
+        />
+      </div>
+    </motion.div>
+
+    {/* Submit */}
+    <motion.button
+      variants={item}
+      type="submit"
+      whileHover={{ scale: 1.05, backgroundColor: "#16a34a" }}
+      whileTap={{ scale: 0.95 }}
+      className="sm:col-span-2 bg-green-600 text-white py-3 rounded-lg font-semibold w-full text-center"
+    >
+      🚀 Register
+    </motion.button>
+  </motion.form>
+</motion.div>
+
   );
 };
 

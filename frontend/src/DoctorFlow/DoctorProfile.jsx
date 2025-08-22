@@ -95,8 +95,6 @@ const DoctorProfile = () => {
       );
 
       toast.success("Profile updated successfully!");
-
-      // Wait for toast before refreshing
       setTimeout(() => {
         setEditMode(false);
         setNewPhoto(null);
@@ -119,14 +117,18 @@ const DoctorProfile = () => {
 
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={2000} toastClassName="bg-blue-500 text-white rounded-lg shadow-md" />
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        toastClassName="bg-blue-500 text-white rounded-lg shadow-md"
+      />
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 md:p-6">
+        <div className="bg-white shadow-lg rounded-xl p-6 md:p-8 w-full max-w-xl">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
             Doctor Profile
           </h2>
 
-          {/* Profile Photo with Edit Icon and Preview */}
+          {/* Profile Photo */}
           <div className="flex flex-col items-center mb-6 relative">
             <motion.img
               initial={{ opacity: 0.5, scale: 0.9 }}
@@ -134,7 +136,7 @@ const DoctorProfile = () => {
               transition={{ duration: 0.5 }}
               src={preview || doctor.doctorPhoto}
               alt="Doctor Avatar"
-              className="w-32 h-32 rounded-full object-cover border-4 border-gray-300"
+              className="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-gray-300"
             />
             {editMode && (
               <>
@@ -171,8 +173,7 @@ const DoctorProfile = () => {
 
           {/* Editable Form */}
           <div className="space-y-4">
-            {[
-              { label: "Full Name", name: "fullName" },
+            {[{ label: "Full Name", name: "fullName" },
               { label: "Email", name: "email" },
               { label: "Contact", name: "phone" },
               { label: "Specialization", name: "specialization" },
@@ -182,8 +183,8 @@ const DoctorProfile = () => {
               { label: "Address", name: "addressLine" },
               { label: "License Number", name: "licenseNumber" },
             ].map(({ label, name }) => (
-              <div key={name} className="flex items-center gap-4 border-b pb-1">
-                <h1 className="text-gray-700 w-40">{label}:</h1>
+              <div key={name} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 border-b pb-1">
+                <h1 className="text-gray-700 w-full sm:w-40">{label}:</h1>
                 {editMode ? (
                   <input
                     type="text"
@@ -198,8 +199,9 @@ const DoctorProfile = () => {
               </div>
             ))}
 
-            <div className="flex items-center gap-4 border-b pb-1">
-              <h1 className="text-gray-700 w-40">License Photo:</h1>
+            {/* License Photo */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 border-b pb-1">
+              <h1 className="text-gray-700 w-full sm:w-40">License Photo:</h1>
               {doctor.licensePhoto ? (
                 <a
                   href={doctor.licensePhoto}
@@ -217,10 +219,10 @@ const DoctorProfile = () => {
           </div>
 
           {editMode && (
-            <div className="mt-6 text-center">
+            <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-3">
               <button
                 onClick={handleSave}
-                className="bg-green-600 text-white px-4 py-2 rounded mr-3"
+                className="bg-green-600 text-white px-4 py-2 rounded w-full sm:w-auto"
               >
                 Save
               </button>
@@ -231,7 +233,7 @@ const DoctorProfile = () => {
                   setNewPhoto(null);
                   setFormData(doctor);
                 }}
-                className="bg-gray-400 text-white px-4 py-2 rounded"
+                className="bg-gray-400 text-white px-4 py-2 rounded w-full sm:w-auto"
               >
                 Cancel
               </button>
@@ -239,7 +241,7 @@ const DoctorProfile = () => {
           )}
         </div>
       </div>
-   </div>
+    </div>
   );
 };
 

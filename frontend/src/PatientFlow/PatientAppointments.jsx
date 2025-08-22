@@ -7,7 +7,7 @@ import ChatBox from "../Components/ChatBox";
 const PatientAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [unreadCounts, setUnreadCounts] = useState({});
-  const [selectedAppointment, setSelectedAppointment] = useState(null); // ✅ Selected appointment for chat
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const patientId = localStorage.getItem("patientId");
 
   const getAppointments = async () => {
@@ -61,13 +61,14 @@ const PatientAppointments = () => {
 
   return (
     <motion.div
-      className="p-6 bg-gradient-to-br from-blue-50 to-white min-h-screen"
+      className="p-4 md:p-6 lg:p-8 bg-gradient-to-br from-blue-50 to-white min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      {/* Page Title */}
       <motion.h1
-        className="text-3xl font-bold mb-6 text-blue-800"
+        className="text-2xl md:text-3xl font-bold mb-6 text-blue-800"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -75,50 +76,46 @@ const PatientAppointments = () => {
         Your Appointments
       </motion.h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Appointments Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <AnimatePresence>
           {appointments.map((appt) => (
             <motion.div
               key={appt._id}
-              className="bg-white rounded-xl shadow-md p-5 border cursor-pointer"
+              className="bg-white rounded-xl shadow-md p-4 md:p-5 border cursor-pointer flex flex-col justify-between"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4 }}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 8px 15px rgba(0,0,0,0.1)",
-              }}
+              whileHover={{ scale: 1.02, boxShadow: "0px 8px 15px rgba(0,0,0,0.1)" }}
             >
               {/* Patient Info */}
-              <div className="flex items-center gap-3 mb-2">
-                <UserCircle2 className="text-blue-500" size={28} />
-                <h2 className="text-xl font-semibold">{appt.name}</h2>
+              <div className="flex items-center gap-2 md:gap-3 mb-2">
+                <UserCircle2 className="text-blue-500" size={24} />
+                <h2 className="text-lg md:text-xl font-semibold">{appt.name}</h2>
               </div>
 
               {/* Appointment Info */}
-              <div className="flex items-center text-gray-600 gap-2 mb-1">
-                <CalendarCheck size={18} />
-                <span>{formatDate(appt.appointmentDate)}</span>
-              </div>
-              <div className="flex items-center text-gray-600 gap-2 mb-1">
-                <Clock4 size={18} />
-                <span>{appt.appointmentTime}</span>
-              </div>
-              <div className="text-gray-600 mb-2">Reason: {appt.reason}</div>
-              <div className="text-gray-600 mb-2">
-                Doctor: {appt.doctorId?.fullName || "Unknown"}
-              </div>
-              <div className="text-gray-600 mb-2">
-                Consultation Fee: {appt.consultationFeeAtBooking || "Unknown"}
+              <div className="flex flex-col gap-1 text-gray-600 mb-2 text-sm md:text-base">
+                <div className="flex items-center gap-2">
+                  <CalendarCheck size={16} />
+                  <span>{formatDate(appt.appointmentDate)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock4 size={16} />
+                  <span>{appt.appointmentTime}</span>
+                </div>
+                <div>Reason: {appt.reason}</div>
+                <div>Doctor: {appt.doctorId?.fullName || "Unknown"}</div>
+                <div>Consultation Fee: {appt.consultationFeeAtBooking || "Unknown"}</div>
               </div>
 
-              {/* Status */}
+              {/* Status Badge */}
               <motion.span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                className={`inline-block px-3 py-1 rounded-full text-xs md:text-sm font-medium ${
                   appt.status === "pending"
                     ? "bg-yellow-100 text-yellow-700"
-                    : appt.status === "Completed"
+                    : appt.status === "accepted"
                     ? "bg-green-100 text-green-700"
                     : "bg-gray-100 text-gray-700"
                 }`}
@@ -129,12 +126,12 @@ const PatientAppointments = () => {
                 {appt.status}
               </motion.span>
 
-              {/* Buttons */}
-              <div className="mt-4 flex gap-2">
+              {/* Action Buttons */}
+              <div className="mt-3 flex flex-col sm:flex-row gap-2">
                 {appt.status === "pending" && (
                   <motion.button
                     onClick={() => handleCancel(appt._id)}
-                    className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600"
+                    className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-600 text-sm md:text-base"
                     whileTap={{ scale: 0.95 }}
                   >
                     Cancel
@@ -143,11 +140,11 @@ const PatientAppointments = () => {
 
                 {appt.status === "accepted" && (
                   <motion.button
-                    onClick={() => setSelectedAppointment(appt)} // ✅ open chat dynamically
-                    className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                    onClick={() => setSelectedAppointment(appt)}
+                    className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm md:text-base"
                     whileTap={{ scale: 0.95 }}
                   >
-                    <MessageCircle size={18} />
+                    <MessageCircle size={16} />
                     Chat
                     {unreadCounts[appt._id] > 0 && (
                       <span className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">
@@ -162,27 +159,27 @@ const PatientAppointments = () => {
         </AnimatePresence>
       </div>
 
-      {/* ✅ Render ChatBox if an appointment is selected */}
-     {selectedAppointment && (
-  <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div className="relative bg-white rounded-xl shadow-lg w-11/12 md:w-3/4 lg:w-2/3 h-4/5">
-      {/* Close Button */}
-      <button
-        className="absolute top-4 right-4 text-white font-bold text-xl z-10"
-        onClick={() => setSelectedAppointment(null)}
-      >
-        ✕
-      </button>
+      {/* ChatBox Modal */}
+      {selectedAppointment && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-2 md:p-4">
+          <div className="relative bg-white rounded-xl shadow-lg w-full max-w-3xl h-[85vh] md:h-[80vh] flex flex-col overflow-hidden">
+            {/* Close Button */}
+            <button
+              className="absolute top-3 right-3 text-gray-700 font-bold text-xl z-10"
+              onClick={() => setSelectedAppointment(null)}
+            >
+              ✕
+            </button>
 
-      {/* Chat Box */}
-      <ChatBox
-        senderId={patientId}
-        senderModel="patients"
-        appointmentId={selectedAppointment._id}
-      />
-    </div>
-  </div>
-)}
+            {/* Chat Box */}
+            <ChatBox
+              senderId={patientId}
+              senderModel="patients"
+              appointmentId={selectedAppointment._id}
+            />
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };
