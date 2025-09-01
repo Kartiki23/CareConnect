@@ -26,7 +26,7 @@ export default function PatientDashboard() {
       if (!storedpatientId) return;
 
       const response = await axios.post(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/patientProfile",
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/patientProfile",
         { patientId: storedpatientId },
         {
           headers: { Authorization: `Bearer ${token}` },

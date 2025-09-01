@@ -13,7 +13,7 @@ const Specialties = () => {
   // Fetch all specialties
   const getSpecialties = async () => {
     try {
-      const response = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/specialties");
+      const response = await axios.get("https://careconnect-1-xvl2.onrender.com/api/v1/user/specialties");
       setSpecialties(response.data.specialties ?? []);
     } catch (error) {
       console.error("Error fetching specialties:", error);

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const socket = io("https://careconnect-9y8d.onrender.com", { transports: ["websocket"] });
+const socket = io("https://careconnect-1-xvl2.onrender.com", { transports: ["websocket"] });
 
 const ChatBox = ({ senderId, senderModel }) => {
   const [appointments, setAppointments] = useState([]);
@@ -20,7 +20,7 @@ const ChatBox = ({ senderId, senderModel }) => {
     const fetchChats = async () => {
       try {
         const res = await axios.get(
-          `https://careconnect-9y8d.onrender.com/api/v1/chat/myChats/${senderId}/${senderModel}`
+          `https://careconnect-1-xvl2.onrender.com/api/v1/chat/myChats/${senderId}/${senderModel}`
         );
         setAppointments(res.data);
       } catch (err) {
@@ -40,7 +40,7 @@ const ChatBox = ({ senderId, senderModel }) => {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-          `https://careconnect-9y8d.onrender.com/api/v1/chat/messages/${roomId}`
+          `https://careconnect-1-xvl2.onrender.com/api/v1/chat/messages/${roomId}`
         );
         setMessages(res.data.messages || []);
       } catch (err) {
@@ -82,7 +82,7 @@ const ChatBox = ({ senderId, senderModel }) => {
     setText("");
 
     try {
-      await axios.post("https://careconnect-9y8d.onrender.com/api/v1/chat/send", newMsg);
+      await axios.post("https://careconnect-1-xvl2.onrender.com/api/v1/chat/send", newMsg);
       socket.emit("sendMessage", newMsg);
     } catch (err) {
       console.error("Send message error:", err);

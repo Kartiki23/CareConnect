@@ -24,7 +24,7 @@ const BloodDonationForm = ({ onClose }) => {
   useEffect(() => {
     const fetchDonationTypes = async () => {
       try {
-        const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/donation");
+        const res = await axios.get("https://careconnect-1-xvl2.onrender.com/api/v1/user/donation");
         setDonationTypes(res.data.donation || []);
       } catch (err) {
         console.error("Error fetching donation types:", err);
@@ -50,7 +50,7 @@ const BloodDonationForm = ({ onClose }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://careconnect-9y8d.onrender.com/api/v1/user/bloodDonationForm", formData);
+      const response = await axios.post("https://careconnect-1-xvl2.onrender.com/api/v1/user/bloodDonationForm", formData);
       toast.success(response.data.message || "✅ Form submitted successfully!");
       setFormData({
         fullName: "",

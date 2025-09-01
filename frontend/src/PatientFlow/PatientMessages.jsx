@@ -9,7 +9,7 @@ const PatientMessages = ({ patientId }) => {
 
   useEffect(() => {
     axios
-      .get(`https://careconnect-9y8d.onrender.com/api/v1/chat/acceptedAppointments/${patientId}`)
+      .get(`https://careconnect-1-xvl2.onrender.com/api/v1/chat/acceptedAppointments/${patientId}`)
       .then((res) => setAppointments(res.data));
   }, [patientId]);
 

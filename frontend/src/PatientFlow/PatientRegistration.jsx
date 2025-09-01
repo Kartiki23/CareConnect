@@ -25,7 +25,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 
-const API = "https://careconnect-9y8d.onrender.com";
+const API = "https://careconnect-1-xvl2.onrender.com";
 
 const PatientRegistration = () => {
   const navigate = useNavigate();

@@ -19,14 +19,14 @@ const DoctorPage = () => {
   const fetchDoctors = async (specialization) => {
     try {
       const res = await axios.get(
-        `https://careconnect-9y8d.onrender.com/api/v1/user/specialty/${specialization}`
+        `https://careconnect-1-xvl2.onrender.com/api/v1/user/specialty/${specialization}`
       );
       setDoctors(res.data);
 
       const doctorsWithPhotos = res.data.map((doc) => ({
         ...doc,
         doctorPhoto: doc.doctorPhoto
-          ? `https://careconnect-9y8d.onrender.com/uploads/${doc.doctorPhoto}`
+          ? `https://careconnect-1-xvl2.onrender.com/uploads/${doc.doctorPhoto}`
           : "https://i.pravatar.cc/150?img=12", // fallback image
       }));
 

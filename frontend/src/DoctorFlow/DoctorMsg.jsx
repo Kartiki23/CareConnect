@@ -9,7 +9,7 @@ const DoctorDashboard = ({ doctorId }) => {
 
   useEffect(() => {
     axios
-      .get(`https://careconnect-9y8d.onrender.com/api/v1/chat/acceptedPatients/${doctorId}`)
+      .get(`https://careconnect-1-xvl2.onrender.com/api/v1/chat/acceptedPatients/${doctorId}`)
       .then((res) => setAppointments(res.data))
       .catch((err) => console.error(err));
   }, [doctorId]);

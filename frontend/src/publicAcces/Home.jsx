@@ -17,7 +17,7 @@ const Home = () => {
   const getSpecialties = async () => {
     try {
       const response = await axios.get(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/specialties"
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/specialties"
       );
       setSpecialties(response.data.specialties ?? []);
     } catch (error) {
@@ -32,7 +32,7 @@ const Home = () => {
   const getDonations = async () => {
     try {
       const response = await axios.get(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/donation"
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/donation"
       );
       setDonationSlides(response.data.donation ?? []);
     } catch (error) {

@@ -15,7 +15,7 @@ const BloodDonarList = () => {
   const fetchDonors = async () => {
     try {
       const response = await axios.get(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/donors",
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/donors",
         {
           params: { search, bloodGroup: filter },
         }
@@ -31,7 +31,7 @@ const BloodDonarList = () => {
     if (!window.confirm("Are you sure you want to delete this donor?")) return;
     try {
       await axios.delete(
-        `https://careconnect-9y8d.onrender.com/api/v1/user/donors/${id}`
+        `https://careconnect-1-xvl2.onrender.com/api/v1/user/donors/${id}`
       );
       toast.success("Donor deleted successfully");
       fetchDonors();

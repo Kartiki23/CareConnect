@@ -37,8 +37,8 @@ const Login = () => {
 
     const endpoint =
       role === "patient"
-        ? "https://careconnect-9y8d.onrender.com/api/v1/user/Plogin"
-        : "https://careconnect-9y8d.onrender.com/api/v1/user/login";
+        ? "https://careconnect-1-xvl2.onrender.com/api/v1/user/Plogin"
+        : "https://careconnect-1-xvl2.onrender.com/api/v1/user/login";
 
     try {
       const response = await axios.post(endpoint, { email, password });
@@ -73,7 +73,7 @@ const Login = () => {
     if (!fpEmail || !fpNewPassword) return alert("Please fill all fields.");
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/v1/user/reset-password",
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/reset-password",
         { email: fpEmail, newPassword: fpNewPassword }
       );
       if (res.data.success) {

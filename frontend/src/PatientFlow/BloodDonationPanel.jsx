@@ -13,7 +13,7 @@ const BloodDonationPanel = () => {
     const fetchDonations = async () => {
       try {
         //const token = localStorage.getItem("token"); // ✅ JWT stored at login
-        const res = await axios.get("https://careconnect-9y8d.onrender.com/api/v1/user/my-donations", {
+        const res = await axios.get("https://careconnect-1-xvl2.onrender.com/api/v1/user/my-donations", {
           //headers: { Authorization: `Bearer ${token}` },
         });
         setDonations(res.data.donations);

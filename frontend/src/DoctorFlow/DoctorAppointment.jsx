@@ -34,7 +34,7 @@ const DoctorAppointment = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/getAppointmentsForDoctor",
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/getAppointmentsForDoctor",
         { params: { doctorId } }
       );
       setAppointments(res.data.appointments || []);
@@ -50,7 +50,7 @@ const DoctorAppointment = () => {
   const handleUpdateStatus = async (id, status) => {
     try {
       await axios.patch(
-        "https://careconnect-9y8d.onrender.com/api/v1/user/updateStatus",
+        "https://careconnect-1-xvl2.onrender.com/api/v1/user/updateStatus",
         { appointmentId: id, status }
       );
       fetchAppointments();
@@ -63,7 +63,7 @@ const DoctorAppointment = () => {
   const markAsPaid = async (id) => {
     try {
       await axios.put(
-        `https://careconnect-9y8d.onrender.com/api/v1/user/${id}/markPaid`
+        `https://careconnect-1-xvl2.onrender.com/api/v1/user/${id}/markPaid`
       );
       setAppointments((prev) =>
         prev.map((a) =>
