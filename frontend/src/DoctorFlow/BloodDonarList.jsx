@@ -48,7 +48,7 @@ const BloodDonarList = () => {
   return (
     <div className="max-w-full mx-auto p-4 sm:p-6">
       <h2 className="text-3xl font-bold mb-6 text-red-600 text-center">
-        Blood Donors Admin Panel
+       Donors Admin Panel
       </h2>
 
       {/* Filters */}
