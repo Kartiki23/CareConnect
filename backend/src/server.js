@@ -23,6 +23,7 @@ import { connectDB } from './config/Db.js';
 import { ChatMessage } from './model/PatientMessageModel.js';
 import locationRoute from './route/LocationRoute.js';
 import bloodDonationRoute from './route/BloodDonationRoute.js';
+import contactRoute from './route/ContactRoute.js';
 
 dotenv.config();
 connectDB();
@@ -42,6 +43,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 // Routes
 app.use("/api/v1/user", authRoutes);
+app.use("/api/v1/user", contactRoute);
 app.use("/api/v1/user", docLoginRouter);
 app.use("/api/v1/user", patientloginRoutes);
 app.use("/api/v1/user", patientRegisterrouter);
