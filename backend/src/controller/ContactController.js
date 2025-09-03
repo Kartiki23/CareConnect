@@ -14,14 +14,14 @@ export const contact = async (req,res) =>{
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "kartikipawar36@gmail.com",   // Website owner's Gmail
-        pass: "tdiuzaytxuvbvqtj",     // App password
+        user: process.env.USER_EMAIL,   // Website owner's Gmail
+        pass: process.env.EMAIL_PASS     // App password
       },
     });
 
     await transporter.sendMail({
       from: email,
-      to: "kartikipawar36@gmail.com",       // Owner’s email
+      to: process.env.USER_EMAIL,       // Owner’s email
       subject: `📩 New Contact from ${name}`,
       text: `Message: ${message}\n\nFrom: ${name} (${email})`,
     });
