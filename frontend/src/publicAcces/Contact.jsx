@@ -18,7 +18,7 @@ const Contact = () => {
     setStatus("Sending...");
 
     try {
-      const res = await axios.post("http://localhost:3001/api/v1/user/contact", form); // ✅ Backend API
+      const res = await axios.post("https://careconnect-1-xvl2.onrender.com/api/v1/user/contact", form); // ✅ Backend API
       if (res.data.success) {
         setStatus("✅ Message sent successfully!");
         setForm({ name: "", email: "", message: "" });
