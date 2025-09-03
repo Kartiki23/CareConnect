@@ -3,13 +3,13 @@ description: An intelligent Doctor-Patient Management System
 theme: jekyll-theme-primer
 
 # Use only the Frontend folder for the site
-source: Frontend
+source: frontend
 
 # Exclude backend and other unwanted files
 exclude:
-  - "Backend"
+  - "backend"
   - "node_modules"
-  - "Frontend/node_modules"
+  - "frontend/node_modules"
   - "package.json"
   - "package-lock.json"
   - "yarn.lock"
