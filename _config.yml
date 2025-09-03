@@ -1,0 +1,19 @@
+title: CareConnect
+description: An intelligent Doctor-Patient Management System
+theme: jekyll-theme-primer
+
+# Use only the Frontend folder for the site
+source: Frontend
+
+# Exclude backend and other unwanted files
+exclude:
+  - "Backend"
+  - "node_modules"
+  - "Frontend/node_modules"
+  - "package.json"
+  - "package-lock.json"
+  - "yarn.lock"
+  - "README.md"
+  - "LICENSE"
+  - ".gitignore"
+  - ".github"
