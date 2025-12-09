@@ -22,6 +22,7 @@ export const getPatientProfile = async (req, res) => {
       gender: patient.gender,
       age: patient.age,
       phone: patient.phone,
+      addressLine: patient.addressLine
       //doctorPhoto: doctor.doctorPhoto,
     });
   } catch (error) {
@@ -70,6 +71,7 @@ export const updatePatientInfo = async (req, res) => {
       phone: req.body.phone,
       gender: req.body.gender,
       age: req.body.age,
+      addressLine: req.body.addressLine
     };
 
     const updatedPatient = await Patient.findByIdAndUpdate(

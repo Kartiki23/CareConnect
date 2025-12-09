@@ -11,7 +11,7 @@ export const patientSchema = new Schema({
         required:true,
         trim:true,
         minLength:6
-    }
+    },
 
 },{ timestamps: true,}
 );

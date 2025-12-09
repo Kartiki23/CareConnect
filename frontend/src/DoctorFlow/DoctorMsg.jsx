@@ -1,114 +1,86 @@
-// src/pages/MultiPatientChat.jsx
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, User } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import ChatBox from "../Components/ChatBox";
 
-const patients = [
-  { id: 1, name: "kartiki Pawar" },
-  { id: 2, name: "Srushti Raskar" },
-  { id: 3, name: "Vaibhavi Garje" },
-  { id: 4, name: "Bhagyashri Gadge"}
-];
+const DoctorDashboard = ({ doctorId }) => {
+  const [appointments, setAppointments] = useState([]);
+  const [activeChat, setActiveChat] = useState(null);
+  const [isListOpen, setIsListOpen] = useState(false); // mobile toggle
 
-const DoctorMsg = () => {
-  const [selectedPatient, setSelectedPatient] = useState(patients[0]);
-  const [messages, setMessages] = useState({});
-  const [input, setInput] = useState("");
-
-  const handleSend = () => {
-    if (!input.trim()) return;
-
-    const newMessage = {
-      text: input,
-      sender: "doctor",
-      timestamp: new Date().toISOString(),
-    };
-
-    const patientId = selectedPatient.id;
-    const updatedMessages = {
-      ...messages,
-      [patientId]: [...(messages[patientId] || []), newMessage],
-    };
-
-    setMessages(updatedMessages);
-    setInput("");
-  };
+  useEffect(() => {
+    axios
+      .get(`https://careconnect-1-xvl2.onrender.com/api/v1/chat/acceptedPatients/${doctorId}`)
+      .then((res) => setAppointments(res.data))
+      .catch((err) => console.error(err));
+  }, [doctorId]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-1/4 bg-white shadow-lg">
-        <div className="p-4 text-xl font-bold border-b">Patients</div>
-        <ul>
-          {patients.map((p) => (
-            <li
-  key={p.id}
-  onClick={() => setSelectedPatient(p)}
-  className={`px-4 py-3 flex items-center gap-3 cursor-pointer border-b hover:bg-gray-100 ${
-    selectedPatient.id === p.id ? "bg-blue-50 font-semibold" : ""
-  }`}
->
-  <img
-    src={`https://i.pravatar.cc/150?u=${p.name}`} // Unique placeholder avatar
-    alt={p.name}
-    className="w-8 h-8 rounded-full object-cover"
-  />
-  <span>{p.name}</span>
-</li>
-          ))}
-        </ul>
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
+      {/* Patient List */}
+      <div
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md z-50 transform transition-transform duration-300
+          ${isListOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
+        <div className="flex justify-between items-center p-4 border-b md:border-none">
+          <h2 className="text-lg font-bold">Accepted Patients</h2>
+          <button
+            className="md:hidden text-gray-700"
+            onClick={() => setIsListOpen(false)}
+          >
+            ✕
+          </button>
+        </div>
+        <div className="overflow-y-auto h-full">
+          {appointments.length > 0 ? (
+            appointments.map((appt) => (
+              <div
+                key={appt.appointmentId}
+                className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                  activeChat?.appointmentId === appt.appointmentId
+                    ? "bg-indigo-100"
+                    : ""
+                }`}
+                onClick={() => {
+                  setActiveChat(appt);
+                  setIsListOpen(false); // close list on mobile
+                }}
+              >
+                <p className="font-medium">{appt.name}</p>
+                <p className="text-sm text-gray-500">{appt.appointmentDate}</p>
+              </div>
+            ))
+          ) : (
+            <p className="p-2 text-gray-500">No accepted patients yet.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Hamburger for mobile */}
+      <div className="md:hidden absolute top-4 left-4 z-50">
+        <button
+          onClick={() => setIsListOpen(true)}
+          className="text-gray-700 hover:text-indigo-600"
+        >
+          ☰
+        </button>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b bg-white flex items-center text-lg font-semibold">
-          <img
-    src={`https://i.pravatar.cc/150?u=${selectedPatient.name}`} // Unique placeholder avatar
-    alt={selectedPatient.name}
-    className="w-8 h-8 rounded-full object-cover"
-  />
-  <span className="ml-2">{selectedPatient.name} </span>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          {(messages[selectedPatient.id] || []).map((msg, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className={`max-w-xs px-4 py-2 mb-1 rounded-lg ${
-                msg.sender === "doctor"
-                  ? "bg-blue-500 text-white self-end ml-auto"
-                  : "bg-gray-200 text-gray-800"
-              }`}
-            >
-              {msg.text}
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Input */}
-        <div className="p-4 border-t bg-white flex items-center">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
-            className="flex-1 border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
+      <div className="flex-1 p-4 md:p-6 ml-0 md:ml-64 h-screen overflow-y-auto">
+        {activeChat ? (
+          <ChatBox
+            appointmentId={activeChat.appointmentId}
+            senderId={doctorId}
+            senderModel="docregmodels"
           />
-          <button
-            onClick={handleSend}
-            className="ml-2 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full"
-          >
-            <Send size={18} />
-          </button>
-        </div>
+        ) : (
+          <p className="text-gray-500 text-center mt-10 md:mt-20">
+            Select a patient to chat
+          </p>
+        )}
       </div>
     </div>
   );
 };
 
-export default DoctorMsg;
+export default DoctorDashboard;

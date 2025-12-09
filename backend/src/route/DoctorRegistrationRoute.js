@@ -1,31 +1,21 @@
-
+// backend/src/route/DoctorRegistrationRoute.js
 import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { getAllDoctors, registerDoctor } from "../controller/DoctorRegistrationController.js";
+import { getAllDoctors, getDoctorsBySpecialty, registerDoctor } from "../controller/DoctorRegistrationController.js";
 
 const authRoutes = express.Router();
 
-// Ensure uploads folder exists
 const uploadDir = path.join("uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// Configure Multer
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename:    (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
-
 const upload = multer({ storage });
 
-// POST route
 authRoutes.post(
   "/register",
   upload.fields([
@@ -35,7 +25,7 @@ authRoutes.post(
   registerDoctor
 );
 
-
-authRoutes.get('/doctor',getAllDoctors);
+authRoutes.get('/doctor', getAllDoctors);
+authRoutes.get("/specialty/:specialization", getDoctorsBySpecialty);
 
 export default authRoutes;

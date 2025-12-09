@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { appointment } from "../model/BookAppointmentModel.js";
-import { Patient } from "../model/PatientRegistrationModel.js";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
 
 // Book an appointment
@@ -37,6 +36,12 @@ export const bookAppointment = async (req, res) => {
       return res.status(400).json({ message: "All fields are required!" });
     }
 
+    // ✅ Fetch the doctor's payment
+    const doctor = await docRegModel.findById(doctorId).select("consultationFee");
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
     const newAppointment = new appointment({
       name,
       email,
@@ -50,7 +55,9 @@ export const bookAppointment = async (req, res) => {
       reason,
       medicalHistory,
       patientId,
-      status: "pending",
+      consultationFeeAtBooking: doctor.consultationFee,
+      paymentMethod: "Cash",
+      paymentStatus: "Pending"
     });
 
     await newAppointment.save();
@@ -73,6 +80,13 @@ export const getAppointmentsForDoctor = async (req, res) => {
 
     const appointments = await appointment.find({
       doctorId: new mongoose.Types.ObjectId(doctorId),
+    });
+
+     appointments.sort((a, b) => {
+      if (a.createdAt && b.createdAt) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+      return 0; // leave unchanged if createdAt missing
     });
 
     res.status(200).json({ appointments });
@@ -109,7 +123,6 @@ export const updateAppointmentStatus = async (req, res) => {
   }
 };
 
-
 // Get Appointments For Patient
 export const getAppointmentsForPatient = async (req, res) => {
   try {
@@ -119,11 +132,9 @@ export const getAppointmentsForPatient = async (req, res) => {
       return res.status(400).json({ error: "Patient ID is required" });
     }
 
-   const appointments = await appointment.find({ patientId ,}).populate("doctorId", "fullName specialization");
-
-    // const appointments = await appointment
-    //   .find({ patientId })
-    //   .populate("doctorId", "fullName"); // <-- THIS POPULATES fullName from doctor
+    const appointments = await appointment
+      .find({ patientId })
+      .populate("doctorId", "fullName specialization consultationFeeAtBooking"); // ✅ Include payment
 
     res.status(200).json({ appointments });
   } catch (error) {
@@ -141,5 +152,26 @@ export const cancelAppointment = async (req, res) => {
   } catch (error) {
     console.error("Cancellation error:", error);
     res.status(500).json({ error: "Failed to cancel appointment" });
+  }
+};
+
+// Mark Payment
+export const markPaymentAsPaid = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appt = await appointment.findById(id);
+    if (!appt) return res.status(404).json({ message: "Appointment not found" });
+
+    if (appt.status !== "accepted") {
+      return res.status(400).json({ message: "Payment can be captured only after appointment is accepted." });
+    }
+
+    appt.paymentStatus = "Paid";
+    await appt.save();
+
+    res.json({ message: "Payment marked as Paid", appointment: appt });
+  } catch (error) {
+    console.log("Mark paid error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

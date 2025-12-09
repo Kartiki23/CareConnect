@@ -11,12 +11,13 @@ export const userSchema = new Schema({
         required:true,
         trim:true,
         minLength:6
-    }
+    },
 
 },
 {
     timestamps: true,
 }
 );
+
 
 export const docLogin = mongoose.model('docLogin',userSchema);

@@ -1,161 +1,326 @@
-import React, { useState } from 'react';
+// frontend/src/PatientFlow/PatientRegistration.jsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { motion } from "framer-motion";
+import {
+  getBrowserPosition,
+  reverseGeocode,
+  forwardGeocode,
+} from "../utils/Location";
+
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Calendar,
+  MapPin,
+  Building,
+  Globe,
+  Crosshair,
+  Locate,
+  UploadCloud,
+} from "lucide-react";
+
+const API = "https://careconnect-1-xvl2.onrender.com";
 
 const PatientRegistration = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
-    gender: "",
-    age: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
+    gender: "",
+    age: "",
+    addressLine: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+    latitude: "",
+    longitude: "",
   });
 
-  // Handles input changes
-  const handleChanges = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loadingLoc, setLoadingLoc] = useState(false);
 
-  // Handles form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onChange = (e) =>
+    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/v1/user/Pregister",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        alert(" Patient Registered Successfully");
-        console.log("Server Response:", response.data);
-
-        setFormData({
-          fullName: "",
-          gender: "",
-          age: "",
-          email: "",
-          phone: "",
-          password: ""
-        });
-
-        navigate("/patientDashboard");
-      } else {
-        alert(` Registration failed: ${response.data.message || "Server error"}`);
-        console.log("Backend error:", response.data);
-      }
-    } catch (error) {
-      console.error("Axios error:", error);
-      alert("Could not connect to server. Please check if backend is running on port 3001.");
+  const pickPhoto = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedPhoto(file);
+      setPreview(URL.createObjectURL(file));
     }
   };
 
+  const useMyLocation = async () => {
+    try {
+      setLoadingLoc(true);
+      const { lat, lon } = await getBrowserPosition();
+      const addr = await reverseGeocode(lat, lon);
+      setFormData((p) => ({
+        ...p,
+        addressLine: addr.addressLine || addr.formattedAddress || "",
+        city: addr.city || "",
+        state: addr.state || "",
+        postalCode: addr.postalCode || "",
+        country: addr.country || "",
+        latitude: String(lat),
+        longitude: String(lon),
+      }));
+      toast.success("Location detected ✅");
+    } catch (e) {
+      console.error(e);
+      toast.error("Could not get your location ❌");
+    } finally {
+      setLoadingLoc(false);
+    }
+  };
+
+  const geocodeTyped = async () => {
+    try {
+      const q = [
+        formData.addressLine,
+        formData.city,
+        formData.state,
+        formData.postalCode,
+        formData.country,
+      ]
+        .filter(Boolean)
+        .join(", ");
+      if (!q) return toast.error("Type an address to locate");
+      const { lat, lon, formattedAddress } = await forwardGeocode(q);
+      setFormData((p) => ({
+        ...p,
+        latitude: String(lat),
+        longitude: String(lon),
+        addressLine: formattedAddress || p.addressLine,
+      }));
+      toast.success("Address located 📍");
+    } catch (e) {
+      toast.error("Could not find that address ❌");
+    }
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      const fd = new FormData();
+      Object.entries(formData).forEach(([k, v]) => fd.append(k, v));
+      if (selectedPhoto) fd.append("patientPhoto", selectedPhoto);
+
+      await axios.post(`${API}/api/v1/user/Pregister`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast.success("Patient registered 🎉");
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || "Registration failed ❌");
+    }
+  };
+
+  // 🔥 Animation Variants (same style as DoctorRegistration)
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 70 } },
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50 p-6">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full">
-        <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
-          Patient Registration
-        </h2>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 p-6"
+    >
+      <ToastContainer />
+      <motion.form
+        onSubmit={submit}
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
+        <motion.h2
+          variants={item}
+          className="md:col-span-2 text-3xl font-bold text-blue-700 text-center mb-4"
+        >
+          🩺 Patient Registration
+        </motion.h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block font-medium mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter your full name"
-              required
-            />
-          </div>
+        {/* Inputs with icons */}
+        <motion.div variants={item} className="flex items-center border rounded">
+          <User className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            className="p-2 rounded w-full focus:outline-none"
+            name="fullName"
+            value={formData.fullName}
+            onChange={onChange}
+            placeholder="Full Name"
+            required
+          />
+        </motion.div>
 
-          <div>
-            <label className="block font-medium mb-1">Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              required
-            >
-              <option value="">--- Select Gender ---</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Mail className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            type="email"
+            className="p-2 rounded w-full focus:outline-none"
+            name="email"
+            value={formData.email}
+            onChange={onChange}
+            placeholder="Email"
+            required
+          />
+        </motion.div>
 
-          <div>
-            <label className="block font-medium mb-1">Age</label>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter your age"
-              required
-            />
-          </div>
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Lock className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            type="password"
+            className="p-2 rounded w-full focus:outline-none"
+            name="password"
+            value={formData.password}
+            onChange={onChange}
+            placeholder="Password"
+            required
+          />
+        </motion.div>
 
-          <div>
-            <label className="block font-medium mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Calendar className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            type="number"
+            className="p-2 rounded w-full focus:outline-none"
+            name="age"
+            value={formData.age}
+            onChange={onChange}
+            placeholder="Age"
+            required
+          />
+        </motion.div>
 
-          <div>
-            <label className="block font-medium mb-1">Phone</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              placeholder="10-digit phone number"
-              pattern="[0-9]{10}"
-              required
-            />
-          </div>
+        <motion.div variants={item} className="flex items-center border rounded">
+          <Phone className="w-5 h-5 text-gray-400 ml-2" />
+          <input
+            className="p-2 rounded w-full focus:outline-none"
+            name="phone"
+            value={formData.phone}
+            onChange={onChange}
+            placeholder="Phone (10 digits)"
+            required
+          />
+        </motion.div>
 
-          <div>
-            <label className="block font-medium mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChanges}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Create password"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-300"
+        <motion.div variants={item} className="flex items-center border rounded">
+          <User className="w-5 h-5 text-gray-400 ml-2" />
+          <select
+            className="p-2 rounded w-full focus:outline-none"
+            name="gender"
+            value={formData.gender}
+            onChange={onChange}
+            required
           >
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
+            <option value="">--- Select Gender ---</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </motion.div>
+
+        {/* Address fields */}
+        <motion.div
+          variants={item}
+          className="md:col-span-2 font-semibold mt-2"
+        >
+          Address
+        </motion.div>
+
+        {[
+          { name: "addressLine", icon: <MapPin className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "House / Street / Area", span: "md:col-span-2" },
+          { name: "city", icon: <Building className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "City" },
+          { name: "state", icon: <Building className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "State" },
+          { name: "postalCode", icon: <MapPin className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "Postal Code" },
+          { name: "country", icon: <Globe className="w-5 h-5 text-gray-400 ml-2" />, placeholder: "Country" },
+        ].map((f, i) => (
+          <motion.div
+            key={i}
+            variants={item}
+            className={`flex items-center border rounded ${f.span || ""}`}
+          >
+            {f.icon}
+            <input
+              className="p-2 rounded w-full focus:outline-none"
+              name={f.name}
+              value={formData[f.name]}
+              onChange={onChange}
+              placeholder={f.placeholder}
+            />
+          </motion.div>
+        ))}
+
+        {/* Location buttons */}
+        <motion.div
+          variants={item}
+          className="flex gap-2 items-center md:col-span-2"
+        >
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={useMyLocation}
+            className="flex items-center gap-1 bg-blue-600 text-white px-3 py-2 rounded disabled:opacity-60"
+            disabled={loadingLoc}
+          >
+            <Crosshair className="w-4 h-4" />
+            {loadingLoc ? "Detecting..." : "Use my live location"}
+          </motion.button>
+
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={geocodeTyped}
+            className="flex items-center gap-1 border px-3 py-2 rounded"
+          >
+            <Locate className="w-4 h-4" />
+            Locate typed address
+          </motion.button>
+
+          <div className="text-sm text-gray-500">
+            lat: {formData.latitude || "-"} | lon: {formData.longitude || "-"}
+          </div>
+        </motion.div>
+
+        {/* Submit button */}
+        <motion.button
+          variants={item}
+          type="submit"
+          whileHover={{ scale: 1.05, backgroundColor: "#0000cd" }}
+          whileTap={{ scale: 0.95 }}
+          className="md:col-span-2 bg-blue-600 text-white py-3 rounded-lg font-semibold"
+        >
+           Register
+        </motion.button>
+      </motion.form>
+    </motion.div>
   );
 };
 
