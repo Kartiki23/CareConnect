@@ -24,13 +24,14 @@ import { ChatMessage } from './model/PatientMessageModel.js';
 import locationRoute from './route/LocationRoute.js';
 import bloodDonationRoute from './route/BloodDonationRoute.js';
 import contactRoute from './route/ContactRoute.js';
+import appointmentNotificationRoute from './route/AppintmentNotificationRoute.js';
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// ✅ Fix CORS to allow PATCH/PUT/DELETE
+// ✅ Fix CORS
 app.use(cors({
   origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -50,6 +51,7 @@ app.use("/api/v1/user", patientRegisterrouter);
 app.use("/api/v1/user", docDashboardRouter);
 app.use("/api/v1/user", specialtiesRouter);
 app.use("/api/v1/user", donationRoute);
+app.use("/api/v1/user", appointmentNotificationRoute);
 app.use("/api/v1/user", bookAppointmentRoute);
 app.use("/api/v1/user", patientDashboardRoute);
 app.use("/api/v1/user", resetTokenRoute);
@@ -64,19 +66,27 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { 
     origin: "http://localhost:5173", 
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] // ✅ add PATCH here too
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] 
   }
 });
+
+// ✅ Store online doctors
+let onlineDoctors = {};
 
 io.on("connection", (socket) => {
   console.log("✅ User connected:", socket.id);
 
-  // Join appointment room
+  // ---------------- Doctor Online Tracking ----------------
+  socket.on("doctorOnline", (doctorId) => {
+    onlineDoctors[doctorId] = socket.id;
+    console.log(`👨‍⚕️ Doctor ${doctorId} is online with socket ${socket.id}`);
+  });
+
+  // ---------------- Appointment Chat Rooms ----------------
   socket.on("joinRoom", async ({ appointmentId, userId }) => {
     socket.join(appointmentId);
     console.log(`🔹 ${socket.id} joined room ${appointmentId}`);
 
-    // Mark unread messages as read
     try {
       await ChatMessage.updateMany(
         { appointmentId, "readBy.userId": { $ne: userId } },
@@ -87,20 +97,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Leave room
   socket.on("leaveRoom", ({ appointmentId }) => {
     socket.leave(appointmentId);
     console.log(`🔸 ${socket.id} left room ${appointmentId}`);
   });
 
-  // Send message
+  // ---------------- Chat Message ----------------
   socket.on("sendMessage", async (msg) => {
     try {
       const { appointmentId, senderId, senderModel, message } = msg;
-
       if (!appointmentId || !senderId || !message || !senderModel) return;
 
-      // Save message to DB
       const chatMessage = new ChatMessage({
         appointmentId,
         senderId,
@@ -111,17 +118,31 @@ io.on("connection", (socket) => {
 
       const savedMessage = await chatMessage.save();
 
-      // Emit to all users in room including sender
       io.to(appointmentId).emit("receiveMessage", savedMessage);
-
     } catch (err) {
       console.error("sendMessage error:", err.message);
     }
   });
 
+  // ---------------- Disconnect ----------------
   socket.on("disconnect", () => {
     console.log("❌ User disconnected:", socket.id);
+
+    // Remove doctor from online list if disconnected
+    for (const [docId, sockId] of Object.entries(onlineDoctors)) {
+      if (sockId === socket.id) {
+        delete onlineDoctors[docId];
+        console.log(`⚠️ Doctor ${docId} went offline`);
+      }
+    }
   });
+});
+
+// ✅ Make io & onlineDoctors accessible to routes
+app.use((req, res, next) => {
+  req.io = io;
+  req.onlineDoctors = onlineDoctors;
+  next();
 });
 
 // Start server

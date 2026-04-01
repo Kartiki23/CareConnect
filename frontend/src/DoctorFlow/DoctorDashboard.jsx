@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { Bell } from "lucide-react";
 
 const COLORS = ["#4F46E5", "#F59E0B"];
 
@@ -24,16 +25,16 @@ const Card = ({ title, value, sub, subColor = "text-gray-400" }) => (
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6 }}
-    whileHover={{ scale: 1.05, boxShadow: "0px 6px 20px rgba(0,0,0,0.15)" }}
+    whileHover={{ scale: 1.05 }}
   >
     <h3 className="text-sm font-semibold">{title}</h3>
-    <p className="text-2xl font-bold mt-1">{value}</p>
+    <p className="text-2xl font-bold mt-1">{value ?? 0}</p>
     <p className={`text-xs mt-1 ${subColor}`}>{sub}</p>
   </motion.div>
 );
 
 const DoctorDashboard = () => {
-  const [doctor, setDoctor] = useState({ fullName: "", doctorPhoto: "" });
+  const [doctor, setDoctor] = useState(null);
   const [dashboardData, setDashboardData] = useState({
     activity: [],
     ageGroups: [],
@@ -43,34 +44,51 @@ const DoctorDashboard = () => {
     paymentSummary: { totalCashPayments: 0, totalCashAmount: 0 },
   });
 
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const getDoctorInfo = async () => {
     try {
-      const storedDoctorId = localStorage.getItem("doctorId");
+      const doctorId = localStorage.getItem("doctorId");
       const token = localStorage.getItem("token");
-      if (!storedDoctorId) return;
 
-      const [doctorRes, dashboardRes] = await Promise.all([
+      if (!doctorId || !token) {
+        console.log("Missing doctorId or token");
+        return;
+      }
+
+      const [doctorRes, dashboardRes, notificationRes] = await Promise.all([
         axios.post(
           "https://careconnect-1-xvl2.onrender.com/api/v1/user/doctorProfile",
-          { doctorId: storedDoctorId },
+          { doctorId },
           { headers: { Authorization: `Bearer ${token}` } }
         ),
         axios.get(
-          `https://careconnect-1-xvl2.onrender.com/api/v1/user/dashboard/${storedDoctorId}`,
+          `https://careconnect-1-xvl2.onrender.com/api/v1/user/dashboard/${doctorId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         ),
+        // axios.get(
+        //   `https://careconnect-1-xvl2.onrender.com/api/v1/user/notifications/${doctorId}`,
+        //   { headers: { Authorization: `Bearer ${token}` } }
+        // ),
       ]);
 
-      const imageUrl = doctorRes.data.doctorPhoto
-        ? `https://careconnect-1-xvl2.onrender.com/uploads/${doctorRes.data.doctorPhoto}`
+      console.log("Doctor API:", doctorRes.data);
+
+      // 🔥 Handle both possible API formats
+      const doctorData = doctorRes.data.doctor || doctorRes.data;
+
+      const imageUrl = doctorData?.doctorPhoto
+        ? `https://careconnect-1-xvl2.onrender.com/uploads/${doctorData.doctorPhoto}`
         : "https://i.pravatar.cc/40";
 
       setDoctor({
-        fullName: doctorRes.data.fullName || "Doctor",
+        fullName: doctorData?.fullName || "Doctor",
         doctorPhoto: imageUrl,
       });
 
-      setDashboardData(dashboardRes.data);
+      setDashboardData(dashboardRes.data || {});
+      setNotifications(notificationRes.data || []);
     } catch (error) {
       console.log("Error fetching doctor info:", error);
     }
@@ -80,129 +98,118 @@ const DoctorDashboard = () => {
     getDoctorInfo();
   }, []);
 
+  const handleMarkAllRead = () => {
+    setNotifications([]);
+  };
+
   return (
     <motion.div
       className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-pink-50 to-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
     >
       <main className="flex-1 p-4 md:p-6 overflow-auto">
+
         {/* Header */}
-        <motion.div
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4"
-          initial={{ y: -40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
           <h1 className="text-3xl font-semibold">Dashboard</h1>
-          <motion.div className="flex items-center gap-3" whileHover={{ scale: 1.05 }}>
-            <span className="font-semibold text-sm sm:text-base">Dr. {doctor.fullName}</span>
-            <motion.img
-              src={doctor.doctorPhoto}
-              alt="Doctor Avatar"
-              className="w-10 h-10 rounded-full"
-              whileHover={{ rotate: 10, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-            />
-          </motion.div>
-        </motion.div>
+
+          <div className="flex items-center gap-4 relative">
+
+            {/* 🔔 Notifications */}
+            <div
+              className="relative cursor-pointer"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <Bell className="w-6 h-6 text-gray-700" />
+              {notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
+                  {notifications.length}
+                </span>
+              )}
+            </div>
+
+            {/* Dropdown */}
+            {showNotifications && (
+              <div className="absolute right-0 top-8 bg-white shadow-lg rounded-xl w-72 max-h-80 overflow-y-auto z-50 p-3">
+                <div className="flex justify-between mb-2">
+                  <h3 className="font-semibold text-sm">Notifications</h3>
+                  <button onClick={handleMarkAllRead} className="text-xs text-blue-500">
+                    Clear
+                  </button>
+                </div>
+
+                {notifications.length > 0 ? (
+                  notifications.map((note, idx) => (
+                    <div key={idx} className="border-b py-2 text-sm">
+                      {note.message}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm">No notifications</p>
+                )}
+              </div>
+            )}
+
+            {/* 👨‍⚕️ Doctor Info */}
+            <div className="flex items-center gap-3">
+              <span className="font-semibold">
+                Dr. {doctor?.fullName || "Loading..."}
+              </span>
+
+              {/* ✅ FIXED IMAGE */}
+              <img
+                src={doctor?.doctorPhoto || "https://i.pravatar.cc/40"}
+                alt="Doctor"
+                className="w-10 h-10 rounded-full"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card title="Important Tasks" value="160" sub="42 tasks high priority" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card title="New Appointments" value={dashboardData.newAppointments} sub="Last 30 days" />
           <Card title="Total Appointments" value={dashboardData.totalAppointments} sub="All time" />
           <Card
             title="Cash Payments"
-            value={`$${dashboardData.paymentSummary.totalCashAmount}`}
-            sub={`${dashboardData.paymentSummary.totalCashPayments} payments`}
+            value={`₹${dashboardData.paymentSummary?.totalCashAmount || 0}`}
+            sub={`${dashboardData.paymentSummary?.totalCashPayments || 0} payments`}
             subColor="text-green-500"
           />
         </div>
 
-        {/* Activity Chart + Top Division */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <motion.div
-            className="bg-white rounded-xl shadow-md p-4 md:col-span-2"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.7 }}
-          >
-            <h2 className="font-semibold mb-4 text-sm md:text-base">Activity</h2>
+        {/* Charts */}
+        <div className="grid md:grid-cols-2 gap-4">
+
+          {/* Activity */}
+          <div className="bg-white p-4 rounded-xl shadow">
+            <h2 className="mb-2 font-semibold">Activity</h2>
             <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={dashboardData.activity}>
+              <LineChart data={dashboardData.activity || []}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="thisYear" stroke="#4F46E5" strokeWidth={2} />
-                <Line type="monotone" dataKey="lastYear" stroke="#9CA3AF" strokeWidth={2} />
+                <Line type="monotone" dataKey="thisYear" stroke="#4F46E5" />
+                <Line type="monotone" dataKey="lastYear" stroke="#9CA3AF" />
               </LineChart>
             </ResponsiveContainer>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="bg-white rounded-xl shadow-md p-4"
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.7 }}
-          >
-            <h2 className="font-semibold mb-4 text-sm md:text-base">Top Division</h2>
-            <ul className="text-gray-700 space-y-2 text-xs sm:text-sm">
-              <li>General Physician</li>
-              <li>Internal Medicine</li>
-              <li>Skin Specialist</li>
-              <li>Cardiologist</li>
-              <li>Reproduction</li>
-            </ul>
-          </motion.div>
-        </div>
-
-        {/* Age + Gender Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          <motion.div
-            className="bg-white rounded-xl shadow-md p-4"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="font-semibold mb-4 text-sm md:text-base">Age</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={dashboardData.ageGroups}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#6366F1" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </motion.div>
-
-          <motion.div
-            className="bg-white rounded-xl shadow-md p-4"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h2 className="font-semibold mb-4 text-sm md:text-base">Gender</h2>
+          {/* Gender */}
+          <div className="bg-white p-4 rounded-xl shadow">
+            <h2 className="mb-2 font-semibold">Gender</h2>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie
-                  data={dashboardData.genderCount}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={50}
-                  dataKey="value"
-                  label
-                >
-                  {Array.isArray(dashboardData.genderCount) &&
-                    dashboardData.genderCount.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
+                <Pie data={dashboardData.genderCount || []} dataKey="value">
+                  {(dashboardData.genderCount || []).map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
                 </Pie>
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-          </motion.div>
+          </div>
         </div>
       </main>
     </motion.div>

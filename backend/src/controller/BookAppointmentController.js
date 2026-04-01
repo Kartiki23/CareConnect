@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { appointment } from "../model/BookAppointmentModel.js";
 import { docRegModel } from "../model/DoctorRegistrationModel.js";
+import { notification } from "../model/AppointmentNotificationModel.js";
 
 // Book an appointment
 export const bookAppointment = async (req, res) => {
@@ -61,6 +62,13 @@ export const bookAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
+
+    const notifications = new notification({
+      doctorId,
+      message: `New appointment booked for ${date} at ${time}.`,
+    });
+    await notifications.save();
+
 
     res.status(201).json({ message: "Appointment Booked Successfully!" });
   } catch (error) {
